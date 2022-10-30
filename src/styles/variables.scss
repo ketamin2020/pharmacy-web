@@ -1,0 +1,23 @@
+:root {
+  --primeFont: 'Montserrat', sans-serif;
+
+  --orangeColor: #ff6b08;
+  --backgroundColor: #f1f2f7;
+  --formColor: #fafafa;
+  --whiteColor: #ffffff;
+  --blackColor: #181c27;
+  --greyColor: rgba(24, 28, 39, 0.6);
+  --borderColor: rgba(24, 28, 39, 0.1);
+  --primaryOvale: #f3ad17;
+  --secondaryOvale: #f16609;
+  --thirdOvale: #e27fcb;
+  --fouthOvale: #ff6b07;
+
+  --min1024: screen and (min-width: 1280px);
+  --min768: screen and (min-width: 768px);
+  --mx767: screen and (max-width: 767px);
+
+  --trans: all 0.25s ease-in-out;
+  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration: 250ms;
+}
