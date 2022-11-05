@@ -1,0 +1,46 @@
+@import '../../../../styles/mixin.scss';
+.header__nav-bar {
+  display: grid;
+  grid-template-columns: 40px 1fr 60px;
+  justify-content: space-between;
+  align-items: center;
+  justify-items: center;
+  box-shadow: 0 4px 20px rgb(57 69 86 / 10%);
+  background: var(--backgroundColorGrey);
+  color: #212121;
+  padding: 10px 8px;
+  min-height: 40px;
+  & svg {
+    color: var(--whiteColor);
+    cursor: pointer;
+  }
+  & .MuiOutlinedInput-notchedOutline {
+    display: none;
+  }
+  & .header__nav-basket__title {
+    font-size: 10px;
+    margin: 0;
+    color: var(--whiteColor);
+  }
+  & .header__nav-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  & .header__nav-contacts {
+    display: flex;
+    align-items: center;
+    & p {
+      margin: 0;
+      text-align: center;
+      color: var(--whiteColor);
+    }
+    & a {
+      color: var(--whiteColor);
+    }
+  }
+  @include desktopS {
+    grid-template-columns: 240px 1fr 60px;
+  }
+}

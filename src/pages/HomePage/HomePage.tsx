@@ -1,5 +1,6 @@
 import React from 'react'
+import Layout from 'layouts/Layout'
 
 export const HomePage = () => {
-  return <div>HomePage</div>
+  return <Layout>HomePage</Layout>
 }
