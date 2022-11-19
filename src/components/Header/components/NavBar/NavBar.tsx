@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { isMobileDeviceSelector } from 'redux/auth/authSelectors'
 import { TextField } from '@mui/material'
 import { InputAdornment, IconButton, makeStyles, createStyles } from '@material-ui/core'
-import { Menu, MenuOpen, ShoppingBasket, Search, Phone } from '@mui/icons-material'
+import { Menu, MenuOpen, ShoppingBasket, Search, Phone, PermIdentity, FavoriteBorder } from '@mui/icons-material'
 import Badge from '@mui/material/Badge'
 import NavSideBar from '../NavSideBar/NavSideBar'
-import { Phone as PhoneNumber, WorkTime } from 'public'
-import { normalizePhone } from 'utils/normalizePhone'
+import { Phone as PhoneNumber } from 'public'
 import './NavBar.scss'
 
 const useStylesInput = makeStyles(() =>
@@ -30,10 +27,32 @@ const useStylesIconButton = makeStyles(() =>
   }),
 )
 
+const navbarItems = [
+  {
+    id: 0,
+    title: 'Про нас',
+  },
+  {
+    id: 2,
+    title: 'Гарантії',
+  },
+  {
+    id: 3,
+    title: 'Доставка та оплата',
+  },
+  {
+    id: 4,
+    title: 'Повернення',
+  },
+  {
+    id: 5,
+    title: 'Контакти',
+  },
+]
+
 const NavBar = () => {
   const styleInput = useStylesInput()
   const styleIconButton = useStylesIconButton()
-  const isMobile = useSelector(isMobileDeviceSelector)
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
@@ -41,19 +60,25 @@ const NavBar = () => {
   }
   return (
     <div className='header__nav-bar'>
-      {isMobile ? (
-        <span onClick={toggleSlider}>{open ? <MenuOpen /> : <Menu />}</span>
-      ) : (
-        <div className='header__nav-contacts'>
-          <Phone />
-          <div>
-            <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
-              {PhoneNumber.PHONE_1_PRETY}
-            </a>
-            <p>{WorkTime.WORK_TIME}</p>
-          </div>
+      <span className='header__nav-toggle desktop__hidden' onClick={toggleSlider}>
+        {open ? <MenuOpen /> : <Menu />}
+      </span>
+      <div className='mobile__hidden header__nav-menu'>
+        {navbarItems.map(item => (
+          <span className='header__nav-menu_item' key={item.id}>
+            {item.title}
+          </span>
+        ))}
+      </div>
+
+      <div className='header__nav-contacts mobile__hidden'>
+        <Phone />
+        <div>
+          <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
+            {PhoneNumber.PHONE_1_PRETY}
+          </a>
         </div>
-      )}
+      </div>
 
       <TextField
         onChange={e => null}
@@ -78,11 +103,22 @@ const NavBar = () => {
             </InputAdornment>
           ),
         }}
+        className='desktop__hidden'
       />
-      <Badge className='header__nav-badge' badgeContent={4} color='warning'>
-        <ShoppingBasket />
-        <p className='header__nav-basket__title'>Корзина</p>
-      </Badge>
+      <div className='header__nav-constrols_group'>
+        <Badge className='header__nav-badge' badgeContent={0} color='warning'>
+          <PermIdentity />
+          <p className='header__nav-basket__title'>Увійти</p>
+        </Badge>
+        <Badge className='header__nav-badge' badgeContent={4} color='warning'>
+          <FavoriteBorder />
+          <p className='header__nav-basket__title'>Вибране</p>
+        </Badge>
+        <Badge className='header__nav-badge' badgeContent={4} color='warning'>
+          <ShoppingBasket />
+          <p className='header__nav-basket__title'>Корзина</p>
+        </Badge>
+      </div>
       <NavSideBar open={open} toggleSlider={toggleSlider} />
     </div>
   )

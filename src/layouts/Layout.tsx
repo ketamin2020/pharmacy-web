@@ -1,9 +1,19 @@
 import React from 'react'
 import Header from 'components/Header/Header'
 import Footer from 'components/Footer/Footer'
+import styled from '@emotion/styled'
+const Wrapper = styled.div`
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  & footer {
+    margin-top: auto;
+  }
+`
 const Layout = ({ children }) => {
   return (
-    <div>
+    <Wrapper>
       <header>
         <Header />
       </header>
@@ -11,7 +21,7 @@ const Layout = ({ children }) => {
       <footer>
         <Footer />
       </footer>
-    </div>
+    </Wrapper>
   )
 }
 

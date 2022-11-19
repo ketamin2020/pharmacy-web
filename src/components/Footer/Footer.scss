@@ -1,0 +1,85 @@
+@import '../../styles/mixin.scss';
+.footer__wrapper {
+  width: 100%;
+  background-color: var(--blackColor);
+  padding: 50px;
+  @include desktopS {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  & .footer--logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  & .footer--links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  & .footer--link {
+    color: var(--whiteColor);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 18px;
+    cursor: pointer;
+    transform: scale(1);
+    transition: all 0.2s;
+    &:hover {
+      transform: scale(1.1);
+      transition: all 0.2s;
+      color: var(--greenColor);
+    }
+  }
+  & .footer--contacts__block {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    &:last-child {
+      & a {
+        color: var(--greenColor);
+      }
+      & svg {
+        color: var(--greenColor);
+      }
+    }
+  }
+  & .footer--contacts {
+    & a {
+      color: var(--whiteColor);
+    }
+    & svg {
+      color: var(--whiteColor);
+    }
+  }
+}
+.footer--policy {
+  display: flex;
+  padding: 50px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--blackColor);
+  & > * {
+    color: var(--whiteColor);
+  }
+  & .logo__wrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+}
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.16);
+}

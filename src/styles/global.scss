@@ -2,3 +2,23 @@ body {
   letter-spacing: 0.02em;
   font-family: var(--primeFont);
 }
+* {
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 720px) {
+  .mobile__hidden {
+    display: none !important;
+  }
+  .desktop__hidden {
+    display: block;
+  }
+}
+@media screen and (min-width: 721px) {
+  .mobile__hidden {
+    display: block;
+  }
+  .desktop__hidden {
+    display: none !important;
+  }
+}

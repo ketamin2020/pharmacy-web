@@ -1,12 +1,11 @@
 @import '../../../../styles/mixin.scss';
 .header__nav-bar {
-  display: grid;
-  grid-template-columns: 40px 1fr 60px;
-  justify-content: space-between;
+  display: flex;
+  gap: 10px;
   align-items: center;
-  justify-items: center;
+  justify-content: space-between;
   box-shadow: 0 4px 20px rgb(57 69 86 / 10%);
-  background: var(--backgroundColorGrey);
+  background: var(--darkColor);
   color: #212121;
   padding: 10px 8px;
   min-height: 40px;
@@ -27,10 +26,30 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transform: scale(1);
+    transition: all 0.2s;
+    &:hover {
+      transform: scale(1.1);
+      transition: all 0.2s;
+    }
+    &:hover > * {
+      color: var(--greenColor);
+    }
   }
   & .header__nav-contacts {
     display: flex;
     align-items: center;
+    background-color: var(--greenColor);
+    padding: 10px 20px;
+    border-radius: 25px;
+    min-width: 150px;
+    cursor: pointer;
+    transform: scale(1);
+    transition: all 0.2s;
+    &:hover {
+      transform: scale(1.1);
+      transition: all 0.2s;
+    }
     & p {
       margin: 0;
       text-align: center;
@@ -40,7 +59,37 @@
       color: var(--whiteColor);
     }
   }
-  @include desktopS {
-    grid-template-columns: 240px 1fr 60px;
+  & .header__nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  & .header__nav-menu_item {
+    color: var(--whiteColor);
+    font-size: 12px;
+    line-height: 18px;
+    transition: all 0.2s;
+    transform: scale(1);
+    cursor: pointer;
+    &:hover {
+      color: var(--greenColor);
+      transform: scale(1.1);
+      transition: all 0.2s;
+    }
+    @include desktopS {
+      font-size: 16px;
+    }
+  }
+  & .header__nav-constrols_group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  @include tablet {
+    .header__nav-menu,
+    .header__nav-contacts {
+      display: none;
+    }
   }
 }
