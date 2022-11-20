@@ -1,8 +1,11 @@
 @import '../../styles/mixin.scss';
-.footer__wrapper {
+.footer__wrapper,
+.footer--policy {
   width: 100%;
   background-color: var(--blackColor);
-  padding: 50px;
+}
+.footer__wrapper__inner {
+  padding: 50px 0;
   @include desktopS {
     display: flex;
     justify-content: space-between;
@@ -62,9 +65,10 @@
     }
   }
 }
-.footer--policy {
+
+.footer--policy__inner {
   display: flex;
-  padding: 50px;
+  padding: 50px 0;
   width: 100%;
   align-items: center;
   justify-content: space-between;

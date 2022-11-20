@@ -1,17 +1,10 @@
 export interface MenuItemData {
   label: string
-  items: [
-    {
-      label: string
-      url?: string
-      callback?: () => void
-      items?: [{ label: string; callback: () => void; items?: [{ label: string; callback?: () => void; items?: [] }] }]
-    },
-  ]
+  url: string
 }
 
 export enum ItemsMenuFirstNested {
-  MEDICINES = 'Лікарські засоби',
+  MEDICINES = 'Медикаменти',
   COLOPLAST_PRODUCTION = 'Вироби Coloplast',
   BAD_AND_VITAMINES = 'БАД та вітаміни',
   MEDICAL_GOODS = 'Медичні товари',

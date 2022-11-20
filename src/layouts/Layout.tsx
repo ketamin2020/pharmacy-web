@@ -7,6 +7,11 @@ const Wrapper = styled.div`
   margin: 0;
   display: flex;
   flex-direction: column;
+  & .container {
+    width: 100%;
+    max-width: 1460px;
+    margin: 0 auto;
+  }
   & footer {
     margin-top: auto;
   }

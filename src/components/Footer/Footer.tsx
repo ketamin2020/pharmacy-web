@@ -14,43 +14,47 @@ const footerItems = [
 const Footer = () => {
   return (
     <>
-      {' '}
-      <div className='footer__wrapper'>
-        <article className='footer--logo'>
-          <Logo />
-        </article>
-        <article className='footer--links'>
-          {footerItems.map(item => (
-            <span className='footer--link' key={item.id}>
-              {item.title}
-            </span>
-          ))}
-        </article>
-        <article className='footer--contacts'>
-          <div className='footer--contacts__block'>
-            <Phone />
-            <div>
-              <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
-                {PhoneNumber.PHONE_1_PRETY}
-              </a>
+      <article className='footer__wrapper'>
+        <div className='container footer__wrapper__inner'>
+          {' '}
+          <article className='footer--logo'>
+            <Logo />
+          </article>
+          <article className='footer--links'>
+            {footerItems.map(item => (
+              <span className='footer--link' key={item.id}>
+                {item.title}
+              </span>
+            ))}
+          </article>
+          <article className='footer--contacts'>
+            <div className='footer--contacts__block'>
+              <Phone />
+              <div>
+                <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
+                  {PhoneNumber.PHONE_1_PRETY}
+                </a>
+              </div>
             </div>
-          </div>
-          <div className='footer--contacts__block'>
-            <EmailOutlined />
-            <div>
-              <a href={`mailto:${Email.EMAIL_1}`} type='email'>
-                {Email.EMAIL_1}
-              </a>
+            <div className='footer--contacts__block'>
+              <EmailOutlined />
+              <div>
+                <a href={`mailto:${Email.EMAIL_1}`} type='email'>
+                  {Email.EMAIL_1}
+                </a>
+              </div>
             </div>
-          </div>
-        </article>
-      </div>
+          </article>
+        </div>
+      </article>
       <div className='separator'></div>
       <article className='footer--policy'>
-        <div>2022 Всі права захищені. Політика конфіденційності</div>
-        <div className='logo__wrap'>
-          <MastercardLogo />
-          <VisaLogo />
+        <div className='container footer--policy__inner'>
+          <div>2022 Всі права захищені. Політика конфіденційності</div>
+          <div className='logo__wrap'>
+            <MastercardLogo />
+            <VisaLogo />
+          </div>
         </div>
       </article>
     </>
