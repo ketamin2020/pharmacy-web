@@ -11,6 +11,8 @@ const Wrapper = styled.div`
     width: 100%;
     max-width: 1460px;
     margin: 0 auto;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   & footer {
     margin-top: auto;

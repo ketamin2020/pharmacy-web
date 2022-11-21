@@ -1,0 +1,10 @@
+.brands--wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 5px 10px rgb(26 54 95 / 20%);
+  border-radius: 10px;
+  padding: 10px !important;
+  gap: 10px;
+  overflow-x: scroll;
+}

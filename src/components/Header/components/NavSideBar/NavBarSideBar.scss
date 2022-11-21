@@ -1,0 +1,22 @@
+@import '../../../../styles/mixin.scss';
+.sidebar__logo {
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+}
+.header__side-menu_item {
+  color: var(--blueColor);
+  font-size: 16px;
+  line-height: 18px;
+  transition: all 0.2s;
+  transform: scale(1);
+  cursor: pointer;
+  &:hover {
+    color: var(--greenColor);
+    transform: scale(1.1);
+    transition: all 0.2s;
+  }
+  @include desktopS {
+    font-size: 16px;
+  }
+}

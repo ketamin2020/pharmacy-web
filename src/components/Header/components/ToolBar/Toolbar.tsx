@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@mui/material/Button'
-import { Logo } from 'common/icon/icons'
+import { Logo } from 'common/CommonIcons/CommonIcons'
 import { Dropdown } from 'common/Dropdown/Dropdown'
 import { ItemsMenuFirstNested } from '../utils/types'
 import { antibiotics } from '../utils/antibiotics'
@@ -8,12 +8,19 @@ import { medicines } from '../utils/medicines'
 import { medicalGoods } from '../utils/medial_goods'
 import { motherAndChildrens } from '../utils/motherAndChildrens'
 import { gigiena } from '../utils/gigiena'
-import { DrugsIcon, AntibioticsIcon, MedicalGoodsIcon, MotherAndChildIcon, CosmeticsIcon } from 'common/icon/icons'
+import {
+  DrugsIcon,
+  AntibioticsIcon,
+  MedicalGoodsIcon,
+  MotherAndChildIcon,
+  CosmeticsIcon,
+  DeliverySmallIcon,
+} from 'common/CommonIcons/CommonIcons'
 import './ToolBar.scss'
 
 const Toolbar = () => {
   return (
-    <section className='toolbar_wrapper'>
+    <section className='toolbar_wrapper mobile__hidden'>
       <div className='container toolbar_wrapper__inner'>
         <article>
           <Logo />
@@ -49,8 +56,17 @@ const Toolbar = () => {
             onChange={() => null}
             list={gigiena}
           />
-          <Button id='basic-button' aria-controls={'basic-menu'} aria-haspopup='true' onClick={() => null}>
-            <span style={{ color: 'red' }}>Акції</span>
+          <Button
+            id='basic-button'
+            style={{ display: 'flex', alignItems: 'flex-start' }}
+            aria-controls={'basic-menu'}
+            aria-haspopup='true'
+            onClick={() => null}
+          >
+            <span>
+              <DeliverySmallIcon />
+            </span>
+            <span style={{ color: 'red' }}>Акції</span>{' '}
           </Button>
         </article>
       </div>

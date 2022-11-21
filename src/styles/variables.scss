@@ -5,7 +5,9 @@
   --whiteColor: #ffffff;
   --darkColor: #212529;
   --greenColor: #00a990;
+  --blueColor: #1976d2;
 
+  --trans: all 0.25s ease-in-out;
   //---
 
   --orangeColor: #ff6b08;
@@ -25,7 +27,6 @@
   --min768: screen and (min-width: 768px);
   --mx767: screen and (max-width: 767px);
 
-  --trans: all 0.25s ease-in-out;
   --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --animation-duration: 250ms;
 }

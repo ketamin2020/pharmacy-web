@@ -1,8 +1,8 @@
 import React from 'react'
-import { Logo } from 'common/icon/icons'
+import { Logo } from 'common/CommonIcons/CommonIcons'
 import { Phone as PhoneNumber, Email } from 'public'
 import { Phone, EmailOutlined } from '@mui/icons-material'
-import { MastercardLogo, VisaLogo } from 'common/icon/icons'
+import { MastercardLogo, VisaLogo } from 'common/CommonIcons/CommonIcons'
 import './Footer.scss'
 const footerItems = [
   { id: 0, title: 'Про нас' },
