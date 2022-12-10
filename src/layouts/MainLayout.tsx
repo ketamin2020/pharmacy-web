@@ -10,9 +10,9 @@ const Wrapper = styled.div`
   & .container {
     width: 100%;
     max-width: 1460px;
-    margin: 0 auto;
     padding-left: 10px;
     padding-right: 10px;
+    margin: 0 auto;
   }
   & footer {
     margin-top: auto;

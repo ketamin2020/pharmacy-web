@@ -18,6 +18,10 @@ const Wrapper = styled.div`
   .swiper-button-prev {
     display: none;
   }
+  margin-bottom: 50px;
+  & .swiper-pagination-progressbar-fill {
+    background-color: var(--greenColor);
+  }
 `
 const ButtonWrapper = styled.div`
   display: flex;

@@ -12,6 +12,7 @@ const items = [{ icon: bayer }, { icon: bi }, { icon: coloplast }, { icon: jj },
 const Brands = () => {
   return (
     <Box className='container'>
+      <h2>Бренди</h2>
       <List className='brands--wrapper'>
         {items.map((item, i) => (
           <li key={i}>
