@@ -1,17 +1,28 @@
-export enum RoutePath {
+import { LazyExoticComponent } from 'react'
+
+enum RoutePath {
   HOME_PAGE = '/',
   ABOUT_PAGE = '/about',
-  HOW_TO_SECTION = '/about/howto',
-  DELIVERY_SECTION = '/about/delivery',
-  CONTACTS_SECTION = '/about/contacts',
-  MISSION_SECTION = 'about/missiya-kompanii',
-  PARTNERS_SECTION = '/about/partners',
-  TEAM_SECTION = '/about/team',
-  EXPERTS_SECTION = '/about/medical-experts',
-  EDITOR_POLICY_SECTION = '/about/editorial-policy',
-  MARKETING_POLICY_SECTION = '/about/marketing-policy',
-  TERMS_SECTION = '/about/terms',
-  AGREEMENT_SECTION = '/about/agreement',
-  ORDER_RETURN_SECTION = '/about/order-return',
-  WARRANTY_SECTION = '/about/warranty',
+  HOW_TO = '/about/howto',
+  DELIVERY = '/about/delivery',
+  CONTACTS = '/about/contacts',
+  MISSION = '/about/missiya-kompanii',
+  PARTNERS = '/about/partners',
+  TEAM = '/about/team',
+  EXPERTS = '/about/medical-experts',
+  EDITOR_POLICY = '/about/editorial-policy',
+  MARKETING_POLICY = '/about/marketing-policy',
+  TERMS = '/about/terms',
+  AGREEMENT = '/about/agreement',
+  ORDER_RETURN = '/about/order-return',
+  WARRANTY = '/about/warranty',
 }
+
+interface Routes {
+  name: string
+  path: string
+  exact: boolean
+  element: LazyExoticComponent<() => JSX.Element>
+}
+
+export { Routes, RoutePath }
