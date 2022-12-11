@@ -56,7 +56,7 @@ const Toolbar = () => {
             onChange={() => null}
             list={gigiena}
           />
-          <Button
+          {/* <Button
             id='basic-button'
             style={{ display: 'flex', alignItems: 'flex-start' }}
             aria-controls={'basic-menu'}
@@ -67,7 +67,7 @@ const Toolbar = () => {
               <DeliverySmallIcon />
             </span>
             <span style={{ color: 'red' }}>Акції</span>{' '}
-          </Button>
+          </Button> */}
         </article>
       </div>
     </section>

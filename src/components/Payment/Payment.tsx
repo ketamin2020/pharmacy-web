@@ -46,6 +46,15 @@ const Box = styled.article`
     grid-template-columns: 1fr 3fr;
     align-items: center;
     border-bottom: 1px solid rgba(136, 143, 154, 0.16);
+    & .background {
+      height: 80px;
+      width: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--greenColor);
+      border-radius: 40%;
+    }
   }
   & .box_body {
     padding: 20px;
@@ -115,11 +124,11 @@ export const Payment = () => {
           </div>
         </Box>
       </BoxWrapper>
-      <h2>Способи доставки</h2>
+      <h2>Способи оплати</h2>
       <BoxWrapper>
         <Box>
           <div className='box_header'>
-            <div>
+            <div className='background'>
               <Money />
             </div>
             <div>
@@ -135,7 +144,7 @@ export const Payment = () => {
         </Box>
         <Box>
           <div className='box_header'>
-            <div>
+            <div className='background'>
               <CreditCard />
             </div>
             <div>
@@ -153,7 +162,7 @@ export const Payment = () => {
         </Box>
         <Box>
           <div className='box_header'>
-            <div>
+            <div className='background'>
               <QrCode />
             </div>
             <div>
@@ -170,7 +179,7 @@ export const Payment = () => {
         </Box>
         <Box>
           <div className='box_header'>
-            <div>
+            <div className='background'>
               <Replay />
             </div>
             <div>

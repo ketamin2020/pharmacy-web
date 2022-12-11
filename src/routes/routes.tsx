@@ -33,7 +33,7 @@ const publicRoutes: Routes[] = [
     name: 'Контакти',
     path: RoutePath.CONTACTS,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/ContactsPage/index' /* webpackChunkName: "Contacts" */)),
   },
   {
     name: 'Наша місія',
