@@ -27,7 +27,7 @@ const publicRoutes: Routes[] = [
     name: 'Доставка і оплата',
     path: RoutePath.DELIVERY,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/PaymentPage/index' /* webpackChunkName: "Payment Page" */)),
   },
   {
     name: 'Контакти',
