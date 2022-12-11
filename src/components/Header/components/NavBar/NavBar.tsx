@@ -1,31 +1,38 @@
 import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { Menu, MenuOpen, ShoppingBasket, Phone, PermIdentity, FavoriteBorder } from '@mui/icons-material'
 import Badge from '@mui/material/Badge'
 import NavSideBar from '../NavSideBar/NavSideBar'
 import { Phone as PhoneNumber } from 'public'
 import { SearhInput } from 'common/SearchInput/SearhInput'
+import { RoutePath } from 'routes/types'
 import './NavBar.scss'
 
 const navbarItems = [
   {
     id: 0,
     title: 'Про нас',
+    path: RoutePath.ABOUT_PAGE,
   },
   {
     id: 2,
     title: 'Гарантії',
+    path: RoutePath.WARRANTY,
   },
   {
     id: 3,
     title: 'Доставка та оплата',
+    path: RoutePath.DELIVERY,
   },
   {
     id: 4,
     title: 'Повернення',
+    path: RoutePath.ORDER_RETURN,
   },
   {
     id: 5,
     title: 'Контакти',
+    path: RoutePath.CONTACTS,
   },
 ]
 
@@ -43,9 +50,9 @@ const NavBar = () => {
         </span>
         <div className='mobile__hidden header__nav-menu'>
           {navbarItems.map(item => (
-            <span className='header__nav-menu_item' key={item.id}>
+            <NavLink to={item.path} className='header__nav-menu_item' key={item.id} end>
               {item.title}
-            </span>
+            </NavLink>
           ))}
         </div>
 

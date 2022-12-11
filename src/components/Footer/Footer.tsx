@@ -1,15 +1,37 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 import { Logo } from 'common/CommonIcons/CommonIcons'
 import { Phone as PhoneNumber, Email } from 'public'
 import { Phone, EmailOutlined } from '@mui/icons-material'
 import { MastercardLogo, VisaLogo } from 'common/CommonIcons/CommonIcons'
+import { RoutePath } from 'routes/types'
 import './Footer.scss'
 const footerItems = [
-  { id: 0, title: 'Про нас' },
-  { id: 1, title: 'Гарантії' },
-  { id: 2, title: 'Доставка та оплата' },
-  { id: 3, title: 'Повернення' },
-  { id: 4, title: 'Контакти' },
+  {
+    id: 0,
+    title: 'Про нас',
+    path: RoutePath.ABOUT_PAGE,
+  },
+  {
+    id: 2,
+    title: 'Гарантії',
+    path: RoutePath.WARRANTY,
+  },
+  {
+    id: 3,
+    title: 'Доставка та оплата',
+    path: RoutePath.DELIVERY,
+  },
+  {
+    id: 4,
+    title: 'Повернення',
+    path: RoutePath.ORDER_RETURN,
+  },
+  {
+    id: 5,
+    title: 'Контакти',
+    path: RoutePath.CONTACTS,
+  },
 ]
 const Footer = () => {
   return (
@@ -22,9 +44,9 @@ const Footer = () => {
           </article>
           <article className='footer--links'>
             {footerItems.map(item => (
-              <span className='footer--link' key={item.id}>
+              <NavLink to={item.path} className='footer--link' key={item.id} end>
                 {item.title}
-              </span>
+              </NavLink>
             ))}
           </article>
           <article className='footer--contacts'>

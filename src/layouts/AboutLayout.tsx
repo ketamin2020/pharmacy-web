@@ -26,6 +26,9 @@ const Wrapper = styled.div`
     border-radius: 10px;
     background-color: white;
   }
+  & section {
+    padding: 20px;
+  }
 `
 const activeStyle = {
   color: '#00a990',

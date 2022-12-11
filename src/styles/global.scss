@@ -2,8 +2,10 @@ body {
   letter-spacing: 0.02em;
   font-family: var(--primeFont);
 }
+
 * {
   box-sizing: border-box;
+  font-family: var(--primeFont);
 }
 
 @media screen and (max-width: 720px) {
