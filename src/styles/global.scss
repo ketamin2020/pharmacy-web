@@ -8,6 +8,13 @@ body {
   font-family: var(--primeFont);
 }
 
+a {
+  color: var(--blueColor);
+  &:hover {
+    color: var(--redColor);
+  }
+}
+
 @media screen and (max-width: 720px) {
   .mobile__hidden {
     display: none !important;

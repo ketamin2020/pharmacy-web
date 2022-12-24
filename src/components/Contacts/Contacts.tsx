@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import Map from 'common/Map/Map'
 const Wrapper = styled.div`
   & * {
     font-family: var(--primaryFont);
@@ -17,5 +18,9 @@ const Wrapper = styled.div`
   }
 `
 export const Contacts = () => {
-  return <Wrapper>Contacts</Wrapper>
+  return (
+    <Wrapper>
+      <Map />
+    </Wrapper>
+  )
 }

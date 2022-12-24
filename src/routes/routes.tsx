@@ -76,26 +76,26 @@ const publicRoutes: Routes[] = [
     name: 'Політика конфіденційності',
     path: RoutePath.TERMS,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/TermsPage/index' /* webpackChunkName: "Terms Page" */)),
   },
   {
     name: 'Угода про використання',
     path: RoutePath.AGREEMENT,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/AgreementPage/index' /* webpackChunkName: "Agreement Page" */)),
   },
 
   {
     name: 'Умови повернення',
     path: RoutePath.ORDER_RETURN,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/OrderReturnPage/index' /* webpackChunkName: "Order Return Page" */)),
   },
   {
     name: 'Гарантії якості',
     path: RoutePath.WARRANTY,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/WarrantyPage/index' /* webpackChunkName: "Warranty Page" */)),
   },
 ]
 // const privateRoutes = []
