@@ -1,9 +1,9 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Logo } from 'common/CommonIcons/CommonIcons'
+import { Logo } from 'images/icons/icons'
 import { Phone as PhoneNumber, Email } from 'public'
 import { Phone, EmailOutlined } from '@mui/icons-material'
-import { MastercardLogo, VisaLogo } from 'common/CommonIcons/CommonIcons'
+import { MastercardLogo, VisaLogo } from 'images/icons/icons'
 import { RoutePath } from 'routes/types'
 import './Footer.scss'
 const footerItems = [

@@ -51,26 +51,26 @@ const publicRoutes: Routes[] = [
     name: 'Наша команда',
     path: RoutePath.TEAM,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/TeamPage/index' /* webpackChunkName: "Team Page" */)),
   },
   {
     name: 'Медичні експерти',
     path: RoutePath.EXPERTS,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/MedicalExpertsPage/index' /* webpackChunkName: "Medical Experts Page" */)),
   },
 
   {
     name: 'Редакційна політика',
     path: RoutePath.EDITOR_POLICY,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/EditorialPolicyPage/index' /* webpackChunkName: "Editorial Policy Page" */)),
   },
   {
     name: 'Маркетингова політика',
     path: RoutePath.MARKETING_POLICY,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/MarketingPolicyPage/index' /* webpackChunkName: "Marketing Policy Page" */)),
   },
   {
     name: 'Політика конфіденційності',

@@ -6,9 +6,9 @@ import {
   MotherAndChildIcon,
   CosmeticsIcon,
   DeliverySmallIcon,
-} from 'common/CommonIcons/CommonIcons'
+} from 'images/icons/icons'
 import Button from '@mui/material/Button'
-import { Logo } from 'common/CommonIcons/CommonIcons'
+import { Logo } from 'images/icons/icons'
 import { Dropdown } from 'common/Dropdown/Dropdown'
 import SocialList from 'common/SocialList/SocialList'
 import { ItemsMenuFirstNested } from '../utils/types'

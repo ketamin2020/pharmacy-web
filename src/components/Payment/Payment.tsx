@@ -2,7 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { Typography } from '@mui/material'
 import { ListItem, List } from '@material-ui/core'
-import { NewPostIcon, DeliveredIcon, CurierIcon } from 'common/CommonIcons/CommonIcons'
+import { NewPostIcon, DeliveredIcon, CurierIcon } from 'images/icons/icons'
 import { CreditCard, Money, Replay } from '@material-ui/icons'
 import { QrCode } from '@mui/icons-material'
 

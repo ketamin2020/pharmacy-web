@@ -1,7 +1,7 @@
 import React from 'react'
 import './About.scss'
 import { Box, List, ListItemText } from '@mui/material'
-import { DeliveryIcon, QualityIcon, RefundsIcon } from 'common/CommonIcons/CommonIcons'
+import { DeliveryIcon, QualityIcon, RefundsIcon } from 'images/icons/icons'
 const items = [
   {
     title: 'Доставка і оплата ',

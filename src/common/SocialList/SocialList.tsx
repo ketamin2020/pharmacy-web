@@ -1,7 +1,7 @@
 import React from 'react'
 import { List } from '@mui/material'
 import { makeStyles } from '@material-ui/core'
-import { TelegramIcon, FacebookIcon, InstagramIcon } from 'common/CommonIcons/CommonIcons'
+import { TelegramIcon, FacebookIcon, InstagramIcon } from 'images/icons/icons'
 
 const items = [
   {
