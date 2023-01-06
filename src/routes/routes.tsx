@@ -21,7 +21,7 @@ const publicRoutes: Routes[] = [
     name: 'Як зробити замовлення',
     path: RoutePath.HOW_TO,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/HowToPage/index' /* webpackChunkName: "HowTo Page" */)),
   },
   {
     name: 'Доставка і оплата',
@@ -39,13 +39,13 @@ const publicRoutes: Routes[] = [
     name: 'Наша місія',
     path: RoutePath.MISSION,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/MissiyaPage/index' /* webpackChunkName: "Missiya Page" */)),
   },
   {
     name: 'Наші партнери',
     path: RoutePath.PARTNERS,
     exact: true,
-    element: lazy(() => import('../pages/AboutPage/index' /* webpackChunkName: "About Page" */)),
+    element: lazy(() => import('../pages/PartnersPage/index' /* webpackChunkName: "Partners Page" */)),
   },
   {
     name: 'Наша команда',

@@ -17,10 +17,14 @@ const Wrapper = styled.div`
     left: -10px;
   }
 `
+const Box = styled.div``
 export const Contacts = () => {
   return (
     <Wrapper>
-      <Map />
+      <Box>
+        <h3>Клієнтам</h3>
+      </Box>
+      <Map style={{ width: '100%', height: '300px' }} />
     </Wrapper>
   )
 }
