@@ -5,6 +5,7 @@ import { Suspense } from 'react'
 import { publicRoutes } from 'routes/routes'
 import { persistor, store } from 'redux/store'
 import AuthLayout from 'layouts/AuthLayout'
+import BusketModal from './Modals/BusketModal/BusketModal'
 import '../styles/index.scss'
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
           </BrowserRouter>
         </PersistGate>
       </AuthLayout>
+      <BusketModal />
     </Provider>
   )
 }

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
 import { Menu, MenuOpen, ShoppingBasket, Phone, PermIdentity, FavoriteBorder } from '@mui/icons-material'
 import Badge from '@mui/material/Badge'
 import NavSideBar from '../NavSideBar/NavSideBar'
@@ -37,10 +39,15 @@ const navbarItems = [
 ]
 
 const NavBar = () => {
+  const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
     setOpen(!open)
+  }
+
+  const handleBusketModal = () => {
+    return dispatch(toggleBusketModal(true))
   }
   return (
     <section className='header--wrapper'>
@@ -77,7 +84,9 @@ const NavBar = () => {
           </Badge>
           <Badge className='header__nav-badge' badgeContent={4} color='warning'>
             <ShoppingBasket />
-            <p className='header__nav-basket__title'>Корзина</p>
+            <p onClick={handleBusketModal} className='header__nav-basket__title'>
+              Корзина
+            </p>
           </Badge>
         </div>
         <NavSideBar open={open} toggleSlider={toggleSlider} />

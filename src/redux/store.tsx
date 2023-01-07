@@ -6,6 +6,7 @@ import storage from 'redux-persist/lib/storage'
 import auth from './auth/authReducer'
 import user from './user/userReducer'
 import account from './account/accountReducer'
+import modals from './ui/modals/modalReducer'
 
 const authPersistConfig = {
   key: 'auth',
@@ -17,6 +18,7 @@ const app = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
   user,
   account,
+  ui: combineReducers({ modals }),
 })
 
 const store = configureStore({
