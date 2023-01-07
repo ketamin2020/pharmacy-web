@@ -9,7 +9,7 @@ const BusketModal = () => {
   const isOpen = useSelector(isOpenBusketModalSelectror)
   const onClose = () => dispatch(toggleBusketModal(false))
   return (
-    <Modal handleClose={onClose} open={isOpen}>
+    <Modal title='Корзина' handleClose={onClose} open={isOpen}>
       <p>Modal</p>
     </Modal>
   )
