@@ -4,6 +4,7 @@ import Slider from './components/Slider/Slider'
 import Brands from './components/Brands/Brands'
 import Popular from './components/Popular/Popular'
 import Bestsellers from './components/Bestsellers/Bestsellers'
+import Description from './components/Description/Description'
 import { Box } from '@material-ui/core'
 export const Main = () => {
   return (
@@ -13,6 +14,7 @@ export const Main = () => {
       <Brands />
       <Popular />
       <Bestsellers />
+      <Description />
     </Box>
   )
 }

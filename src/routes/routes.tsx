@@ -98,5 +98,24 @@ const publicRoutes: Routes[] = [
     element: lazy(() => import('../pages/WarrantyPage/index' /* webpackChunkName: "Warranty Page" */)),
   },
 ]
-// const privateRoutes = []
-export { publicRoutes }
+const privateRoutes: Routes[] = [
+  {
+    path: RoutePath.PERSONAL_INFO,
+    name: 'Персональні дані',
+    exact: true,
+    element: lazy(() => import('../pages/HomePage/index' /* webpackChunkName: "Home Page" */)),
+  },
+  {
+    path: RoutePath.WISHLIST,
+    name: 'Список бажань',
+    exact: true,
+    element: lazy(() => import('../pages/HomePage/index' /* webpackChunkName: "Home Page" */)),
+  },
+  {
+    path: RoutePath.ORDERS,
+    name: 'Мої замовлення',
+    exact: true,
+    element: lazy(() => import('../pages/HomePage/index' /* webpackChunkName: "Home Page" */)),
+  },
+]
+export { publicRoutes, privateRoutes }

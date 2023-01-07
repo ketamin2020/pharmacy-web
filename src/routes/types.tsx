@@ -16,6 +16,9 @@ enum RoutePath {
   AGREEMENT = '/about/agreement',
   ORDER_RETURN = '/about/order-return',
   WARRANTY = '/about/warranty',
+  PERSONAL_INFO = '/account/personal-data',
+  WISHLIST = '/account/wishlist',
+  ORDERS = '/account/orders',
 }
 
 interface Routes {
