@@ -103,19 +103,19 @@ const privateRoutes: Routes[] = [
     path: RoutePath.PERSONAL_INFO,
     name: 'Персональні дані',
     exact: true,
-    element: lazy(() => import('../pages/HomePage/index' /* webpackChunkName: "Home Page" */)),
+    element: lazy(() => import('../pages/PersonalInfoPage/index' /* webpackChunkName: "PersonalInfo Page" */)),
   },
   {
     path: RoutePath.WISHLIST,
     name: 'Список бажань',
     exact: true,
-    element: lazy(() => import('../pages/HomePage/index' /* webpackChunkName: "Home Page" */)),
+    element: lazy(() => import('../pages/WishListPage/index' /* webpackChunkName: "WishListPage Page" */)),
   },
   {
     path: RoutePath.ORDERS,
     name: 'Мої замовлення',
     exact: true,
-    element: lazy(() => import('../pages/HomePage/index' /* webpackChunkName: "Home Page" */)),
+    element: lazy(() => import('../pages/OrderedPage/index' /* webpackChunkName: "Ordered Page" */)),
   },
 ]
 export { publicRoutes, privateRoutes }

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
+import { toggleBusketModal, toggleAuthModal } from 'redux/ui/modals/modalsActions'
 import { Menu, MenuOpen, ShoppingBasket, Phone, PermIdentity, FavoriteBorder } from '@mui/icons-material'
 import Badge from '@mui/material/Badge'
 import NavSideBar from '../NavSideBar/NavSideBar'
@@ -40,6 +41,7 @@ const navbarItems = [
 
 const NavBar = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
@@ -48,6 +50,13 @@ const NavBar = () => {
 
   const handleBusketModal = () => {
     return dispatch(toggleBusketModal(true))
+  }
+  const handleAuthModal = () => {
+    return dispatch(toggleAuthModal(true))
+  }
+
+  const handleWishList = () => {
+    return navigate(RoutePath.WISHLIST)
   }
   return (
     <section className='header--wrapper'>
@@ -74,19 +83,23 @@ const NavBar = () => {
 
         <SearhInput placeholder='Пошук' onChange={() => null} />
         <div className='header__nav-constrols_group'>
-          <Badge className='header__nav-badge' badgeContent={0} color='warning'>
-            <PermIdentity />
-            <p className='header__nav-basket__title'>Увійти</p>
+          <Badge badgeContent={4} color='warning'>
+            <div onClick={handleWishList} className='header__nav-badge'>
+              <FavoriteBorder />
+              <p className='header__nav-basket__title'>Вибране</p>
+            </div>
           </Badge>
-          <Badge className='header__nav-badge' badgeContent={4} color='warning'>
-            <FavoriteBorder />
-            <p className='header__nav-basket__title'>Вибране</p>
+          <Badge badgeContent={4} color='warning'>
+            <div className='header__nav-badge' onClick={handleBusketModal}>
+              <ShoppingBasket />
+              <p className='header__nav-basket__title'>Корзина</p>
+            </div>
           </Badge>
-          <Badge className='header__nav-badge' badgeContent={4} color='warning'>
-            <ShoppingBasket />
-            <p onClick={handleBusketModal} className='header__nav-basket__title'>
-              Корзина
-            </p>
+          <Badge badgeContent={0} color='warning'>
+            <div onClick={handleAuthModal} className='header__nav-badge'>
+              <PermIdentity />
+              <p className='header__nav-basket__title'>Увійти</p>
+            </div>
           </Badge>
         </div>
         <NavSideBar open={open} toggleSlider={toggleSlider} />
