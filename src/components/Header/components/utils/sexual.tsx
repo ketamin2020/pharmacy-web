@@ -5,32 +5,32 @@ export const sexual: MenuItemData = {
     {
       url: '/seksualnoe-zdorove/kontratseptsia/',
 
-      label: 'Контрацепция',
+      label: 'Контрацепція',
     },
     {
       url: '/seksualnoe-zdorove/preparaty-dlya-erektsii/',
 
-      label: 'Препараты для эрекции',
+      label: 'Препарати для ерекції',
     },
     {
       url: '/seksualnoe-zdorove/intimnyy-ukhod/',
 
-      label: 'Интимный уход',
+      label: 'Інтимний догляд',
     },
     {
       url: '/seksualnoe-zdorove/zachatie-i-beremennost/',
 
-      label: 'Зачатие и беременность',
+      label: 'Вагітність',
     },
     {
       url: '/seksualnoe-zdorove/pishchevye-dobavki-dlya-seksualnogo-zdorovya/',
 
-      label: 'Пищевые добавки для сексуального здоровья',
+      label: 'Харчові добавки для сексуального здоровя',
     },
     {
       url: '/seksualnoe-zdorove/smazki-i-uvlazhnyayushchie-geli/',
 
-      label: 'Смазки и увлажняющие гели',
+      label: 'Смазки та зволожуючі засоби',
     },
   ],
 }

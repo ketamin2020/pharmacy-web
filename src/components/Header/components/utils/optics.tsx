@@ -5,12 +5,12 @@ export const optics: MenuItemData = {
     {
       url: '/optika/kontaktnye-linzy/',
 
-      label: 'Контактные линзы',
+      label: 'Контактні лінзи',
     },
     {
       url: '/optika/rastvor-dlya-linz-/',
 
-      label: 'Раствор для линз',
+      label: 'Розчин для лінз',
     },
   ],
 }
