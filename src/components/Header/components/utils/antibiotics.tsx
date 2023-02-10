@@ -3,66 +3,66 @@ export const antibiotics: MenuItemData[] = [
   {
     url: '/antibiotiki/pri-pnevmonii/',
 
-    label: 'Антибиотики при пневмонии',
+    label: 'Антибіотики при пневмонії',
   },
   {
     url: '/antibiotiki/pri-bronkhite/',
 
-    label: 'Антибиотики при бронхите',
+    label: 'Антибіотики при бронхіті',
   },
   {
     url: '/antibiotiki/v-dermatologii/',
 
-    label: 'Антибиотики в дерматологии',
+    label: 'Антибіотики в дерматології',
   },
   {
     url: '/antibiotiki/pri-otite/',
 
-    label: 'Антибиотики при отите',
+    label: 'Антибіотики при отиті',
   },
   {
     url: '/antibiotiki/pri-tsistite/',
 
-    label: 'Антибиотики при цистите',
+    label: 'Антибіотики при циститі',
   },
   {
     url: '/antibiotiki/v-ginekologii/',
 
-    label: 'Антибиотики в гинекологии',
+    label: 'Антибіотики в гінекології',
   },
   {
     url: '/antibiotiki/pri-gaymorite/',
 
-    label: 'Антибиотики при гайморите',
+    label: 'Антибіотики при гаймориті',
   },
   {
     url: '/antibiotiki/v-stomatologii/',
 
-    label: 'Антибиотики в стоматологии',
+    label: 'Антибіотики в стоматології',
   },
   {
     url: '/antibiotiki/pri-diarei/',
 
-    label: 'Антибиотики при диарее',
+    label: 'Антибіотики при диареї',
   },
   {
     url: '/antibiotiki/pri-angine/',
 
-    label: 'Антибиотики при ангине',
+    label: 'Антибіотики при ангіні',
   },
   {
     url: '/antibiotiki/dlya-detey/',
 
-    label: 'Антибиотики для детей',
+    label: 'Антибіотики для дітей',
   },
   {
     url: '/antibiotiki/antibiotiki-pri-grippe/',
 
-    label: 'Антибиотики при гриппе',
+    label: 'Антибіотики при грипі',
   },
   {
     url: '/antibiotiki/dlya-glaz/',
 
-    label: 'Антибиотики для глаз',
+    label: 'Антибіотики для очей',
   },
 ]

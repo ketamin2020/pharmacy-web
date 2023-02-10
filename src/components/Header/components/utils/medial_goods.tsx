@@ -3,56 +3,56 @@ export const medicalGoods: MenuItemData[] = [
   {
     url: '/medicinskaja-tehnika/izdeliya-meditcinskogo-naznacheniya/',
 
-    label: 'Изделия медицинского назначения',
+    label: 'Вироби медичного призначення',
   },
   {
     url: '/medicinskaja-tehnika/kompressionnyy-trikotazh/',
 
-    label: 'Компрессионный трикотаж',
+    label: 'Компресійний трикотаж',
   },
   {
     url: '/medicinskaja-tehnika/korsetno-bandazhnaya-produktsiya/',
 
-    label: 'Бандажи',
+    label: 'Бандажі',
   },
   {
     url: '/medicinskaja-tehnika/ortopedicheskie-tovary/',
 
-    label: 'Ортопедические товары',
+    label: 'Ортопедичні товари',
   },
   {
     url: '/medicinskaja-tehnika/manipulyatsionnye-sredstva/',
 
-    label: 'Манипуляционные средства',
+    label: 'Маніпуляційні засоби',
   },
   {
     url: '/medicinskaja-tehnika/meditsinskaya-odezhda/',
 
-    label: 'Медицинская одежда',
+    label: 'Медичний одяг',
   },
   {
     url: '/medicinskaja-tehnika/meditsinskaya-tekhnika-i-pribory/',
 
-    label: 'Медицинская техника и приборы',
+    label: 'Медична техніка',
   },
   {
     url: '/medicinskaja-tehnika/ukhod-za-bolnymi/',
 
-    label: 'Уход за больными',
+    label: 'Догляд за хворим',
   },
   {
     url: '/medicinskaja-tehnika/planirovanie-semi/',
 
-    label: 'Планирование семьи',
+    label: 'Планування сім"ї',
   },
   {
     url: '/medicinskaja-tehnika/perevyazochnye-sredstva/',
 
-    label: 'Перевязочные средства',
+    label: 'Засоби для перевязки',
   },
   {
     url: '/medicinskaja-tehnika/diagnosticheskie-sredstva/',
 
-    label: 'Диагностические средства',
+    label: 'Діагностичні засоби',
   },
 ]

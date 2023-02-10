@@ -3,12 +3,12 @@ export const cosmetologist: MenuItemData[] = [
   {
     url: '/kosmetologiya/antiseptiki-i-dezinfitsiruyushchie/',
 
-    label: 'Антисептики и дезинфицирующие',
+    label: 'Антисептики та дизенфікуючі',
   },
   {
     url: '/kosmetologiya/shpritsy/',
 
-    label: 'Шприцы',
+    label: 'Шприци',
   },
   {
     url: '/kosmetologiya/perchatki/',
@@ -23,6 +23,6 @@ export const cosmetologist: MenuItemData[] = [
   {
     url: '/kosmetologiya/inektsii-krasoty/',
 
-    label: 'Контурная пластика',
+    label: 'Контурна пластика',
   },
 ]

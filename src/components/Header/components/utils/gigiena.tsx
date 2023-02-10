@@ -3,68 +3,64 @@ export const gigiena: MenuItemData[] = [
   {
     url: '/kosmetika-i-gigiena/lechebnaja-kosmetika/',
 
-    label: 'Лечебная косметика',
+    label: 'Лікувальна косметика',
   },
   {
     url: '/kosmetika-i-gigiena/sredstva-dlya-litsa/',
 
-    label: 'Средства для лица',
+    label: 'Засоби для лиця',
   },
   {
     url: '/kosmetika-i-gigiena/lechebnye-masla/',
 
-    label: 'Лечебные масла',
+    label: 'Лікувальні масла',
   },
   {
     url: '/kosmetika-i-gigiena/gigiena-polosti-rta/',
 
-    label: 'Гигиена полости рта',
+    label: 'Гігієна порожнини рота',
   },
   {
     url: '/kosmetika-i-gigiena/ukhod-za-volosami/',
 
-    label: 'Уход за волосами',
+    label: 'Догляд за волоссям',
   },
   {
     url: '/kosmetika-i-gigiena/sredstva-dlya-tela/',
 
-    label: 'Средства для тела',
+    label: 'Засоби для тіла',
   },
   {
     url: '/kosmetika-i-gigiena/sredstva-zhenskoy-gigieny/',
 
-    label: 'Средства женской гигиены',
+    label: 'Засоби жіночої гігієни',
   },
   {
     url: '/kosmetika-i-gigiena/sredstva-dlya-dusha-i-vanny/',
 
-    label: 'Средства для душа и ванны',
+    label: 'Засоби для душу та ванної',
   },
   {
     url: '/kosmetika-i-gigiena/sredstva-dlya-nog/',
 
-    label: 'Средства для ног',
+    label: 'Засоби для ніг',
   },
   {
     url: '/kosmetika-i-gigiena/ukhod-za-rukami-i-nogtyami/',
 
-    label: 'Уход за руками и ногтями',
+    label: 'Догляд за руками',
   },
   {
     url: '/kosmetika-i-gigiena/kremy-dlya-kozhi-vokrug-glaz/',
 
-    label: 'Уход за кожей вокруг глаз',
+    label: 'Догляд за шкірою навколо очей',
   },
   {
     url: '/kosmetika-i-gigiena/dlya-muzhchin/',
 
-    label: 'Для мужчин',
+    label: 'Для чоловіків',
   },
-  {
-    url: '/kosmetika-i-gigiena/kosmeticheskie-probniki/',
 
-    label: 'Пробники косметики (миниатюрки)',
-  },
   {
     url: '/kosmetika-i-gigiena/revanes/',
 
@@ -73,12 +69,12 @@ export const gigiena: MenuItemData[] = [
   {
     url: '/kosmetika-i-gigiena/koreyskaya-kosmetika/',
 
-    label: 'Корейская косметика',
+    label: 'Корейска косметика',
   },
   {
     url: '/kosmetika-i-gigiena/dekorativnaya-kosmetika/',
 
-    label: 'Декоративная косметика',
+    label: 'Декоративна косметика',
   },
   {
     url: '/kosmetika-i-gigiena/vishi/',
@@ -88,6 +84,6 @@ export const gigiena: MenuItemData[] = [
   {
     url: '/kosmetika-i-gigiena/sredstva-dlya-britya/',
 
-    label: 'Средства для бритья',
+    label: 'Засоби для бриття',
   },
 ]

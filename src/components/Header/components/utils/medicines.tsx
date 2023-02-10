@@ -1,6 +1,5 @@
 export const medicines = [
   { label: 'Препарати від застуди', url: '/medikamenty/respiratornaja-sistema/' },
-  { label: 'Препарати від застуди', url: '/medikamenty/respiratornaja-sistema/' },
   { label: 'Контрастні речовини', url: '/medikamenty/rentgenokontrastnye-sredstva/' },
   { label: 'Гінекологічні препарати', url: '/medikamenty/ginekologija/' },
   { label: 'Дерматологічні препарати', url: '/medikamenty/dermatologicheskie-sredstva/' },

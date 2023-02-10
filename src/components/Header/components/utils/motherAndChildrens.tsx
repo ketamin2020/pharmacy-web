@@ -3,31 +3,31 @@ export const motherAndChildrens: MenuItemData[] = [
   {
     url: '/mama-i-malysh/detskaya-kosmetika/',
 
-    label: 'Детская косметика',
+    label: 'Дитяча косметика',
   },
   {
     url: '/mama-i-malysh/gigiena-malyshey/',
 
-    label: 'Гигиена малышей',
+    label: 'Гігієна малюків',
   },
   {
     url: '/mama-i-malysh/tovary-dlya-mam/',
 
-    label: 'Товары для мам',
+    label: 'Товари для мам',
   },
   {
     url: '/mama-i-malysh/detskie-aksessuary/',
 
-    label: 'Детские аксессуары',
+    label: 'Дитячі аксесуари',
   },
   {
     url: '/mama-i-malysh/detskoe-pitanie/',
 
-    label: 'Детское питание',
+    label: 'Дитяче харчування',
   },
   {
     url: '/mama-i-malysh/aksessuary-dlya-kormleniya/',
 
-    label: 'Аксессуары для кормления',
+    label: 'Аксесуари для вигодовування',
   },
 ]
