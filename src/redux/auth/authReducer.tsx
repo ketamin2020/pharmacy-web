@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 import { login, isMobileDevice } from './authActions'
 
 const token = createReducer(null, {
-  [login]: (_, { payload }) => payload.token,
+  [login]: (_, { payload }) => payload,
 })
 const isMobile = createReducer(null, {
   [isMobileDevice]: (_, { payload }) => payload,
