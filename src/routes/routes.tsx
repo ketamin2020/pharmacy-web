@@ -117,5 +117,11 @@ const privateRoutes: Routes[] = [
     exact: true,
     element: lazy(() => import('../pages/OrderedPage/index' /* webpackChunkName: "Ordered Page" */)),
   },
+  {
+    path: RoutePath.ADMIN,
+    name: 'Адмін',
+    exact: true,
+    element: lazy(() => import('../pages/AdminPage/index' /* webpackChunkName: "Admin Page" */)),
+  },
 ]
 export { publicRoutes, privateRoutes }

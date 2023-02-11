@@ -19,6 +19,7 @@ enum RoutePath {
   PERSONAL_INFO = '/account/personal-data',
   WISHLIST = '/account/wishlist',
   ORDERS = '/account/orders',
+  ADMIN = '/admin',
 }
 
 interface Routes {
