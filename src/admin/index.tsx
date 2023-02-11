@@ -1,9 +1,14 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-
+import Dashboard from './pages/Dashboard'
+import Drugs from './pages/Drugs'
+import Ordering from './pages/Ordering'
+import Users from './pages/Users'
+import Workers from './pages/Workers'
+import Application from './pages/Application'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -36,9 +41,8 @@ function a11yProps(index: number) {
     'aria-controls': `vertical-tabpanel-${index}`,
   }
 }
-
-export default function Admin() {
-  const [value, setValue] = React.useState(0)
+const Admin = () => {
+  const [value, setValue] = useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -59,30 +63,32 @@ export default function Admin() {
         <Tab label='Users' {...a11yProps(2)} />
         <Tab label='Dashboard' {...a11yProps(3)} />
         <Tab label='Workers' {...a11yProps(4)} />
-        <Tab label='Item Six' {...a11yProps(5)} />
-        <Tab label='Item Seven' {...a11yProps(6)} />
+        <Tab label='Application' {...a11yProps(5)} />
+        {/* <Tab label='Item Seven' {...a11yProps(6)} /> */}
       </Tabs>
       <TabPanel value={value} index={0}>
-        DRUG PAGE
+        <Drugs />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Ordering
+        <Ordering />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <Users />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Item Four
+        <Dashboard />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Item Five
+        <Workers />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        Item Six
+        <Application />
       </TabPanel>
-      <TabPanel value={value} index={6}>
+      {/* <TabPanel value={value} index={6}>
         Item Seven
-      </TabPanel>
+      </TabPanel> */}
     </Box>
   )
 }
+
+export default Admin
