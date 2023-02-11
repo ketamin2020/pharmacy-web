@@ -10,8 +10,7 @@ import styled from '@emotion/styled'
 import Button from 'common/Button/Button'
 import { login } from 'redux/auth/authActions'
 import { TextFieldProps } from '@mui/material'
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar'
-
+import notification from 'common/Notification/Notification'
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -45,10 +44,12 @@ const AuthModal = () => {
 
   const onLoginUser = async () => {
     const reg = /[^\d\+]/g
+    notification('success', 'Успішно')
     if (phone.replace(reg, '').length < 13) {
       return setError('Невірний номер телефону')
     }
     setLoading(true)
+
     try {
       const res = await loginUser({ phone: phone.replace(reg, '') })
       if (res?.token) {

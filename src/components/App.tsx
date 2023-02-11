@@ -8,7 +8,9 @@ import { ModalProvider } from '../providers/ModalProvider/ModalProvider'
 import ErrorBoundary from 'utils/ErrorBoundary/ErrorBoundary'
 import AuthLayout from 'layouts/AuthLayout'
 import SEOProvider from 'providers/SEOProvider/SEOProvider'
+import { ToastContainer } from 'react-toastify'
 import '../styles/index.scss'
+import 'react-toastify/dist/ReactToastify.css'
 
 const App = () => {
   return (
@@ -28,6 +30,7 @@ const App = () => {
                         <Route key={path} path={path} element={<Page />} />
                       ))}
                     </Routes>
+                    <ToastContainer hideProgressBar={true} theme='dark' />
                   </ErrorBoundary>
                 </Suspense>
               </ModalProvider>
