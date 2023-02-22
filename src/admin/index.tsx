@@ -9,6 +9,7 @@ import Ordering from './pages/Ordering'
 import Users from './pages/Users'
 import Workers from './pages/Workers'
 import Application from './pages/Application'
+import Brands from './pages/Brands'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -24,6 +25,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
+      style={{ width: '100%' }}
       {...other}
     >
       {value === index && (
@@ -48,6 +50,17 @@ const Admin = () => {
     setValue(newValue)
   }
 
+  enum EnumTabType {
+    DRUGS = 0,
+    ORDERING = 1,
+    BRANDS = 2,
+    PARTNERS = 3,
+    USERS = 4,
+    DASHBOARD = 5,
+    WORKERS = 6,
+    APPLICATION = 7,
+  }
+
   return (
     <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh' }}>
       <Tabs
@@ -58,35 +71,37 @@ const Admin = () => {
         aria-label='Vertical tabs example'
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
-        <Tab label='Drugs' {...a11yProps(0)} />
-        <Tab label='Ordering' {...a11yProps(1)} />
-        <Tab label='Users' {...a11yProps(2)} />
-        <Tab label='Dashboard' {...a11yProps(3)} />
-        <Tab label='Workers' {...a11yProps(4)} />
-        <Tab label='Application' {...a11yProps(5)} />
+        <Tab label='Drugs' {...a11yProps(EnumTabType.DRUGS)} />
+        <Tab label='Ordering' {...a11yProps(EnumTabType.ORDERING)} />
+        <Tab label='Brands' {...a11yProps(EnumTabType.BRANDS)} />
+        <Tab label='Partners' {...a11yProps(EnumTabType.PARTNERS)} />
+        <Tab label='Users' {...a11yProps(EnumTabType.USERS)} />
+        <Tab label='Dashboard' {...a11yProps(EnumTabType.DASHBOARD)} />
+        <Tab label='Workers' {...a11yProps(EnumTabType.WORKERS)} />
+        <Tab label='Application' {...a11yProps(EnumTabType.APPLICATION)} />
         {/* <Tab label='Item Seven' {...a11yProps(6)} /> */}
       </Tabs>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={value} index={EnumTabType.DRUGS}>
         <Drugs />
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={value} index={EnumTabType.ORDERING}>
         <Ordering />
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel value={value} index={EnumTabType.USERS}>
         <Users />
       </TabPanel>
-      <TabPanel value={value} index={3}>
+      <TabPanel value={value} index={EnumTabType.DASHBOARD}>
         <Dashboard />
       </TabPanel>
-      <TabPanel value={value} index={4}>
+      <TabPanel value={value} index={EnumTabType.WORKERS}>
         <Workers />
       </TabPanel>
-      <TabPanel value={value} index={5}>
+      <TabPanel value={value} index={EnumTabType.APPLICATION}>
         <Application />
       </TabPanel>
-      {/* <TabPanel value={value} index={6}>
-        Item Seven
-      </TabPanel> */}
+      <TabPanel value={value} index={EnumTabType.BRANDS}>
+        <Brands />
+      </TabPanel>
     </Box>
   )
 }
