@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -16,22 +16,30 @@ import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
 import DeleteIcon from '@mui/icons-material/Delete'
-import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import { Add } from '@mui/icons-material'
 import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
+import { styled as styles } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import CloseIcon from '@mui/icons-material/Close'
 import { TextField } from '@mui/material'
-import Cropper from 'react-cropper'
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+import InputMask from 'react-input-mask'
+import styled from '@emotion/styled'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { getPartners, deletePartner, updatePartner, createPartner } from 'api/partners'
+import moment from 'moment'
+import notification from 'common/Notification/Notification'
+const PickerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+const BootstrapDialog = styles(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
   },
@@ -40,8 +48,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }))
 
-const defaultSrc = 'https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg'
-
 export interface DialogTitleProps {
   id: string
   children?: React.ReactNode
@@ -49,11 +55,16 @@ export interface DialogTitleProps {
 }
 
 interface Data {
-  calories: number
-  carbs: number
-  fat: number
   name: string
-  protein: number
+  full_address: string
+  common_phone: string
+  common_email: string
+  ordering_email: string
+  ordering_phone: string
+  business_hours: {
+    start_time: string
+    end_time: string
+  }
 }
 function BootstrapDialogTitle(props: DialogTitleProps) {
   const { children, onClose, ...other } = props
@@ -79,31 +90,27 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   )
 }
 
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number): Data {
+function createData(
+  id,
+  name: string,
+  full_address: string,
+  common_phone: string,
+  common_email: string,
+  ordering_email: string,
+  ordering_phone: string,
+  business_hours: string,
+): Data {
   return {
+    id,
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    full_address,
+    common_phone,
+    common_email,
+    ordering_email,
+    ordering_phone,
+    business_hours,
   }
 }
-
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-]
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -126,10 +133,6 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number])
   stabilizedThis.sort((a, b) => {
@@ -157,22 +160,41 @@ const headCells: readonly HeadCell[] = [
     label: 'Name',
   },
   {
-    id: 'logo',
+    id: 'full_address',
     numeric: true,
     disablePadding: false,
-    label: 'Logo',
+    label: 'Full address',
   },
   {
-    id: 'url',
+    id: 'common_phone',
     numeric: true,
     disablePadding: false,
-    label: 'Url',
+    label: 'Common phone',
   },
   {
-    id: 'public_url',
+    id: 'common_email',
     numeric: true,
     disablePadding: false,
-    label: 'Public Url',
+    label: 'Common email',
+  },
+  {
+    id: 'ordering_email',
+    numeric: true,
+    disablePadding: false,
+    label: 'Ordring email',
+  },
+  {
+    id: 'ordering_phone',
+    numeric: true,
+    disablePadding: false,
+    label: 'Ordering phone',
+  },
+
+  {
+    id: 'business_hours',
+    numeric: true,
+    disablePadding: false,
+    label: 'Business hours',
   },
 ]
 
@@ -208,7 +230,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -236,7 +258,7 @@ interface EnhancedTableToolbarProps {
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected, handleClickOpen } = props
+  const { numSelected, handleClickOpen, handleDelete } = props
 
   return (
     <Toolbar
@@ -259,7 +281,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         <Tooltip title='Delete'>
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -275,13 +297,20 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 const initData = {
   name: '',
-  url: '',
-  image: '',
+  full_address: '',
+  common_phone: '',
+  common_email: '',
+  ordering_email: '',
+  ordering_phone: '',
+  business_hours: {
+    start_time: '',
+    end_time: '',
+  },
 }
 
 export const Partners = () => {
   const [state, setState] = useState(initData)
-
+  const [data, setData] = useState([])
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Data>('calories')
   const [selected, setSelected] = React.useState<readonly string[]>([])
@@ -289,32 +318,17 @@ export const Partners = () => {
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [open, setOpen] = React.useState(false)
-  const [openCropModal, setOpenCropModal] = useState(false)
+  const [rowSelected, setRowSelected] = useState({})
 
-  const [image, setImage] = useState(defaultSrc)
-  const [cropData, setCropData] = useState(null)
-  const [cropper, setCropper] = useState<Cropper>()
-  const imageRef = useRef<HTMLImageElement>(null)
-  const onChange = (e: any) => {
-    e.preventDefault()
-    let files
-    if (e.dataTransfer) {
-      files = e.dataTransfer.files
-    } else if (e.target) {
-      files = e.target.files
-    }
-    const reader = new FileReader()
-    reader.onload = () => {
-      setOpenCropModal(true)
-      setImage(reader.result as any)
-    }
-    reader.readAsDataURL(files[0])
-  }
-
-  const getCropData = () => {
-    if (typeof cropper !== 'undefined') {
-      setCropData(cropper.getCroppedCanvas().toDataURL())
-    }
+  const onChangeHandleTimePicker = obj => {
+    const { name, value } = obj
+    setState(prev => ({
+      ...prev,
+      business_hours: {
+        ...prev.business_hours,
+        [name]: value,
+      },
+    }))
   }
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
@@ -327,9 +341,6 @@ export const Partners = () => {
   }
   const handleClose = () => {
     setOpen(false)
-  }
-  const handleCloseCropModal = () => {
-    setOpenCropModal(false)
   }
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
@@ -347,7 +358,7 @@ export const Partners = () => {
     setSelected([])
   }
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+  const handleClick = (event: React.MouseEvent<unknown>, name: string, row) => {
     const selectedIndex = selected.indexOf(name)
     let newSelected: readonly string[] = []
 
@@ -360,7 +371,7 @@ export const Partners = () => {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
     }
-
+    setRowSelected(row)
     setSelected(newSelected)
   }
 
@@ -373,15 +384,69 @@ export const Partners = () => {
     setPage(0)
   }
 
+  const fetchPartnersList = async () => {
+    try {
+      const res = await getPartners()
+      setData(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+
+  const handleCreate = async () => {
+    try {
+      await createPartner({
+        ...state,
+        business_hours: {
+          start_time: state.business_hours.start_time && state.business_hours.start_time.format('HH:mm'),
+          end_time: state.business_hours.end_time && state.business_hours.end_time.format('HH:mm'),
+        },
+      })
+      await fetchPartnersList()
+      notification('success', 'Partner was created successfuly!')
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+  const handleDelete = async () => {
+    try {
+      await deletePartner(rowSelected.id)
+      await fetchPartnersList()
+      notification('success', 'Partner was deleted successfuly!')
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+
+  useEffect(() => {
+    fetchPartnersList()
+  }, [])
+
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  const rows = data?.map(d =>
+    createData(
+      d.id,
+      d.name,
+      d.full_address,
+      d.common_phone,
+      d.common_email,
+      d.ordering_email,
+      d.ordering_phone,
+      d.business_hours,
+    ),
+  )
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar handleClickOpen={handleClickOpen} numSelected={selected.length} />
+        <EnhancedTableToolbar
+          handleDelete={handleDelete}
+          handleClickOpen={handleClickOpen}
+          numSelected={selected.length}
+        />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={dense ? 'small' : 'medium'}>
             <EnhancedTableHead
@@ -402,7 +467,7 @@ export const Partners = () => {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={event => handleClick(event, row.name, row)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -421,9 +486,12 @@ export const Partners = () => {
                       <TableCell component='th' id={labelId} scope='row' padding='none'>
                         {row.name}
                       </TableCell>
-                      <TableCell align='right'>{row.calories}</TableCell>
-                      <TableCell align='right'>{row.fat}</TableCell>
-                      <TableCell align='right'>{row.carbs}</TableCell>
+                      <TableCell align='left'>{row.full_address}</TableCell>
+                      <TableCell align='left'>{row.common_phone}</TableCell>
+                      <TableCell align='left'>{row.common_email}</TableCell>
+                      <TableCell align='left'>{row.ordering_email}</TableCell>
+                      <TableCell align='left'>{row.ordering_phone}</TableCell>
+                      <TableCell align='left'>{`${row.business_hours.start_time}-${row.business_hours.end_time}`}</TableCell>
                     </TableRow>
                   )
                 })}
@@ -461,53 +529,111 @@ export const Partners = () => {
             fullWidth
             placeholder='Type...'
             label='Name'
+            required
+            value={state.name}
           />
 
           <TextField
             onChange={onChangeHandle}
-            name='url'
+            name='full_address'
             style={{ marginBottom: '20px' }}
             fullWidth
-            placeholder='https://example.com'
-            label='Public URL'
+            placeholder='Type...'
+            label='Address'
+            required
+            value={state.full_address}
           />
-          <TextField onChange={onChange} style={{ marginBottom: '20px' }} fullWidth type='file' />
-          {cropData && <img style={{ width: '30%' }} src={cropData} alt='cropped' />}
-        </DialogContent>
+          <InputMask
+            name='common_phone'
+            mask={'+38(999)-99-99-999'}
+            maskChar='X'
+            value={state.phone}
+            onChange={onChangeHandle}
+          >
+            {inputProps => (
+              <TextField
+                variant='outlined'
+                fullWidth
+                style={{ marginBottom: '20px' }}
+                label='Common phone'
+                {...inputProps}
+                type='tel'
+                required
+              />
+            )}
+          </InputMask>
 
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
-      <BootstrapDialog onClose={handleCloseCropModal} aria-labelledby='customized-dialog-title' open={openCropModal}>
-        <DialogContent dividers>
-          <Cropper
-            style={{ height: 400, width: '100%' }}
-            initialAspectRatio={1}
-            preview='.img-preview'
-            src={image}
-            ref={imageRef}
-            viewMode={1}
-            guides={true}
-            minCropBoxHeight={10}
-            minCropBoxWidth={10}
-            background={false}
-            responsive={true}
-            checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-            onInitialized={instance => {
-              setCropper(instance)
-            }}
+          <TextField
+            onChange={onChangeHandle}
+            name='common_email'
+            style={{ marginBottom: '20px' }}
+            fullWidth
+            placeholder='Type...'
+            label='Common email'
+            required
+            value={state.common_email}
           />
+
+          <InputMask
+            name='ordering_phone'
+            mask={'+38(999)-99-99-999'}
+            maskChar='X'
+            value={state.ordering_phone}
+            onChange={onChangeHandle}
+          >
+            {inputProps => (
+              <TextField
+                variant='outlined'
+                style={{ marginBottom: '20px' }}
+                fullWidth
+                label='Ordering phone'
+                {...inputProps}
+                type='tel'
+                required
+              />
+            )}
+          </InputMask>
+          <TextField
+            onChange={onChangeHandle}
+            name='ordering_email'
+            style={{ marginBottom: '20px' }}
+            fullWidth
+            placeholder='Type...'
+            label='Ordering email'
+            value={state.ordering_email}
+            required
+          />
+          <p>Business hours:</p>
+
+          <PickerWrapper>
+            <TimePicker
+              label='Start'
+              name='start_time'
+              inputFormat='HH:mm'
+              mask='__:__'
+              value={state.business_hours.start_time}
+              onChange={value => onChangeHandleTimePicker({ name: 'start_time', value })}
+              renderInput={params => <TextField label='Start' {...params} />}
+            />
+
+            <TimePicker
+              label='End'
+              name='end_time'
+              inputFormat='HH:mm'
+              mask='__:__'
+              onChange={value => onChangeHandleTimePicker({ name: 'end_time', value })}
+              value={state.business_hours.end_time}
+              renderInput={params => <TextField label='End' {...params} />}
+            />
+          </PickerWrapper>
         </DialogContent>
 
         <DialogActions>
           <Button
             autoFocus
             onClick={() => {
-              getCropData()
-              setOpenCropModal(false)
+              handleCreate()
+              handleClose()
             }}
           >
             Save changes
