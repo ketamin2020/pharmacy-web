@@ -10,6 +10,7 @@ import Users from './pages/Users'
 import Workers from './pages/Workers'
 import Application from './pages/Application'
 import Brands from './pages/Brands'
+import Partners from './pages/Partners'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -101,6 +102,9 @@ const Admin = () => {
       </TabPanel>
       <TabPanel value={value} index={EnumTabType.BRANDS}>
         <Brands />
+      </TabPanel>
+      <TabPanel value={value} index={EnumTabType.PARTNERS}>
+        <Partners />
       </TabPanel>
     </Box>
   )

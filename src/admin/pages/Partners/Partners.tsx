@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -22,7 +22,6 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 import { Add } from '@mui/icons-material'
-import { Edit } from '@material-ui/icons'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
@@ -32,10 +31,6 @@ import DialogActions from '@mui/material/DialogActions'
 import CloseIcon from '@mui/icons-material/Close'
 import { TextField } from '@mui/material'
 import Cropper from 'react-cropper'
-import { createBrand, getBrands, deleteBrand, updateBrand } from 'api/brand'
-import { uploadSingleFile } from 'api/media'
-import notification from 'common/Notification/Notification'
-import moment from 'moment'
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
@@ -54,11 +49,11 @@ export interface DialogTitleProps {
 }
 
 interface Data {
+  calories: number
+  carbs: number
+  fat: number
   name: string
-  image: string
-  url: string
-  created_at: string
-  id: string
+  protein: number
 }
 function BootstrapDialogTitle(props: DialogTitleProps) {
   const { children, onClose, ...other } = props
@@ -84,31 +79,31 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   )
 }
 
-function createData(name: string, image: string, url: string, created_at: string, id: string): Data {
+function createData(name: string, calories: number, fat: number, carbs: number, protein: number): Data {
   return {
     name,
-    image,
-    url,
-    created_at,
-    id,
+    calories,
+    fat,
+    carbs,
+    protein,
   }
 }
 
-// const rows = [
-//   createData('Cupcake', 305, 3.7, 67, 4.3),
-//   createData('Donut', 452, 25.0, 51, 4.9),
-//   createData('Eclair', 262, 16.0, 24, 6.0),
-//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//   createData('Gingerbread', 356, 16.0, 49, 3.9),
-//   createData('Honeycomb', 408, 3.2, 87, 6.5),
-//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//   createData('Jelly Bean', 375, 0.0, 94, 0.0),
-//   createData('KitKat', 518, 26.0, 65, 7.0),
-//   createData('Lollipop', 392, 0.2, 98, 0.0),
-//   createData('Marshmallow', 318, 0, 81, 2.0),
-//   createData('Nougat', 360, 19.0, 9, 37.0),
-//   createData('Oreo', 437, 18.0, 63, 4.0),
-// ]
+const rows = [
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Donut', 452, 25.0, 51, 4.9),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  createData('Honeycomb', 408, 3.2, 87, 6.5),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Jelly Bean', 375, 0.0, 94, 0.0),
+  createData('KitKat', 518, 26.0, 65, 7.0),
+  createData('Lollipop', 392, 0.2, 98, 0.0),
+  createData('Marshmallow', 318, 0, 81, 2.0),
+  createData('Nougat', 360, 19.0, 9, 37.0),
+  createData('Oreo', 437, 18.0, 63, 4.0),
+]
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -131,6 +126,10 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
+// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
+// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
+// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
+// with exampleArray.slice().sort(exampleComparator)
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number])
   stabilizedThis.sort((a, b) => {
@@ -167,13 +166,13 @@ const headCells: readonly HeadCell[] = [
     id: 'url',
     numeric: true,
     disablePadding: false,
-    label: 'URL',
+    label: 'Url',
   },
   {
-    id: 'created_at',
+    id: 'public_url',
     numeric: true,
     disablePadding: false,
-    label: 'Created',
+    label: 'Public Url',
   },
 ]
 
@@ -237,7 +236,7 @@ interface EnhancedTableToolbarProps {
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected, handleClickOpen, handleClickUpdate, handleDeleteBrand } = props
+  const { numSelected, handleClickOpen } = props
 
   return (
     <Toolbar
@@ -255,22 +254,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          Brands
+          Partners
         </Typography>
       )}
-      {numSelected === 1 ? (
-        <>
-          <Tooltip title='Delete'>
-            <IconButton onClick={handleDeleteBrand}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Edit'>
-            <IconButton onClick={handleClickUpdate}>
-              <Edit />
-            </IconButton>
-          </Tooltip>
-        </>
+      {numSelected > 0 ? (
+        <Tooltip title='Delete'>
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       ) : (
         <Tooltip title='Add new brand'>
           <IconButton onClick={handleClickOpen}>
@@ -284,27 +276,25 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 const initData = {
   name: '',
   url: '',
+  image: '',
 }
 
-export const Brands = () => {
+export const Partners = () => {
   const [state, setState] = useState(initData)
-  const [data, setData] = useState([])
+
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Data>('calories')
   const [selected, setSelected] = React.useState<readonly string[]>([])
-  const [rowSelected, setRowSelected] = useState({})
   const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [open, setOpen] = React.useState(false)
   const [openCropModal, setOpenCropModal] = useState(false)
-  const [openUpdateModal, setOpenUpdateModal] = useState(false)
 
   const [image, setImage] = useState(defaultSrc)
   const [cropData, setCropData] = useState(null)
   const [cropper, setCropper] = useState<Cropper>()
   const imageRef = useRef<HTMLImageElement>(null)
-  const [imageBlob, setImageBlob] = useState(null)
   const onChange = (e: any) => {
     e.preventDefault()
     let files
@@ -323,26 +313,13 @@ export const Brands = () => {
 
   const getCropData = () => {
     if (typeof cropper !== 'undefined') {
-      const canvas = cropper.getCroppedCanvas()
-      const base64 = canvas.toDataURL()
-      canvas.toBlob(async blob => {
-        const fd = new FormData()
-        const file = new File([blob], 'filename.jpeg')
-        fd.append('image', file)
-        setImageBlob(fd)
-      })
-
-      setCropData(base64)
+      setCropData(cropper.getCroppedCanvas().toDataURL())
     }
   }
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
     const { name, value } = e.target
     setState(prev => ({ ...prev, [name]: value }))
-  }
-  const onChangeUpdateHandle = (e: onChange<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setRowSelected(prev => ({ ...prev, [name]: value }))
   }
 
   const handleClickOpen = () => {
@@ -353,10 +330,6 @@ export const Brands = () => {
   }
   const handleCloseCropModal = () => {
     setOpenCropModal(false)
-  }
-
-  const handleCloseUpdateModal = () => {
-    setOpenUpdateModal(false)
   }
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
@@ -374,7 +347,7 @@ export const Brands = () => {
     setSelected([])
   }
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string, row: Data) => {
+  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
     const selectedIndex = selected.indexOf(name)
     let newSelected: readonly string[] = []
 
@@ -389,7 +362,6 @@ export const Brands = () => {
     }
 
     setSelected(newSelected)
-    setRowSelected(row)
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -401,65 +373,15 @@ export const Brands = () => {
     setPage(0)
   }
 
-  const fetchBrands = async () => {
-    try {
-      const res = await getBrands()
-      setData(res)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleCreateBrand = async () => {
-    try {
-      const logo = await uploadSingleFile(imageBlob)
-
-      const res = await createBrand({
-        ...state,
-        logo: {
-          ...logo,
-        },
-      })
-
-      await fetchBrands()
-
-      notification('success', 'Brand created successfuly!')
-    } catch (error) {
-      console.log(error)
-      notification('error', 'Something went wrong')
-    }
-  }
-
-  const handleDeleteBrand = async () => {
-    try {
-      console.log(rowSelected)
-      await deleteBrand(rowSelected.id)
-      await fetchBrands()
-      notification('success', 'Brand deleted successfuly!')
-    } catch (error) {
-      console.log(error)
-      notification('error', 'Something went wrong')
-    }
-  }
-
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
+  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-  const rows = data?.map(d => createData(d.name, d.image, d.url, d.created_at, d.id))
-
-  useEffect(() => {
-    fetchBrands()
-  }, [])
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar
-          handleClickUpdate={() => setOpenUpdateModal(true)}
-          handleClickOpen={handleClickOpen}
-          handleDeleteBrand={handleDeleteBrand}
-          numSelected={selected.length}
-        />
+        <EnhancedTableToolbar handleClickOpen={handleClickOpen} numSelected={selected.length} />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby='tableTitle' size={dense ? 'small' : 'medium'}>
             <EnhancedTableHead
@@ -480,7 +402,7 @@ export const Brands = () => {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name, row)}
+                      onClick={event => handleClick(event, row.name)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -499,9 +421,9 @@ export const Brands = () => {
                       <TableCell component='th' id={labelId} scope='row' padding='none'>
                         {row.name}
                       </TableCell>
-                      <TableCell align='right'>{<img style={{ width: '50px' }} src={row.image} />}</TableCell>
-                      <TableCell align='right'>{row.url}</TableCell>
-                      <TableCell align='right'>{moment(row.created_at).format('DD/MM/YYYY')}</TableCell>
+                      <TableCell align='right'>{row.calories}</TableCell>
+                      <TableCell align='right'>{row.fat}</TableCell>
+                      <TableCell align='right'>{row.carbs}</TableCell>
                     </TableRow>
                   )
                 })}
@@ -529,7 +451,7 @@ export const Brands = () => {
       </Paper>
       <BootstrapDialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>
         <BootstrapDialogTitle id='customized-dialog-title' onClose={handleClose}>
-          Create new brand
+          Create new partner
         </BootstrapDialogTitle>
         <DialogContent dividers>
           <TextField
@@ -554,13 +476,7 @@ export const Brands = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button
-            autoFocus
-            onClick={() => {
-              handleCreateBrand()
-              handleClose()
-            }}
-          >
+          <Button autoFocus onClick={handleClose}>
             Save changes
           </Button>
         </DialogActions>
@@ -579,7 +495,7 @@ export const Brands = () => {
             minCropBoxWidth={10}
             background={false}
             responsive={true}
-            checkOrientation={false}
+            checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
             onInitialized={instance => {
               setCropper(instance)
             }}
@@ -592,50 +508,6 @@ export const Brands = () => {
             onClick={() => {
               getCropData()
               setOpenCropModal(false)
-            }}
-          >
-            Save changes
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
-      <BootstrapDialog
-        onClose={handleCloseUpdateModal}
-        aria-labelledby='customized-dialog-title'
-        open={openUpdateModal}
-      >
-        <BootstrapDialogTitle id='customized-dialog-title' onClose={handleCloseUpdateModal}>
-          Update Brand
-        </BootstrapDialogTitle>
-        <DialogContent dividers>
-          <TextField
-            onChange={onChangeUpdateHandle}
-            name='name'
-            style={{ marginBottom: '20px' }}
-            fullWidth
-            placeholder='Type...'
-            label='Name'
-            value={rowSelected.name}
-          />
-
-          <TextField
-            onChange={onChangeUpdateHandle}
-            name='url'
-            style={{ marginBottom: '20px' }}
-            fullWidth
-            placeholder='https://example.com'
-            label='Public URL'
-            value={rowSelected.url}
-          />
-          <TextField onChange={onChange} style={{ marginBottom: '20px' }} fullWidth type='file' />
-          {rowSelected.image && <img style={{ width: '30%' }} src={rowSelected.image} alt='cropped' />}
-        </DialogContent>
-
-        <DialogActions>
-          <Button
-            autoFocus
-            onClick={() => {
-              handleCreateBrand()
-              handleClose()
             }}
           >
             Save changes
