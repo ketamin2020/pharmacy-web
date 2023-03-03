@@ -27,18 +27,11 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import CloseIcon from '@mui/icons-material/Close'
 import { TextField } from '@mui/material'
-import InputMask from 'react-input-mask'
-import styled from '@emotion/styled'
-import { TimePicker } from '@mui/x-date-pickers/TimePicker'
-import { getPartners, deletePartner, updatePartner, createPartner } from 'api/partners'
-import moment from 'moment'
+
+import { getSubstances, deleteSubstance, updateSubstance, createSubstance } from 'api/substances'
+
 import notification from 'common/Notification/Notification'
-const PickerWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
+
 const BootstrapDialog = styles(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
@@ -55,16 +48,8 @@ export interface DialogTitleProps {
 }
 
 interface Data {
-  name: string
-  full_address: string
-  common_phone: string
-  common_email: string
-  ordering_email: string
-  ordering_phone: string
-  business_hours: {
-    start_time: string
-    end_time: string
-  }
+  name_ua: string
+  name_eu: string
 }
 function BootstrapDialogTitle(props: DialogTitleProps) {
   const { children, onClose, ...other } = props
@@ -90,25 +75,13 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   )
 }
 
-function createData(
-  id,
-  name: string,
-  full_address: string,
-  common_phone: string,
-  common_email: string,
-  ordering_email: string,
-  ordering_phone: string,
-  business_hours: string,
-): Data {
+function createData(id, name_ua, name_eu, head_title, index): Data {
   return {
     id,
-    name,
-    full_address,
-    common_phone,
-    common_email,
-    ordering_email,
-    ordering_phone,
-    business_hours,
+    name_ua,
+    name_eu,
+    head_title,
+    index,
   }
 }
 
@@ -154,47 +127,28 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'name',
+    id: 'name_ua',
     numeric: false,
     disablePadding: true,
-    label: 'Name',
+    label: 'Name UA',
   },
   {
-    id: 'full_address',
+    id: 'name_eu',
     numeric: true,
     disablePadding: false,
-    label: 'Full address',
+    label: 'Name EU',
   },
   {
-    id: 'common_phone',
+    id: 'head_title',
     numeric: true,
     disablePadding: false,
-    label: 'Common phone',
+    label: 'Head title',
   },
   {
-    id: 'common_email',
+    id: 'index',
     numeric: true,
     disablePadding: false,
-    label: 'Common email',
-  },
-  {
-    id: 'ordering_email',
-    numeric: true,
-    disablePadding: false,
-    label: 'Ordring email',
-  },
-  {
-    id: 'ordering_phone',
-    numeric: true,
-    disablePadding: false,
-    label: 'Ordering phone',
-  },
-
-  {
-    id: 'business_hours',
-    numeric: true,
-    disablePadding: false,
-    label: 'Business hours',
+    label: 'Index',
   },
 ]
 
@@ -276,7 +230,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          Partners
+          Substances
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -296,16 +250,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   )
 }
 const initData = {
-  name: '',
-  full_address: '',
-  common_phone: '',
-  common_email: '',
-  ordering_email: '',
-  ordering_phone: '',
-  business_hours: {
-    start_time: '',
-    end_time: '',
-  },
+  name_ua: '',
+  name_eu: '',
 }
 
 export const Substance = () => {
@@ -319,17 +265,6 @@ export const Substance = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [open, setOpen] = React.useState(false)
   const [rowSelected, setRowSelected] = useState({})
-
-  const onChangeHandleTimePicker = obj => {
-    const { name, value } = obj
-    setState(prev => ({
-      ...prev,
-      business_hours: {
-        ...prev.business_hours,
-        [name]: value,
-      },
-    }))
-  }
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -386,7 +321,7 @@ export const Substance = () => {
 
   const fetchPartnersList = async () => {
     try {
-      const res = await getPartners()
+      const res = await getSubstances()
       setData(res)
     } catch (error) {
       notification('error', 'Something went wrong!')
@@ -395,24 +330,20 @@ export const Substance = () => {
 
   const handleCreate = async () => {
     try {
-      await createPartner({
+      await createSubstance({
         ...state,
-        business_hours: {
-          start_time: state.business_hours.start_time && state.business_hours.start_time.format('HH:mm'),
-          end_time: state.business_hours.end_time && state.business_hours.end_time.format('HH:mm'),
-        },
       })
       await fetchPartnersList()
-      notification('success', 'Partner was created successfuly!')
+      notification('success', 'Substance was created successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
     }
   }
   const handleDelete = async () => {
     try {
-      await deletePartner(rowSelected.id)
+      await deleteSubstance(rowSelected.id)
       await fetchPartnersList()
-      notification('success', 'Partner was deleted successfuly!')
+      notification('success', 'Substance was deleted successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
     }
@@ -424,18 +355,7 @@ export const Substance = () => {
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
-  const rows = data?.map(d =>
-    createData(
-      d.id,
-      d.name,
-      d.full_address,
-      d.common_phone,
-      d.common_email,
-      d.ordering_email,
-      d.ordering_phone,
-      d.business_hours,
-    ),
-  )
+  const rows = data?.map(d => createData(d.id, d.name_ua, d.name_eu, d.head_title, d.index))
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
@@ -484,14 +404,11 @@ export const Substance = () => {
                         />
                       </TableCell>
                       <TableCell component='th' id={labelId} scope='row' padding='none'>
-                        {row.name}
+                        {row.name_ua}
                       </TableCell>
-                      <TableCell align='left'>{row.full_address}</TableCell>
-                      <TableCell align='left'>{row.common_phone}</TableCell>
-                      <TableCell align='left'>{row.common_email}</TableCell>
-                      <TableCell align='left'>{row.ordering_email}</TableCell>
-                      <TableCell align='left'>{row.ordering_phone}</TableCell>
-                      <TableCell align='left'>{`${row.business_hours.start_time}-${row.business_hours.end_time}`}</TableCell>
+                      <TableCell align='left'>{row.name_eu}</TableCell>
+                      <TableCell align='left'>{row.head_title}</TableCell>
+                      <TableCell align='left'>{row.index}</TableCell>
                     </TableRow>
                   )
                 })}
@@ -519,113 +436,30 @@ export const Substance = () => {
       </Paper>
       <BootstrapDialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>
         <BootstrapDialogTitle id='customized-dialog-title' onClose={handleClose}>
-          Create new partner
+          Create new substance
         </BootstrapDialogTitle>
         <DialogContent dividers>
           <TextField
             onChange={onChangeHandle}
-            name='name'
+            name='name_ua'
             style={{ marginBottom: '20px' }}
             fullWidth
             placeholder='Type...'
-            label='Name'
+            label='Name UA'
             required
-            value={state.name}
+            value={state.name_ua}
           />
 
           <TextField
             onChange={onChangeHandle}
-            name='full_address'
+            name='name_eu'
             style={{ marginBottom: '20px' }}
             fullWidth
             placeholder='Type...'
-            label='Address'
+            label='Name EU'
             required
-            value={state.full_address}
+            value={state.name_eu}
           />
-          <InputMask
-            name='common_phone'
-            mask={'+38(999)-99-99-999'}
-            maskChar='X'
-            value={state.phone}
-            onChange={onChangeHandle}
-          >
-            {inputProps => (
-              <TextField
-                variant='outlined'
-                fullWidth
-                style={{ marginBottom: '20px' }}
-                label='Common phone'
-                {...inputProps}
-                type='tel'
-                required
-              />
-            )}
-          </InputMask>
-
-          <TextField
-            onChange={onChangeHandle}
-            name='common_email'
-            style={{ marginBottom: '20px' }}
-            fullWidth
-            placeholder='Type...'
-            label='Common email'
-            required
-            value={state.common_email}
-          />
-
-          <InputMask
-            name='ordering_phone'
-            mask={'+38(999)-99-99-999'}
-            maskChar='X'
-            value={state.ordering_phone}
-            onChange={onChangeHandle}
-          >
-            {inputProps => (
-              <TextField
-                variant='outlined'
-                style={{ marginBottom: '20px' }}
-                fullWidth
-                label='Ordering phone'
-                {...inputProps}
-                type='tel'
-                required
-              />
-            )}
-          </InputMask>
-          <TextField
-            onChange={onChangeHandle}
-            name='ordering_email'
-            style={{ marginBottom: '20px' }}
-            fullWidth
-            placeholder='Type...'
-            label='Ordering email'
-            value={state.ordering_email}
-            required
-          />
-          <p>Business hours:</p>
-
-          <PickerWrapper>
-            <TimePicker
-              label='Start'
-              name='start_time'
-              inputFormat='HH:mm'
-              mask='__:__'
-              value={state.business_hours.start_time}
-              onChange={value => onChangeHandleTimePicker({ name: 'start_time', value })}
-              renderInput={params => <TextField label='Start' {...params} />}
-            />
-
-            <TimePicker
-              label='End'
-              name='end_time'
-              inputFormat='HH:mm'
-              mask='__:__'
-              onChange={value => onChangeHandleTimePicker({ name: 'end_time', value })}
-              value={state.business_hours.end_time}
-              renderInput={params => <TextField label='End' {...params} />}
-            />
-          </PickerWrapper>
         </DialogContent>
 
         <DialogActions>
