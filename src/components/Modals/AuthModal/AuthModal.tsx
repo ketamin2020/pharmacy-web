@@ -43,6 +43,7 @@ const AuthModal = () => {
   }
 
   const onLoginUser = async () => {
+    // eslint-disable-next-line no-useless-escape
     const reg = /[^\d\+]/g
     notification('success', 'Успішно')
     if (phone.replace(reg, '').length < 13) {

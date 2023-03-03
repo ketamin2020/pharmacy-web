@@ -278,7 +278,7 @@ const initData = {
   position: '',
 }
 
-export const Workers = () => {
+export const DrugsTable = () => {
   const [state, setState] = useState(initData)
   const [data, setData] = useState([])
   const [order, setOrder] = useState<Order>('asc')
