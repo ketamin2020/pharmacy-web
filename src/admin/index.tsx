@@ -13,6 +13,9 @@ import Brands from './pages/Brands'
 import Partners from './pages/Partners'
 import Makers from './pages/Makers'
 import Substance from './pages/Substance'
+import Groups from './pages/Groups'
+import Main from './pages/Main'
+import Instruction from './pages/Instruction'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -64,6 +67,9 @@ const Admin = () => {
     APPLICATION = 7,
     MAKERS = 8,
     SUBSTANCE = 9,
+    GROUP = 10,
+    MAIN = 11,
+    INSTRUCTION = 12,
   }
 
   return (
@@ -86,7 +92,11 @@ const Admin = () => {
         <Tab label='Application' {...a11yProps(EnumTabType.APPLICATION)} />
         <Tab label='Makers' {...a11yProps(EnumTabType.MAKERS)} />
         <Tab label='Active Substance' {...a11yProps(EnumTabType.SUBSTANCE)} />
+        <Tab label='Group' {...a11yProps(EnumTabType.GROUP)} />
+        <Tab label='Main' {...a11yProps(EnumTabType.MAIN)} />
+        <Tab label='Instruction' {...a11yProps(EnumTabType.INSTRUCTION)} />
       </Tabs>
+
       <TabPanel value={value} index={EnumTabType.DRUGS}>
         <Drugs />
       </TabPanel>
@@ -116,6 +126,15 @@ const Admin = () => {
       </TabPanel>
       <TabPanel value={value} index={EnumTabType.SUBSTANCE}>
         <Substance />
+      </TabPanel>
+      <TabPanel value={value} index={EnumTabType.GROUP}>
+        <Groups />
+      </TabPanel>
+      <TabPanel value={value} index={EnumTabType.MAIN}>
+        <Main />
+      </TabPanel>
+      <TabPanel value={value} index={EnumTabType.INSTRUCTION}>
+        <Instruction />
       </TabPanel>
     </Box>
   )
