@@ -58,11 +58,14 @@ export interface DialogTitleProps {
 }
 
 interface Data {
-  name_ua: string
-  name_eu: string
+  id: string
+  morion: number
+  section: object
+  external_code: string
+  name: string
 }
 
-function createData(id, name_ua, name_eu, head_title, index): Data {
+function createData(id, morion, section, external_code, name): Data {
   return {
     id,
     name_ua,
@@ -343,6 +346,8 @@ export const Instruction = () => {
   const [open, setOpen] = React.useState(false)
   const [rowSelected, setRowSelected] = useState({})
   const [code, setCode] = useState()
+  const [name, setName] = useState()
+  const [externalCode, setExternalCode] = useState()
   const editorRef = useRef(null)
   const log = () => {
     if (editorRef.current) {
@@ -357,7 +362,6 @@ export const Instruction = () => {
   const onChangeEditorHandle = (name, html) => {
     setState(prev => ({ ...prev, [name]: { ...prev[name], html } }))
   }
-  console.log(state.composition)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -419,7 +423,10 @@ export const Instruction = () => {
   const handleCreate = async () => {
     try {
       await createInstruction({
-        ...state,
+        section: state,
+        morion: code,
+        name,
+        external_code: externalCode,
       })
       await fetchPartnersList()
       notification('success', 'Substance was created successfuly!')
@@ -532,7 +539,14 @@ export const Instruction = () => {
             <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
               Create New Instruction
             </Typography>
-            <Button autoFocus color='inherit' onClick={handleClose}>
+            <Button
+              autoFocus
+              color='inherit'
+              onClick={() => {
+                handleCreate()
+                handleClose()
+              }}
+            >
               save
             </Button>
           </Toolbar>
@@ -545,6 +559,23 @@ export const Instruction = () => {
             type='number'
             onChange={e => setCode(e.target.value)}
             value={code}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='External code'
+            type='text'
+            onChange={e => setExternalCode(e.target.value)}
+            value={externalCode}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='Name'
+            required
+            type='text'
+            onChange={e => setName(e.target.value)}
+            value={name}
             style={{ marginBottom: '20px' }}
           />
           {Object.entries(state).map(([key, value]) => (
