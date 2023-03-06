@@ -24,7 +24,11 @@ import Dialog from '@mui/material/Dialog'
 
 import CloseIcon from '@mui/icons-material/Close'
 import { TextField } from '@mui/material'
+import { FormControl } from '@material-ui/core'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
 
+import Select, { SelectChangeEvent } from '@mui/material/Select'
 import ListItem from '@mui/material/ListItem'
 import List from '@mui/material/List'
 import AppBar from '@mui/material/AppBar'
@@ -36,12 +40,23 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-import { getInstructions, deleteInstruction, updateInstruction, createInstruction } from 'api/instructions'
+import { getProperties, deleteProperty, updateProperty, createProperty } from 'api/property'
+import { getSubstances } from 'api/substances'
 import notification from 'common/Notification/Notification'
 
-import { Editor } from '@tinymce/tinymce-react'
-import { tinyEditorSettings } from 'services/tinyEditor'
+import Autocomplete from '@mui/material/Autocomplete'
+import CircularProgress from '@mui/material/CircularProgress'
 import { Edit } from '@material-ui/icons'
+interface Film {
+  title: string
+  year: number
+}
+
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay)
+  })
+}
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -221,7 +236,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          Instructions
+          Properties
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -248,109 +263,58 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   )
 }
 const initData = {
-  composition: {
-    title: 'Склад',
-    html: '',
+  active_ingredient: {
+    value: '',
   },
-  medicinal_form: {
-    title: 'Лікарська форма',
-
-    html: '',
+  marketed_name: {
+    value: '',
   },
-  medicinal_group: {
-    title: 'Фармакотерапевтична група',
-
-    html: '',
+  manufacturing_country: {
+    value: '',
   },
-
-  pharmacodynamics: {
-    title: 'Фармакодинаміка',
-    html: '',
+  maker: {
+    value: '',
   },
-  pharmacokinetics: {
-    title: 'Фармакокінетика',
-    html: '',
+  imported: {
+    value: '',
   },
-  indications_for_use: {
-    title: 'Показання',
-    html: '',
+  dosage: {
+    value: '',
   },
-  contraindication: {
-    title: 'Протипоказання',
-    html: '',
+  production_form: {
+    value: '',
   },
-  interaction_with_other: {
-    title: 'Взаємодія з іншими лікарськими засобами та інші види взаємодій',
-    html: '',
+  prescription: {
+    value: '',
   },
-  features_of_application: {
-    title: 'Особливості застосування',
-    html: '',
+  morion: {
+    value: '',
   },
-  ability_to_influence: {
-    title: 'Здатність впливати на швидкість реакції при керуванні автотранспортом або іншими механізмами',
-    html: '',
+  administration_route: {
+    value: '',
+  },
+  quantity: {
+    value: '',
   },
 
-  use_during_pregnancy: {
-    title: 'Застосування у період вагітності або годування груддю',
-    html: '',
+  expiration: {
+    value: '',
+  },
+  atc: {
+    value: '',
+  },
+  storage_temperature: {
+    value: '',
   },
 
-  application_and_dosage: {
-    title: 'Спосіб застосування та дози',
-    html: '',
-  },
-  children: {
-    title: 'Діти',
-    html: '',
-  },
-  overdose: {
-    title: 'Передозування',
-    html: '',
-  },
-
-  adverse_reactions: {
-    title: 'Побічні реакції',
-    html: '',
-  },
-  expiration_date: {
-    title: 'Термін придатності',
-    html: '',
-  },
-  storage_conditions: {
-    title: 'Умови зберігання',
-    html: '',
-  },
-  packaging: {
-    title: 'Упаковка',
-    html: '',
-  },
-
-  leave_category: {
-    title: 'Категорія відпуску',
-    html: '',
-  },
-  producer: {
-    title: 'Виробник',
-    html: '',
-  },
-  location: {
-    title: 'Місцезнаходження виробника та його адреса місця провадження діяльності',
-    html: '',
-  },
-
-  source_of_instructions: {
-    title: 'Джерело інструкції',
-    html: '',
-    default:
-      '<div>Інструкцію лікарського засобу взято з офіційного джерела — <a href="http://www.drlz.com.ua/" target="_blank">Державного реєстру лікарських засобів України</a>.</div>',
+  package: {
+    value: '',
   },
 }
 
-export const Instruction = () => {
+export const Property = () => {
   const [state, setState] = useState(initData)
-  const [defaultState, setDefaultState] = useState(initData)
+
   const [data, setData] = useState([])
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<keyof Data>()
@@ -363,14 +327,13 @@ export const Instruction = () => {
   const [code, setCode] = useState()
   const [name, setName] = useState()
   const [externalCode, setExternalCode] = useState()
-  const editorRef = useRef(null)
+  const [openAutocomplete, setOpenAutocomplete] = React.useState(false)
+  const [options, setOptions] = React.useState<readonly Film[]>([])
+  const loading = open && options.length === 0
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
     const { name, value } = e.target
-    setState(prev => ({ ...prev, [name]: { ...prev[name], title: value } }))
-  }
-  const onChangeEditorHandle = (name, html) => {
-    setState(prev => ({ ...prev, [name]: { ...prev[name], html } }))
+    setState(prev => ({ ...prev, [name]: { ...prev[name], value: value } }))
   }
 
   const handleClickOpen = () => {
@@ -379,7 +342,7 @@ export const Instruction = () => {
   const handleClose = () => {
     setOpen(false)
     setState(initData)
-    setDefaultState(initData)
+
     setCode(null)
     setName('')
     setExternalCode('')
@@ -418,7 +381,7 @@ export const Instruction = () => {
 
     setRowSelected(row)
     setState(row.section)
-    setDefaultState(row.section)
+
     setCode(row.morion)
     setName(row.name)
     setExternalCode(row.external_code)
@@ -436,7 +399,7 @@ export const Instruction = () => {
 
   const fetchInstructionsList = async () => {
     try {
-      const res = await getInstructions()
+      const res = await getProperties()
       setData(res)
     } catch (error) {
       notification('error', 'Something went wrong!')
@@ -445,21 +408,21 @@ export const Instruction = () => {
 
   const handleCreate = async () => {
     try {
-      await createInstruction({
+      await createProperty({
         section: state,
         morion: code,
         name,
         external_code: externalCode,
       })
       await fetchInstructionsList()
-      notification('success', 'Instruction was created successfuly!')
+      notification('success', 'Property was created successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
     }
   }
   const handleUpdate = async () => {
     try {
-      await updateInstruction({
+      await updateProperty({
         id: rowSelected.id,
         section: state,
         morion: code,
@@ -467,16 +430,26 @@ export const Instruction = () => {
         external_code: externalCode,
       })
       await fetchInstructionsList()
-      notification('success', 'Instruction was updated successfuly!')
+      notification('success', 'Property was updated successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
     }
   }
   const handleDelete = async () => {
     try {
-      await deleteInstruction(rowSelected.id)
+      await deleteProperty(rowSelected.id)
       await fetchInstructionsList()
-      notification('success', 'Instruction was deleted successfuly!')
+      notification('success', 'Property was deleted successfuly!')
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+
+  const fetchSubstanceList = async () => {
+    try {
+      const res = await getSubstances()
+
+      setOptions(res)
     } catch (error) {
       notification('error', 'Something went wrong!')
     }
@@ -484,6 +457,9 @@ export const Instruction = () => {
 
   useEffect(() => {
     fetchInstructionsList()
+  }, [])
+  useEffect(() => {
+    fetchSubstanceList()
   }, [])
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
@@ -576,7 +552,7 @@ export const Instruction = () => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
-              Create New Instruction
+              Create New Property
             </Typography>
 
             {rowSelected?.id ? (
@@ -609,6 +585,7 @@ export const Instruction = () => {
             fullWidth
             label='Morion'
             required
+            size='small'
             type='number'
             onChange={e => setCode(e.target.value)}
             value={code}
@@ -617,6 +594,7 @@ export const Instruction = () => {
           <TextField
             fullWidth
             label='External code'
+            size='small'
             type='text'
             onChange={e => setExternalCode(e.target.value)}
             value={externalCode}
@@ -625,38 +603,179 @@ export const Instruction = () => {
           <TextField
             fullWidth
             label='Name'
+            size='small'
             required
             type='text'
             onChange={e => setName(e.target.value)}
             value={name}
             style={{ marginBottom: '20px' }}
           />
-          {Object.entries(state).map(([key, value]) => (
-            <Accordion key={key}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
-                <Typography>{value.title}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ListItem style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} key={key}>
-                  <TextField
-                    fullWidth
-                    name={key}
-                    label='Group title'
-                    required
-                    onChange={onChangeHandle}
-                    value={value.title}
-                  />
-                  <Editor
-                    apiKey='your-api-key'
-                    onInit={(evt, editor) => (editorRef.current = editor)}
-                    initialValue={defaultState?.[key]?.html}
-                    onEditorChange={newValue => onChangeEditorHandle(key, newValue)}
-                    init={tinyEditorSettings}
-                  />
-                </ListItem>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          <Autocomplete
+            id='asynchronous-demo'
+            fullWidth
+            style={{ marginBottom: '20px' }}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionLabel={option => option.name_ua}
+            options={options}
+            loading={loading}
+            onChange={onChangeHandle}
+            value={state.active_ingredient.value || null}
+            size='small'
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Substance'
+                size='small'
+                fullWidth
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <React.Fragment>
+                      {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                      {params.InputProps.endAdornment}
+                    </React.Fragment>
+                  ),
+                }}
+              />
+            )}
+          />
+          <TextField
+            fullWidth
+            label='Marked name'
+            required
+            size='small'
+            name='marked_name'
+            onChange={onChangeHandle}
+            value={state.marketed_name.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='Manufacturing country'
+            required
+            size='small'
+            name='manufacturing_country'
+            onChange={onChangeHandle}
+            value={state.manufacturing_country.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='Maker'
+            required
+            size='small'
+            name='maker'
+            onChange={onChangeHandle}
+            value={state.maker.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <FormControl fullWidth>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={state.imported.value}
+              label='Imported'
+              onChange={onChangeHandle}
+              style={{ marginBottom: '20px' }}
+              size='small'
+            >
+              <MenuItem value={'Так'}>Так</MenuItem>
+              <MenuItem value={'Ні'}>Ні</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label='Dosage'
+            required
+            size='small'
+            name='dosage'
+            onChange={onChangeHandle}
+            value={state.dosage.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='Form'
+            required
+            size='small'
+            name='production_form'
+            onChange={onChangeHandle}
+            value={state.production_form.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <FormControl fullWidth>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={state.prescription.value}
+              label='Prescription'
+              onChange={onChangeHandle}
+              style={{ marginBottom: '20px' }}
+              size='small'
+            >
+              <MenuItem value={'Так'}>Так</MenuItem>
+              <MenuItem value={'Ні'}>Ні</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label='Administration route'
+            required
+            size='small'
+            name='administration_route'
+            onChange={onChangeHandle}
+            value={state.administration_route.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='Quantity'
+            required
+            size='small'
+            name='quantity'
+            onChange={onChangeHandle}
+            value={state.quantity.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <FormControl fullWidth>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={state.expiration.value}
+              label='Expiration'
+              placeholder='Expiration'
+              onChange={onChangeHandle}
+              style={{ marginBottom: '20px' }}
+              size='small'
+            >
+              <MenuItem value={'1 рік'}>1 рік</MenuItem>
+              <MenuItem value={'2 роки'}>2 роки</MenuItem>
+              <MenuItem value={'3 роки'}>3 роки</MenuItem>
+              <MenuItem value={'4 роки'}>4 роки</MenuItem>
+              <MenuItem value={'5 років'}>1 років</MenuItem>
+              <MenuItem value={'6 років'}>6 років</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label='Storage temperature'
+            required
+            size='small'
+            name='storage_temperature'
+            onChange={onChangeHandle}
+            value={state.storage_temperature.value}
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            fullWidth
+            label='Package'
+            required
+            size='small'
+            name='package'
+            onChange={onChangeHandle}
+            value={state.package.value}
+            style={{ marginBottom: '20px' }}
+          />
         </List>
       </Dialog>
     </Box>
