@@ -35,28 +35,49 @@ import AppBar from '@mui/material/AppBar'
 
 import { TransitionProps } from '@mui/material/transitions'
 import Slide from '@mui/material/Slide'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import { getProperties, deleteProperty, updateProperty, createProperty } from 'api/property'
 import { getSubstances } from 'api/substances'
+import { getMakers } from 'api/makers'
 import notification from 'common/Notification/Notification'
 
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Edit } from '@material-ui/icons'
+import styled from '@emotion/styled'
 interface Film {
   title: string
   year: number
 }
 
-function sleep(delay = 0) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay)
-  })
-}
+const warningsItems = [
+  { value: 'Можна', name: 'Можна' },
+  { value: 'З обережністю', name: 'З обережністю' },
+  { value: 'Заборонено', name: 'Заборонено' },
+]
+
+const childItems = [
+  { name: 'Заборонено', value: 'Заборонено' },
+  { name: 'Дозволено', value: 'Дозволено' },
+  { name: 'З 1 року', value: 'З 1 року' },
+  { name: 'З 2 років', value: 'З 2 років' },
+  { name: 'З 3 років', value: 'З 3 років' },
+  { name: 'З 4 років', value: 'З 4 років' },
+  { name: 'З 5 років', value: 'З 5 років' },
+  { name: 'З 6 років', value: 'З 6 років' },
+  { name: 'З 7 років', value: 'З 7 років' },
+  { name: 'З 8 років', value: 'З 8 років' },
+  { name: 'З 9 років', value: 'З 9 років' },
+  { name: 'З 10 років', value: 'З 10 років' },
+  { name: 'З 11 років', value: 'З 11 років' },
+  { name: 'З 12 років', value: 'З 12 років' },
+  { name: 'З 13 років', value: 'З 13 років' },
+  { name: 'З 14 років', value: 'З 14 років' },
+  { name: 'З 15 років', value: 'З 15 років' },
+  { name: 'З 16 років', value: 'З 16 років' },
+  { name: 'З 17 років', value: 'З 17 років' },
+  { name: 'З 18 років', value: 'З 18 років' },
+]
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -81,11 +102,11 @@ interface Data {
   name: string
 }
 
-function createData(id, morion, section, external_code, name): Data {
+function createData(id, morion, attributes, external_code, name): Data {
   return {
     id,
     morion,
-    section,
+    attributes,
     external_code,
     name,
   }
@@ -266,7 +287,7 @@ const initData = {
   active_ingredient: {
     value: '',
   },
-  marketed_name: {
+  marked_name: {
     value: '',
   },
   manufacturing_country: {
@@ -312,8 +333,33 @@ const initData = {
   },
 }
 
+const initWarnings = {
+  allergy_warning: {
+    value: '',
+  },
+  diabetes_warning: {
+    value: '',
+  },
+  driving_warning: {
+    value: '',
+  },
+  pregnancy_warning: {
+    value: '',
+  },
+  breastfeeding_warning: {
+    value: '',
+  },
+  alcohol_warning: {
+    value: '',
+  },
+  child_warning: {
+    value: '',
+  },
+}
+
 export const Property = () => {
   const [state, setState] = useState(initData)
+  const [warnings, setWarnings] = useState(initWarnings)
 
   const [data, setData] = useState([])
   const [order, setOrder] = useState<Order>('asc')
@@ -327,13 +373,20 @@ export const Property = () => {
   const [code, setCode] = useState()
   const [name, setName] = useState()
   const [externalCode, setExternalCode] = useState()
-  const [openAutocomplete, setOpenAutocomplete] = React.useState(false)
+  const [makers, setMakers] = useState([])
+
   const [options, setOptions] = React.useState<readonly Film[]>([])
   const loading = open && options.length === 0
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
     const { name, value } = e.target
+
     setState(prev => ({ ...prev, [name]: { ...prev[name], value: value } }))
+  }
+
+  const onChangeWarnings = (e: onChange<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setWarnings(prev => ({ ...prev, [name]: { ...prev[name], value: value } }))
   }
 
   const handleClickOpen = () => {
@@ -380,8 +433,8 @@ export const Property = () => {
     }
 
     setRowSelected(row)
-    setState(row.section)
-
+    setState(row.attributes.main.items)
+    setWarnings(row.attributes.warnings.items)
     setCode(row.morion)
     setName(row.name)
     setExternalCode(row.external_code)
@@ -397,7 +450,7 @@ export const Property = () => {
     setPage(0)
   }
 
-  const fetchInstructionsList = async () => {
+  const fetchPropertiesList = async () => {
     try {
       const res = await getProperties()
       setData(res)
@@ -409,12 +462,15 @@ export const Property = () => {
   const handleCreate = async () => {
     try {
       await createProperty({
-        section: state,
+        main: state,
+        warnings,
         morion: code,
         name,
         external_code: externalCode,
       })
-      await fetchInstructionsList()
+      setSelected([])
+      setRowSelected({})
+      await fetchPropertiesList()
       notification('success', 'Property was created successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
@@ -424,12 +480,15 @@ export const Property = () => {
     try {
       await updateProperty({
         id: rowSelected.id,
-        section: state,
-        morion: code,
+        main: state,
+        warnings: warnings,
         name,
         external_code: externalCode,
+        morion: code,
       })
-      await fetchInstructionsList()
+      setSelected([])
+      setRowSelected({})
+      await fetchPropertiesList()
       notification('success', 'Property was updated successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
@@ -438,7 +497,9 @@ export const Property = () => {
   const handleDelete = async () => {
     try {
       await deleteProperty(rowSelected.id)
-      await fetchInstructionsList()
+      await fetchPropertiesList()
+      setSelected([])
+      setRowSelected({})
       notification('success', 'Property was deleted successfuly!')
     } catch (error) {
       notification('error', 'Something went wrong!')
@@ -454,17 +515,29 @@ export const Property = () => {
       notification('error', 'Something went wrong!')
     }
   }
+  const fetchMakersList = async () => {
+    try {
+      const res = await getMakers()
+
+      setMakers(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
 
   useEffect(() => {
-    fetchInstructionsList()
+    fetchPropertiesList()
   }, [])
   useEffect(() => {
     fetchSubstanceList()
   }, [])
+  useEffect(() => {
+    fetchMakersList()
+  }, [])
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
-  const rows = data?.map(d => createData(d.id, d.morion, d.section, d.external_code, d.name))
+  const rows = data?.map(d => createData(d.id, d.morion, d.attributes, d.external_code, d.name))
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
@@ -581,203 +654,410 @@ export const Property = () => {
           </Toolbar>
         </AppBar>
         <List>
-          <TextField
-            fullWidth
-            label='Morion'
-            required
-            size='small'
-            type='number'
-            onChange={e => setCode(e.target.value)}
-            value={code}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='External code'
-            size='small'
-            type='text'
-            onChange={e => setExternalCode(e.target.value)}
-            value={externalCode}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='Name'
-            size='small'
-            required
-            type='text'
-            onChange={e => setName(e.target.value)}
-            value={name}
-            style={{ marginBottom: '20px' }}
-          />
-          <Autocomplete
-            id='asynchronous-demo'
-            fullWidth
-            style={{ marginBottom: '20px' }}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionLabel={option => option.name_ua}
-            options={options}
-            loading={loading}
-            onChange={onChangeHandle}
-            value={state.active_ingredient.value || null}
-            size='small'
-            renderInput={params => (
+          <Wrapper>
+            <Row>
+              <p>Код Моріон</p>
               <TextField
-                {...params}
-                label='Substance'
-                size='small'
                 fullWidth
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <React.Fragment>
-                      {loading ? <CircularProgress color='inherit' size={20} /> : null}
-                      {params.InputProps.endAdornment}
-                    </React.Fragment>
-                  ),
-                }}
+                label='Morion'
+                required
+                size='small'
+                type='number'
+                onChange={e => setCode(e.target.value)}
+                value={code}
               />
-            )}
-          />
-          <TextField
-            fullWidth
-            label='Marked name'
-            required
-            size='small'
-            name='marked_name'
-            onChange={onChangeHandle}
-            value={state.marketed_name.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='Manufacturing country'
-            required
-            size='small'
-            name='manufacturing_country'
-            onChange={onChangeHandle}
-            value={state.manufacturing_country.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='Maker'
-            required
-            size='small'
-            name='maker'
-            onChange={onChangeHandle}
-            value={state.maker.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <FormControl fullWidth>
-            <Select
-              labelId='demo-simple-select-label'
-              id='demo-simple-select'
-              value={state.imported.value}
-              label='Imported'
-              onChange={onChangeHandle}
-              style={{ marginBottom: '20px' }}
-              size='small'
-            >
-              <MenuItem value={'Так'}>Так</MenuItem>
-              <MenuItem value={'Ні'}>Ні</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label='Dosage'
-            required
-            size='small'
-            name='dosage'
-            onChange={onChangeHandle}
-            value={state.dosage.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='Form'
-            required
-            size='small'
-            name='production_form'
-            onChange={onChangeHandle}
-            value={state.production_form.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <FormControl fullWidth>
-            <Select
-              labelId='demo-simple-select-label'
-              id='demo-simple-select'
-              value={state.prescription.value}
-              label='Prescription'
-              onChange={onChangeHandle}
-              style={{ marginBottom: '20px' }}
-              size='small'
-            >
-              <MenuItem value={'Так'}>Так</MenuItem>
-              <MenuItem value={'Ні'}>Ні</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label='Administration route'
-            required
-            size='small'
-            name='administration_route'
-            onChange={onChangeHandle}
-            value={state.administration_route.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='Quantity'
-            required
-            size='small'
-            name='quantity'
-            onChange={onChangeHandle}
-            value={state.quantity.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <FormControl fullWidth>
-            <Select
-              labelId='demo-simple-select-label'
-              id='demo-simple-select'
-              value={state.expiration.value}
-              label='Expiration'
-              placeholder='Expiration'
-              onChange={onChangeHandle}
-              style={{ marginBottom: '20px' }}
-              size='small'
-            >
-              <MenuItem value={'1 рік'}>1 рік</MenuItem>
-              <MenuItem value={'2 роки'}>2 роки</MenuItem>
-              <MenuItem value={'3 роки'}>3 роки</MenuItem>
-              <MenuItem value={'4 роки'}>4 роки</MenuItem>
-              <MenuItem value={'5 років'}>1 років</MenuItem>
-              <MenuItem value={'6 років'}>6 років</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label='Storage temperature'
-            required
-            size='small'
-            name='storage_temperature'
-            onChange={onChangeHandle}
-            value={state.storage_temperature.value}
-            style={{ marginBottom: '20px' }}
-          />
-          <TextField
-            fullWidth
-            label='Package'
-            required
-            size='small'
-            name='package'
-            onChange={onChangeHandle}
-            value={state.package.value}
-            style={{ marginBottom: '20px' }}
-          />
+            </Row>
+            <Row>
+              <p>Зовнішній код</p>
+              <TextField
+                fullWidth
+                label='External code'
+                size='small'
+                type='text'
+                onChange={e => setExternalCode(e.target.value)}
+                value={externalCode}
+              />
+            </Row>
+
+            <Row>
+              <p>Назва</p>
+              <TextField
+                fullWidth
+                label='Name'
+                size='small'
+                required
+                type='text'
+                onChange={e => setName(e.target.value)}
+                value={name}
+              />
+            </Row>
+
+            <Row>
+              <p>Діюча речовина</p>
+              <Autocomplete
+                id='asynchronous-demo'
+                fullWidth
+                getOptionLabel={option => options.find(o => o.id === option)?.name_ua}
+                options={options?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'active_ingredient', value: value } })}
+                value={state.active_ingredient.value || null}
+                size='small'
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Substance'
+                    size='small'
+                    fullWidth
+                    name='active_ingredient'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Row>
+
+            <Row>
+              <p>Торгівельна назва</p>
+              <TextField
+                fullWidth
+                label='Marked name'
+                required
+                size='small'
+                name='marked_name'
+                onChange={onChangeHandle}
+                value={state.marked_name.value}
+              />
+            </Row>
+
+            <Row>
+              <p>Країна виробник</p>
+              <TextField
+                fullWidth
+                label='Manufacturing country'
+                required
+                size='small'
+                name='manufacturing_country'
+                onChange={onChangeHandle}
+                value={state.manufacturing_country.value}
+              />
+            </Row>
+
+            <Row>
+              <p>Виробник</p>
+
+              <Autocomplete
+                id='asynchronous-demo'
+                fullWidth
+                getOptionLabel={option => makers?.find(o => o.id === option)?.full_name}
+                options={makers?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'maker', value: value } })}
+                value={state.maker.value || null}
+                size='small'
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Makers'
+                    size='small'
+                    fullWidth
+                    name='maker'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Row>
+
+            <Row>
+              <p>Імпорт</p>
+
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={state.imported.value}
+                name='imported'
+                onChange={onChangeHandle}
+                size='small'
+              >
+                <MenuItem value={'Так'}>Так</MenuItem>
+                <MenuItem value={'Ні'}>Ні</MenuItem>
+              </Select>
+            </Row>
+
+            <Row>
+              <p>Дозування</p>
+              <TextField
+                fullWidth
+                label='Dosage'
+                required
+                size='small'
+                name='dosage'
+                onChange={onChangeHandle}
+                value={state.dosage.value}
+              />
+            </Row>
+            <Row>
+              <p>Форма</p>
+              <TextField
+                fullWidth
+                label='Form'
+                required
+                size='small'
+                name='production_form'
+                onChange={onChangeHandle}
+                value={state.production_form.value}
+              />
+            </Row>
+            <Row>
+              <p>Без рецепта</p>
+
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={state.prescription.value}
+                name='prescription'
+                onChange={onChangeHandle}
+                size='small'
+              >
+                <MenuItem value={'Так'}>Так</MenuItem>
+                <MenuItem value={'Ні'}>Ні</MenuItem>
+              </Select>
+            </Row>
+            <Row>
+              <p>Спосіб введення</p>
+              <TextField
+                fullWidth
+                label='Administration route'
+                required
+                size='small'
+                name='administration_route'
+                onChange={onChangeHandle}
+                value={state.administration_route.value}
+              />
+            </Row>
+            <Row>
+              <p>Кількість в упаковці</p>
+              <TextField
+                fullWidth
+                label='Quantity'
+                required
+                size='small'
+                name='quantity'
+                onChange={onChangeHandle}
+                value={state.quantity.value}
+              />
+            </Row>
+            <Row>
+              <p>Термін придатності</p>
+
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={state.expiration.value}
+                onChange={onChangeHandle}
+                name='expiration'
+                size='small'
+              >
+                <MenuItem value={'1 рік'}>1 рік</MenuItem>
+                <MenuItem value={'2 роки'}>2 роки</MenuItem>
+                <MenuItem value={'3 роки'}>3 роки</MenuItem>
+                <MenuItem value={'4 роки'}>4 роки</MenuItem>
+                <MenuItem value={'5 років'}>1 років</MenuItem>
+                <MenuItem value={'6 років'}>6 років</MenuItem>
+              </Select>
+            </Row>
+
+            <Row>
+              <p>Температура зберігання</p>
+              <TextField
+                fullWidth
+                label='Storage temperature'
+                required
+                size='small'
+                name='storage_temperature'
+                onChange={onChangeHandle}
+                value={state.storage_temperature.value}
+              />
+            </Row>
+            <Row>
+              <p>Упаковка</p>
+              <TextField
+                fullWidth
+                label='Package'
+                required
+                size='small'
+                name='package'
+                onChange={onChangeHandle}
+                value={state.package.value}
+              />
+            </Row>
+
+            <p>Кому можна</p>
+
+            <Row>
+              <p>Алергікам</p>
+
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={warnings.allergy_warning.value}
+                onChange={onChangeWarnings}
+                name='allergy_warning'
+                size='small'
+              >
+                {warningsItems.map((el, idx) => (
+                  <MenuItem key={idx} value={el.value}>
+                    {el.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Row>
+
+            <Row>
+              <p>Діабетикам</p>
+              <FormControl fullWidth>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={warnings.diabetes_warning.value}
+                  name='diabetes_warning'
+                  onChange={onChangeWarnings}
+                  size='small'
+                >
+                  {warningsItems.map((el, idx) => (
+                    <MenuItem key={idx} value={el.value}>
+                      {el.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Row>
+
+            <Row>
+              <p>Водіям</p>
+              <FormControl fullWidth>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={warnings.driving_warning.value}
+                  onChange={onChangeWarnings}
+                  name='driving_warning'
+                  size='small'
+                >
+                  {warningsItems.map((el, idx) => (
+                    <MenuItem key={idx} value={el.value}>
+                      {el.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Row>
+
+            <Row>
+              <p>Вігітним</p>
+              <FormControl fullWidth>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={warnings.pregnancy_warning.value}
+                  onChange={onChangeWarnings}
+                  name='pregnancy_warning'
+                  size='small'
+                >
+                  {warningsItems.map((el, idx) => (
+                    <MenuItem key={idx} value={el.value}>
+                      {el.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Row>
+            <Row>
+              <p>Годуючим матерям</p>
+              <FormControl fullWidth>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={warnings.breastfeeding_warning.value}
+                  onChange={onChangeWarnings}
+                  name='breastfeeding_warning'
+                  size='small'
+                >
+                  {warningsItems.map((el, idx) => (
+                    <MenuItem key={idx} value={el.value}>
+                      {el.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Row>
+            <Row>
+              <p>Взаємодія з алкоголем</p>
+              <FormControl fullWidth>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={warnings.alcohol_warning.value}
+                  onChange={onChangeWarnings}
+                  size='small'
+                  name='alcohol_warning'
+                >
+                  {warningsItems.map((el, idx) => (
+                    <MenuItem key={idx} value={el.value}>
+                      {el.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Row>
+            <Row>
+              <p>Дітям</p>
+
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={warnings.child_warning.value}
+                placeholder='Expiration'
+                name='child_warning'
+                onChange={onChangeWarnings}
+                size='small'
+              >
+                {childItems.map((el, idx) => (
+                  <MenuItem key={idx} value={el.value}>
+                    {el.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Row>
+          </Wrapper>
         </List>
       </Dialog>
     </Box>
   )
 }
+
+const Wrapper = styled.div`
+  padding: 20px 100px;
+`
+
+const Row = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  align-content: center;
+  border-bottom: 1px solid gray;
+  padding: 3px 0;
+`
