@@ -17,6 +17,7 @@ import Groups from './pages/Groups'
 import Main from './pages/Main'
 import Instruction from './pages/Instruction'
 import Property from './pages/Property'
+import Images from './pages/Images'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -72,6 +73,7 @@ const Admin = () => {
     MAIN = 11,
     INSTRUCTION = 12,
     PROPERTY = 13,
+    IMAGES = 14,
   }
 
   return (
@@ -98,6 +100,7 @@ const Admin = () => {
         <Tab label='Main' {...a11yProps(EnumTabType.MAIN)} />
         <Tab label='Instruction' {...a11yProps(EnumTabType.INSTRUCTION)} />
         <Tab label='Property' {...a11yProps(EnumTabType.PROPERTY)} />
+        <Tab label='Images' {...a11yProps(EnumTabType.IMAGES)} />
       </Tabs>
 
       <TabPanel value={value} index={EnumTabType.DRUGS}>
@@ -141,6 +144,9 @@ const Admin = () => {
       </TabPanel>
       <TabPanel value={value} index={EnumTabType.PROPERTY}>
         <Property />
+      </TabPanel>
+      <TabPanel value={value} index={EnumTabType.IMAGES}>
+        <Images />
       </TabPanel>
     </Box>
   )
