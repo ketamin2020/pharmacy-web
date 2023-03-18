@@ -21,13 +21,14 @@ import { visuallyHidden } from '@mui/utils'
 import { Add } from '@mui/icons-material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
-
+import DialogContentText from '@mui/material/DialogContentText'
 import CloseIcon from '@mui/icons-material/Close'
 import { TextField } from '@mui/material'
 import { FormControl } from '@material-ui/core'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import ListItem from '@mui/material/ListItem'
 import List from '@mui/material/List'
@@ -37,6 +38,7 @@ import { TransitionProps } from '@mui/material/transitions'
 import Slide from '@mui/material/Slide'
 
 import { getProperties, deleteProperty, updateProperty, createProperty } from 'api/property'
+import { getTradeNames, deleteTradeName, updateTradeName, createTradeName } from 'api/tradeName'
 import { getSubstances } from 'api/substances'
 import { getMakers } from 'api/makers'
 import notification from 'common/Notification/Notification'
@@ -297,7 +299,7 @@ const initData = {
     value: '',
   },
   imported: {
-    value: '',
+    value: 'Так',
   },
   dosage: {
     value: '',
@@ -306,7 +308,7 @@ const initData = {
     value: '',
   },
   prescription: {
-    value: '',
+    value: 'Так',
   },
   morion: {
     value: '',
@@ -374,8 +376,17 @@ export const Property = () => {
   const [name, setName] = useState()
   const [externalCode, setExternalCode] = useState()
   const [makers, setMakers] = useState([])
+  const [tradeNames, setTradeNames] = useState([])
+  const [options, setOptions] = useState<readonly Film[]>([])
+  const [openTradeNameModal, setOpenTradeNameModal] = useState(false)
+  const [tradeNameState, setTradeNameState] = useState('')
+  const handleClickOpenTradeNameModal = () => {
+    setOpenTradeNameModal(true)
+  }
 
-  const [options, setOptions] = React.useState<readonly Film[]>([])
+  const handleCloseTradeNameModal = () => {
+    setOpenTradeNameModal(false)
+  }
   const loading = open && options.length === 0
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
@@ -506,6 +517,18 @@ export const Property = () => {
     }
   }
 
+  const handleSaveTradeName = async () => {
+    if (!tradeNameState) return
+    try {
+      const res = await createTradeName({ name: tradeNameState })
+
+      setTradeNames(prev => [...prev, res])
+      handleCloseTradeNameModal()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const fetchSubstanceList = async () => {
     try {
       const res = await getSubstances()
@@ -524,6 +547,15 @@ export const Property = () => {
       notification('error', 'Something went wrong!')
     }
   }
+  const fetchTradeNamesList = async () => {
+    try {
+      const res = await getTradeNames()
+
+      setTradeNames(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
 
   useEffect(() => {
     fetchPropertiesList()
@@ -533,6 +565,9 @@ export const Property = () => {
   }, [])
   useEffect(() => {
     fetchMakersList()
+  }, [])
+  useEffect(() => {
+    fetchTradeNamesList()
   }, [])
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
@@ -724,15 +759,39 @@ export const Property = () => {
             </Row>
 
             <Row>
-              <p>Торгівельна назва</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Торгівельна назва{' '}
+                <span style={{ cursor: 'pointer' }} onClick={handleClickOpenTradeNameModal}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Marked name'
-                required
+                getOptionLabel={option => tradeNames.find(o => o.id === option)?.name}
+                options={tradeNames?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'marked_name', value: value } })}
+                value={state.marked_name.value || null}
                 size='small'
-                name='marked_name'
-                onChange={onChangeHandle}
-                value={state.marked_name.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Trade name'
+                    size='small'
+                    fullWidth
+                    name='active_ingredient'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
 
@@ -1044,6 +1103,28 @@ export const Property = () => {
             </Row>
           </Wrapper>
         </List>
+      </Dialog>
+
+      <Dialog open={openTradeNameModal} onClose={handleCloseTradeNameModal}>
+        <DialogContent>Create trade name</DialogContent>
+
+        <DialogContent>
+          <TextField
+            value={tradeNameState}
+            onChange={e => setTradeNameState(e.target.value)}
+            autoFocus
+            margin='dense'
+            id='name'
+            label='Trade name'
+            type='text'
+            fullWidth
+            variant='standard'
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTradeNameModal}>Cancel</Button>
+          <Button onClick={handleSaveTradeName}>Create</Button>
+        </DialogActions>
       </Dialog>
     </Box>
   )
