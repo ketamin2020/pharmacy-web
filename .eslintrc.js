@@ -23,6 +23,5 @@ module.exports = {
     'react/jsx-uses-react': 'off', // for react >= 17.0
     'react/react-in-jsx-scope': 'off', // for react >= 17.0
     'react/prop-types': 'off',
-    enforceForLogicalOperands: false,
   },
 }

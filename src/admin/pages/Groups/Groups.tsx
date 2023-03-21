@@ -176,7 +176,7 @@ export const Groups = () => {
                   <Button
                     variant='outlined'
                     onClick={() => {
-                      setState(prev => ({ ...prev, level: 2, parent_id: group.parent_id }))
+                      setState(prev => ({ ...prev, level: 2, parent_id: group.parent_id, child_id: group.id }))
                       handleClickOpen()
                     }}
                   >

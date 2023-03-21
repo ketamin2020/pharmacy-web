@@ -9,6 +9,9 @@ import NavSideBar from '../NavSideBar/NavSideBar'
 import { Phone as PhoneNumber } from 'public'
 import { SearhInput } from 'common/SearchInput/SearhInput'
 import { RoutePath } from 'routes/types'
+import { isAdminSelector, isAuthSelector } from 'redux/auth/authSelectors'
+import { useSelector } from 'react-redux'
+import { AdminPanelSettings } from '@mui/icons-material'
 import './NavBar.scss'
 
 const navbarItems = [
@@ -42,6 +45,8 @@ const navbarItems = [
 const NavBar = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const isAdmin = useSelector(isAdminSelector)
+  const isAuth = useSelector(isAuthSelector)
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
@@ -95,12 +100,24 @@ const NavBar = () => {
               <p className='header__nav-basket__title'>Корзина</p>
             </div>
           </Badge>
-          <Badge badgeContent={0} color='warning'>
-            <div onClick={handleAuthModal} className='header__nav-badge'>
-              <PermIdentity />
-              <p className='header__nav-basket__title'>Увійти</p>
-            </div>
-          </Badge>
+
+          {!isAuth && (
+            <Badge badgeContent={0} color='warning'>
+              <div onClick={handleAuthModal} className='header__nav-badge'>
+                <PermIdentity />
+                <p className='header__nav-basket__title'>Увійти</p>
+              </div>
+            </Badge>
+          )}
+
+          {isAdmin && (
+            <Badge badgeContent={0} color='warning'>
+              <div onClick={() => navigate(RoutePath.ADMIN)} className='header__nav-badge'>
+                <AdminPanelSettings />
+                <p className='header__nav-basket__title'>Адмін</p>
+              </div>
+            </Badge>
+          )}
         </div>
         <NavSideBar open={open} toggleSlider={toggleSlider} />
       </div>

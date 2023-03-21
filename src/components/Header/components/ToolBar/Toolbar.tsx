@@ -1,13 +1,8 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import Button from '@mui/material/Button'
+
 import { Logo } from 'images/icons/icons'
 import { Dropdown } from 'common/Dropdown/Dropdown'
-import { ItemsMenuFirstNested } from '../utils/types'
-import { antibiotics } from '../utils/antibiotics'
-import { medicines } from '../utils/medicines'
-import { medicalGoods } from '../utils/medial_goods'
-import { motherAndChildrens } from '../utils/motherAndChildrens'
-import { gigiena } from '../utils/gigiena'
 import {
   DrugsIcon,
   AntibioticsIcon,
@@ -16,49 +11,37 @@ import {
   CosmeticsIcon,
   DeliverySmallIcon,
 } from 'images/icons/icons'
+import { menuItemsSelector } from 'redux/groups/groupsSelectors'
+import { useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom'
 import './ToolBar.scss'
+const icons = {
+  0: <DrugsIcon />,
+  1: <AntibioticsIcon />,
+  2: <MedicalGoodsIcon />,
+  3: <MotherAndChildIcon />,
+  4: <CosmeticsIcon />,
+}
 
 const Toolbar = () => {
+  const items = useSelector(menuItemsSelector)
+
   return (
     <section className='toolbar_wrapper mobile__hidden'>
       <div className='container toolbar_wrapper__inner'>
         <article>
-          <Logo />
+          <NavLink to='/'>
+            <Logo />
+          </NavLink>
         </article>
         <article>
-          <Dropdown
-            icon={<DrugsIcon />}
-            title={ItemsMenuFirstNested.MEDICINES}
-            onChange={() => null}
-            list={medicines}
-          />
-          <Dropdown
-            icon={<AntibioticsIcon />}
-            title={ItemsMenuFirstNested.ANTIBIOTICS}
-            onChange={() => null}
-            list={antibiotics}
-          />
-          <Dropdown
-            icon={<MedicalGoodsIcon />}
-            title={ItemsMenuFirstNested.MEDICAL_GOODS}
-            onChange={() => null}
-            list={medicalGoods}
-          />
-          <Dropdown
-            icon={<MotherAndChildIcon />}
-            title={ItemsMenuFirstNested.GOODS_FOR_MOTHERS_AND_CHILDREN}
-            onChange={() => null}
-            list={motherAndChildrens}
-          />
-          <Dropdown
-            icon={<CosmeticsIcon />}
-            title={ItemsMenuFirstNested.COSMETICS_AND_HYGIENE}
-            onChange={() => null}
-            list={gigiena}
-          />
+          {items?.map((item, i) => (
+            <Dropdown key={i} icon={icons[i]} title={item.group_name} onChange={() => null} list={item.children} />
+          ))}
+
           {/* <Button
             id='basic-button'
-            style={{ display: 'flex', alignItems: 'flex-start' }}
+            style={{ display: 'flex', alignItems: 'flex-start', height: '20px' }}
             aria-controls={'basic-menu'}
             aria-haspopup='true'
             onClick={() => null}

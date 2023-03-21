@@ -54,6 +54,7 @@ interface Data {
   last_name: string
   phone: string
   email: string
+
   full_address: string
   position: string
 }
@@ -158,6 +159,7 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Email',
   },
+
   {
     id: 'full_address',
     numeric: true,
@@ -250,7 +252,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          Partners
+          Workers
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -274,10 +276,11 @@ const initData = {
   last_name: '',
   phone: '',
   email: '',
+  password: '',
   full_address: '',
   position: '',
 }
-
+const reg = /[^\d\+]/g
 export const Workers = () => {
   const [state, setState] = useState(initData)
   const [data, setData] = useState([])
@@ -291,7 +294,9 @@ export const Workers = () => {
   const [rowSelected, setRowSelected] = useState({})
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
+    debugger
     const { name, value } = e.target
+
     setState(prev => ({ ...prev, [name]: value }))
   }
 
@@ -356,6 +361,7 @@ export const Workers = () => {
     try {
       await createWorker({
         ...state,
+        phone: state.phone.replace(reg, ''),
       })
       await fetchPartnersList()
       notification('success', 'Worker was created successfuly!')
@@ -463,7 +469,7 @@ export const Workers = () => {
       </Paper>
       <BootstrapDialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>
         <BootstrapDialogTitle id='customized-dialog-title' onClose={handleClose}>
-          Create new user
+          Create new workers
         </BootstrapDialogTitle>
 
         <DialogContent dividers>
@@ -520,6 +526,16 @@ export const Workers = () => {
           />
           <TextField
             onChange={onChangeHandle}
+            name='password'
+            style={{ marginBottom: '20px' }}
+            fullWidth
+            placeholder='Type...'
+            label='Password'
+            required
+            value={state.password}
+          />
+          <TextField
+            onChange={onChangeHandle}
             name='full_address'
             style={{ marginBottom: '20px' }}
             fullWidth
@@ -539,7 +555,7 @@ export const Workers = () => {
               name='position'
               onChange={onChangeHandle}
             >
-              <MenuItem value={'Worker'}>Admin</MenuItem>
+              <MenuItem value={'Admin'}>Admin</MenuItem>
               <MenuItem value={'Worker'}>Worker</MenuItem>
               <MenuItem value={'Pharmacist'}>Pharmacist</MenuItem>
               <MenuItem value={'Lawyer'}>Lawyer</MenuItem>

@@ -7,16 +7,18 @@ import auth from './auth/authReducer'
 import user from './user/userReducer'
 import account from './account/accountReducer'
 import modals from './ui/modals/modalReducer'
+import groups from './groups/groupsReducer'
 
 const authPersistConfig = {
   key: 'auth',
   storage,
-  whitelist: ['token'],
+  whitelist: ['token', 'isAdmin'],
 }
 
 const app = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
   user,
+  groups,
   account,
   ui: combineReducers({ modals }),
 })

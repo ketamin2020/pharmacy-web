@@ -5,9 +5,10 @@ import { toggleAuthModal } from 'redux/ui/modals/modalsActions'
 import InputMask from 'react-input-mask'
 import { TextField } from '@mui/material'
 import { loginUser } from 'api/auth'
+import { loginWorker } from 'api/workers'
 import styled from '@emotion/styled'
 import Button from 'common/Button/Button'
-import { login } from 'redux/auth/authActions'
+import { login, admin } from 'redux/auth/authActions'
 import { TextFieldProps } from '@mui/material'
 import notification from 'common/Notification/Notification'
 import validator from 'validator'
@@ -92,10 +93,10 @@ const AuthModal = () => {
     setLoading(true)
 
     try {
-      const res = await loginUser({ phone: phone.replace(reg, ''), email, password, admin: true })
-
-      if (res?.token) {
-        dispatch(login(res?.token))
+      const res = await loginWorker({ phone: phone.replace(reg, ''), email, password, admin: true })
+      if (res?.data?.token) {
+        dispatch(login(res?.data?.token))
+        dispatch(admin(true))
         notification('success', 'Успішно')
         onClose()
       }
@@ -111,17 +112,24 @@ const AuthModal = () => {
       <DialogContent>
         <DialogContentText>Для входу в систему, необхідно ввести Ваш номер телефону.</DialogContentText>
         <Wrapper>
-          <InputMask mask={'+38(999)-99-99-999'} maskChar='X' value={phone} onChange={onChange}>
+          <InputMask
+            style={{ fontSize: '24px', width: '300px' }}
+            mask={'+38(999)-99-99-999'}
+            maskChar='X'
+            value={phone}
+            onChange={onChange}
+          >
             {(inputProps: TextFieldProps) => (
               <TextField
                 focused={isOpen}
                 variant='outlined'
-                style={{ width: '200px' }}
+                size='small'
+                style={{ width: '300px' }}
                 label='Teлефон'
-                {...inputProps}
                 type='tel'
                 error={!!error.phone}
                 helperText={error.phone}
+                {...inputProps}
               />
             )}
           </InputMask>
@@ -154,7 +162,12 @@ const AuthModal = () => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={isAdmin ? onLoginAsAdmin : onLoginUser} color='green' shape='square'>
+        <Button
+          style={{ margin: '0 auto' }}
+          onClick={isAdmin ? onLoginAsAdmin : onLoginUser}
+          color='green'
+          shape='square'
+        >
           <p>Увійти</p>
         </Button>
       </DialogActions>
