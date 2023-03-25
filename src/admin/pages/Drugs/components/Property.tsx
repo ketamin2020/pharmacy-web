@@ -39,14 +39,30 @@ import Slide from '@mui/material/Slide'
 
 import { getProperties, deleteProperty, updateProperty, createProperty } from 'api/property'
 import { getTradeNames, deleteTradeName, updateTradeName, createTradeName } from 'api/tradeName'
+import { getForms } from 'api/form'
 import { getSubstances } from 'api/substances'
 import { getMakers } from 'api/makers'
+import { getDosage } from 'api/dosage'
+import { getRoutes } from 'api/administrationRoute'
+import { getQuantity } from 'api/quantity'
+import { getTemperatures } from 'api/temperature'
+import { getPackages } from 'api/package'
 import notification from 'common/Notification/Notification'
 
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Edit } from '@material-ui/icons'
 import styled from '@emotion/styled'
+import { CreateSubstanceModal } from 'admin/modals/CreateSubstanceModal'
+import { CreateTradeNameModal } from 'admin/modals/CreateTradeNameModal'
+import { CreateMakerModal } from 'admin/modals/CreateMakerModal'
+import { CreateFormModal } from 'admin/modals/CreateFormModal'
+import { CreateRouteModal } from 'admin/modals/CreateRouteModal'
+import { CreateDosageModal } from 'admin/modals/CreateDosageModal'
+import { CreateQuantityModal } from 'admin/modals/CreateQuantityModal'
+import { CreateTemperatureModal } from 'admin/modals/CreateTemperatureModal'
+import { CreatePackageModal } from 'admin/modals/CreatePackageModal'
+
 interface Film {
   title: string
   year: number
@@ -376,17 +392,25 @@ export const Property = () => {
   const [name, setName] = useState()
   const [externalCode, setExternalCode] = useState()
   const [makers, setMakers] = useState([])
+  const [forms, setForms] = useState([])
   const [tradeNames, setTradeNames] = useState([])
+  const [route, setRoute] = useState([])
+  const [dosage, setDosage] = useState([])
+  const [quantity, setQuantity] = useState([])
+  const [temperature, setTemperature] = useState([])
+  const [packages, setPackages] = useState([])
   const [options, setOptions] = useState<readonly Film[]>([])
   const [openTradeNameModal, setOpenTradeNameModal] = useState(false)
-  const [tradeNameState, setTradeNameState] = useState('')
-  const handleClickOpenTradeNameModal = () => {
-    setOpenTradeNameModal(true)
-  }
 
-  const handleCloseTradeNameModal = () => {
-    setOpenTradeNameModal(false)
-  }
+  const [openSubstaceModal, setOpenSubstaceModal] = useState(false)
+  const [openMakerModal, setOpenMakerModal] = useState(false)
+  const [openFormModal, setOpenFormModal] = useState(false)
+  const [openRouteModal, setOpenRouteModal] = useState(false)
+  const [openDosageModal, setOpenDosageModal] = useState(false)
+  const [openQuantityModal, setOpenQuantityModal] = useState(false)
+  const [openTemperatureModal, setOpenTemperatureModal] = useState(false)
+  const [openPackageModal, setOpenPackageModal] = useState(false)
+
   const loading = open && options.length === 0
 
   const onChangeHandle = (e: onChange<HTMLInputElement>) => {
@@ -517,18 +541,6 @@ export const Property = () => {
     }
   }
 
-  const handleSaveTradeName = async () => {
-    if (!tradeNameState) return
-    try {
-      const res = await createTradeName({ name: tradeNameState })
-
-      setTradeNames(prev => [...prev, res])
-      handleCloseTradeNameModal()
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const fetchSubstanceList = async () => {
     try {
       const res = await getSubstances()
@@ -556,6 +568,60 @@ export const Property = () => {
       notification('error', 'Something went wrong!')
     }
   }
+  const fetchFormsList = async () => {
+    try {
+      const res = await getForms()
+
+      setForms(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+  const fetchRoutesList = async () => {
+    try {
+      const res = await getRoutes()
+
+      setRoute(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+  const fetchDosageList = async () => {
+    try {
+      const res = await getDosage()
+
+      setDosage(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+  const fetchQuantityList = async () => {
+    try {
+      const res = await getQuantity()
+
+      setQuantity(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+  const fetchTemperatureList = async () => {
+    try {
+      const res = await getTemperatures()
+
+      setTemperature(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
+  const fetchPackagesList = async () => {
+    try {
+      const res = await getPackages()
+
+      setPackages(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
 
   useEffect(() => {
     fetchPropertiesList()
@@ -568,6 +634,24 @@ export const Property = () => {
   }, [])
   useEffect(() => {
     fetchTradeNamesList()
+  }, [])
+  useEffect(() => {
+    fetchFormsList()
+  }, [])
+  useEffect(() => {
+    fetchRoutesList()
+  }, [])
+  useEffect(() => {
+    fetchDosageList()
+  }, [])
+  useEffect(() => {
+    fetchQuantityList()
+  }, [])
+  useEffect(() => {
+    fetchTemperatureList()
+  }, [])
+  useEffect(() => {
+    fetchPackagesList()
   }, [])
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
@@ -728,7 +812,12 @@ export const Property = () => {
             </Row>
 
             <Row>
-              <p>Діюча речовина</p>
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Діюча речовина{' '}
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenSubstaceModal(true)}>
+                  <Add />
+                </span>
+              </p>
               <Autocomplete
                 id='asynchronous-demo'
                 fullWidth
@@ -761,7 +850,7 @@ export const Property = () => {
             <Row>
               <p style={{ display: 'flex', gap: '10px' }}>
                 Торгівельна назва{' '}
-                <span style={{ cursor: 'pointer' }} onClick={handleClickOpenTradeNameModal}>
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenTradeNameModal(true)}>
                   <Add />
                 </span>
               </p>
@@ -809,7 +898,12 @@ export const Property = () => {
             </Row>
 
             <Row>
-              <p>Виробник</p>
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Виробник
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenMakerModal(true)}>
+                  <Add />
+                </span>
+              </p>
 
               <Autocomplete
                 id='asynchronous-demo'
@@ -857,27 +951,75 @@ export const Property = () => {
             </Row>
 
             <Row>
-              <p>Дозування</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Дозування
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenDosageModal(true)}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Dosage'
-                required
+                getOptionLabel={option => dosage?.find(o => o.id === option)?.name}
+                options={dosage?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'dosage', value: value } })}
+                value={state.dosage.value || null}
                 size='small'
-                name='dosage'
-                onChange={onChangeHandle}
-                value={state.dosage.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Dosage'
+                    size='small'
+                    fullWidth
+                    name='dosage'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
             <Row>
-              <p>Форма</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Форма
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenFormModal(true)}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Form'
-                required
+                getOptionLabel={option => forms?.find(o => o.id === option)?.name}
+                options={forms?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'production_form', value: value } })}
+                value={state.production_form.value || null}
                 size='small'
-                name='production_form'
-                onChange={onChangeHandle}
-                value={state.production_form.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Form'
+                    size='small'
+                    fullWidth
+                    name='production_form'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
             <Row>
@@ -896,27 +1038,75 @@ export const Property = () => {
               </Select>
             </Row>
             <Row>
-              <p>Спосіб введення</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Спосіб введення
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenRouteModal(true)}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Administration route'
-                required
+                getOptionLabel={option => route?.find(o => o.id === option)?.name}
+                options={route?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'administration_route', value: value } })}
+                value={state.administration_route.value || null}
                 size='small'
-                name='administration_route'
-                onChange={onChangeHandle}
-                value={state.administration_route.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Administration route'
+                    size='small'
+                    fullWidth
+                    name='administration_route'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
             <Row>
-              <p>Кількість в упаковці</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Кількість в упаковці
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenQuantityModal(true)}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Quantity'
-                required
+                getOptionLabel={option => quantity?.find(o => o.id === option)?.name}
+                options={quantity?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'quantity', value: value } })}
+                value={state.quantity.value || null}
                 size='small'
-                name='quantity'
-                onChange={onChangeHandle}
-                value={state.quantity.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Quantity'
+                    size='small'
+                    fullWidth
+                    name='quantity'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
             <Row>
@@ -940,27 +1130,75 @@ export const Property = () => {
             </Row>
 
             <Row>
-              <p>Температура зберігання</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Температура зберігання
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenTemperatureModal(true)}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Storage temperature'
-                required
+                getOptionLabel={option => temperature?.find(o => o.id === option)?.name}
+                options={temperature?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'storage_temperature', value: value } })}
+                value={state.storage_temperature.value || null}
                 size='small'
-                name='storage_temperature'
-                onChange={onChangeHandle}
-                value={state.storage_temperature.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Temperature'
+                    size='small'
+                    fullWidth
+                    name='storage_temperature'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
             <Row>
-              <p>Упаковка</p>
-              <TextField
+              <p style={{ display: 'flex', gap: '10px' }}>
+                Упаковка
+                <span style={{ cursor: 'pointer' }} onClick={() => setOpenPackageModal(true)}>
+                  <Add />
+                </span>
+              </p>
+
+              <Autocomplete
+                id='asynchronous-demo'
                 fullWidth
-                label='Package'
-                required
+                getOptionLabel={option => packages?.find(o => o.id === option)?.name}
+                options={packages?.map(o => o?.id)}
+                onChange={(event, value) => onChangeHandle({ target: { name: 'package', value: value } })}
+                value={state.package.value || null}
                 size='small'
-                name='package'
-                onChange={onChangeHandle}
-                value={state.package.value}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Package'
+                    size='small'
+                    fullWidth
+                    name='package'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
               />
             </Row>
 
@@ -1105,27 +1343,40 @@ export const Property = () => {
         </List>
       </Dialog>
 
-      <Dialog open={openTradeNameModal} onClose={handleCloseTradeNameModal}>
-        <DialogContent>Create trade name</DialogContent>
+      <CreateSubstanceModal
+        callback={fetchSubstanceList}
+        handleClose={() => setOpenSubstaceModal(false)}
+        open={openSubstaceModal}
+      />
+      <CreateTradeNameModal
+        callback={fetchTradeNamesList}
+        handleClose={() => setOpenTradeNameModal(false)}
+        open={openTradeNameModal}
+      />
+      <CreateMakerModal callback={fetchMakersList} open={openMakerModal} handleClose={() => setOpenMakerModal(false)} />
 
-        <DialogContent>
-          <TextField
-            value={tradeNameState}
-            onChange={e => setTradeNameState(e.target.value)}
-            autoFocus
-            margin='dense'
-            id='name'
-            label='Trade name'
-            type='text'
-            fullWidth
-            variant='standard'
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseTradeNameModal}>Cancel</Button>
-          <Button onClick={handleSaveTradeName}>Create</Button>
-        </DialogActions>
-      </Dialog>
+      <CreateFormModal callback={fetchFormsList} open={openFormModal} handleClose={() => setOpenFormModal(false)} />
+      <CreateRouteModal callback={fetchRoutesList} open={openRouteModal} handleClose={() => setOpenRouteModal(false)} />
+      <CreateDosageModal
+        callback={fetchDosageList}
+        open={openDosageModal}
+        handleClose={() => setOpenDosageModal(false)}
+      />
+      <CreateQuantityModal
+        callback={fetchQuantityList}
+        open={openQuantityModal}
+        handleClose={() => setOpenQuantityModal(false)}
+      />
+      <CreateTemperatureModal
+        callback={fetchTemperatureList}
+        open={openTemperatureModal}
+        handleClose={() => setOpenTemperatureModal(false)}
+      />
+      <CreatePackageModal
+        callback={fetchPackagesList}
+        open={openPackageModal}
+        handleClose={() => setOpenPackageModal(false)}
+      />
     </Box>
   )
 }

@@ -1,1 +1,1 @@
-export { Makers as default } from './Makers'
+export { Makers as default } from '../Drugs/components/Makers'

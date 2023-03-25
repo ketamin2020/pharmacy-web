@@ -1,1 +1,1 @@
-export { Groups as default } from './Groups'
+export { Groups as default } from '../Drugs/components/Groups'

@@ -1,1 +1,1 @@
-export { Images as default } from './Images'
+export { Images as default } from '../Drugs/components/Images'
