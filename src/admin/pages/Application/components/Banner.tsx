@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import * as React from 'react'
 import { useRef, useState, useEffect } from 'react'
 import { alpha } from '@mui/material/styles'
@@ -16,13 +17,12 @@ import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
+
 import DeleteIcon from '@mui/icons-material/Delete'
-import FilterListIcon from '@mui/icons-material/FilterList'
+
 import { visuallyHidden } from '@mui/utils'
 import { Add } from '@mui/icons-material'
-import { Edit } from '@material-ui/icons'
+
 import Button from '@mui/material/Button'
 import { styled as Style } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
@@ -33,12 +33,11 @@ import CloseIcon from '@mui/icons-material/Close'
 import { TextField } from '@mui/material'
 import Cropper from 'react-cropper'
 
-import { createImages, getImages, deleteImages, updateImages } from 'api/images'
+import { getBanners, createBanner, deleteBanner } from 'api/banner'
 import { uploadSingleFile } from 'api/media'
 import notification from 'common/Notification/Notification'
 import moment from 'moment'
 import styled from '@emotion/styled'
-import defaultImg from './defaut.png'
 
 const BootstrapDialog = Style(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -49,52 +48,6 @@ const BootstrapDialog = Style(Dialog)(({ theme }) => ({
   },
 }))
 
-const UploadRow = styled.div`
-  width: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  position: relative;
-
-  & .custom-file-input::-webkit-file-upload-button {
-    visibility: hidden;
-  }
-  & .custom-file-input::before {
-    content: 'Upload';
-    display: inline-block;
-    background: linear-gradient(top, #f9f9f9, #e3e3e3);
-    border: 1px solid #999;
-    border-radius: 3px;
-    padding: 5px 8px;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    cursor: pointer;
-    text-shadow: 1px 1px #fff;
-    font-weight: 700;
-    font-size: 10pt;
-  }
-  & .custom-file-input:hover::before {
-    border-color: black;
-  }
-  & .custom-file-input:active::before {
-    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-  }
-  & img {
-    width: 100px;
-    height: 100px;
-    display: block;
-    object-fit: contain;
-    object-position: center;
-    border: 1px solid #71b9ea;
-  }
-  & input {
-    margin-left: 15px;
-  }
-`
-
 const defaultSrc = 'https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg'
 
 export interface DialogTitleProps {
@@ -104,8 +57,7 @@ export interface DialogTitleProps {
 }
 
 interface Data {
-  morion: string
-  items: object[]
+  link: string
   created_at: string
   id: string
 }
@@ -133,11 +85,10 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   )
 }
 
-function createData(id: string, morion: string, items: object[], created_at: string): Data {
+function createData(id: string, link: string, created_at: string): Data {
   return {
     id,
-    morion,
-    items,
+    link,
     created_at,
   }
 }
@@ -189,14 +140,9 @@ const headCells: readonly HeadCell[] = [
     disablePadding: true,
     label: 'ID',
   },
+
   {
-    id: 'morion',
-    numeric: true,
-    disablePadding: false,
-    label: 'Morion',
-  },
-  {
-    id: 'items',
+    id: 'item',
     numeric: true,
     disablePadding: false,
     label: 'Items',
@@ -288,7 +234,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-          Brands
+          Banners image
         </Typography>
       )}
       {numSelected === 1 ? (
@@ -298,11 +244,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title='Edit'>
+          {/* <Tooltip title='Edit'>
             <IconButton onClick={handleClickUpdate}>
               <Edit />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </>
       ) : (
         <Tooltip title='Add images'>
@@ -315,16 +261,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   )
 }
 const initData = {
-  morion: '',
-  items: [
-    { id: 0, url: defaultImg },
-    { id: 0, url: defaultImg },
-    { id: 0, url: defaultImg },
-    { id: 0, url: defaultImg },
-  ],
+  id: 0,
+  link: '',
 }
 
-export const Images = () => {
+export const Banner = () => {
   const [state, setState] = useState(initData)
   const [data, setData] = useState([])
   const [order, setOrder] = React.useState<Order>('asc')
@@ -343,7 +284,7 @@ export const Images = () => {
   const [cropper, setCropper] = useState<Cropper>()
   const imageRef = useRef<HTMLImageElement>(null)
   const [imageBlob, setImageBlob] = useState(null)
-  const onChange = (e: any, index) => {
+  const onChange = e => {
     e.preventDefault()
     let files
     if (e.dataTransfer) {
@@ -355,7 +296,6 @@ export const Images = () => {
     reader.onload = () => {
       setOpenCropModal(true)
       setImage(reader.result as any)
-      setIndex(index)
     }
     reader.readAsDataURL(files[0])
   }
@@ -370,21 +310,12 @@ export const Images = () => {
         fd.append('image', file)
         setImageBlob(fd)
         const res = await uploadSingleFile(fd)
-
-        setState(prev => ({
-          ...prev,
-          items: prev.items.map((item, i) => (i === index ? { id: res.id, url: res.url } : item)),
-        }))
+        setState({ ...res, link: res.url })
       })
       setIndex(null)
 
       setCropData(base64)
     }
-  }
-
-  const onChangeHandle = (e: onChange<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setState(prev => ({ ...prev, [name]: value }))
   }
 
   const handleClickOpen = () => {
@@ -441,21 +372,20 @@ export const Images = () => {
     setPage(0)
   }
 
-  const fetchImages = async () => {
+  const fetchBanners = async () => {
     try {
-      const res = await getImages()
+      const res = await getBanners()
       setData(res)
     } catch (error) {
       console.log(error)
     }
   }
-
+  console.log(state, 'state')
   const handleCreateImages = async () => {
     try {
-      const data = { ...state, items: state.items.map(item => (item.id ? item : { id: 0, url: '' })) }
-      await createImages(data)
+      await createBanner(state)
 
-      await fetchImages()
+      await fetchBanners()
       handleClose()
       notification('success', 'Images created successfuly!')
     } catch (error) {
@@ -464,24 +394,10 @@ export const Images = () => {
     }
   }
 
-  const handleUpdateImages = async () => {
+  const handleDeleteImage = async itemId => {
     try {
-      const data = { ...state, items: state.items.map(item => (item.id ? item : { id: 0, url: '' })) }
-      await updateImages(data)
-
-      await fetchImages()
-      handleClose()
-      notification('success', 'Images updated successfuly!')
-    } catch (error) {
-      console.log(error)
-      notification('error', 'Something went wrong')
-    }
-  }
-
-  const handleDeleteImage = async (itemId, imageId) => {
-    try {
-      await deleteImages(itemId, imageId)
-      await fetchImages()
+      await deleteBanner(itemId)
+      await fetchBanners()
       handleClose()
       notification('success', 'Images deleted successfuly!')
     } catch (error) {
@@ -493,10 +409,10 @@ export const Images = () => {
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-  const rows = data?.map(d => createData(d.id, d.morion, d.items, d.created_at))
+  const rows = data?.map(d => createData(d.id, d.link, d.created_at))
 
   useEffect(() => {
-    fetchImages()
+    fetchBanners()
   }, [])
 
   return (
@@ -536,7 +452,7 @@ export const Images = () => {
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding='checkbox'>
@@ -551,13 +467,9 @@ export const Images = () => {
                       <TableCell align='center' component='th' id={labelId} scope='row' padding='none'>
                         {row.id}
                       </TableCell>
-                      <TableCell align='center' component='th' id={labelId} scope='row' padding='none'>
-                        {row.morion}
-                      </TableCell>
+
                       <TableCell align='center'>
-                        {row.items.map((item, i) => (
-                          <img key={i} style={{ width: '50px' }} src={item.url || defaultImg} />
-                        ))}
+                        <img style={{ width: '50px' }} src={row.link} />
                       </TableCell>
 
                       <TableCell align='center'>{moment(row.created_at).format('DD/MM/YYYY')}</TableCell>
@@ -588,38 +500,16 @@ export const Images = () => {
       </Paper>
       <BootstrapDialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>
         <BootstrapDialogTitle id='customized-dialog-title' onClose={handleClose}>
-          {!!state?.id ? 'Update images' : 'Create new images'}
+          Create new images
         </BootstrapDialogTitle>
         <DialogContent dividers>
-          {!state?.id && (
-            <TextField
-              onChange={onChangeHandle}
-              name='morion'
-              style={{ marginBottom: '20px' }}
-              fullWidth
-              placeholder='Type...'
-              type='number'
-              label='Morion'
-              value={state.morion}
-              required
-            />
-          )}
-
           <div style={{ width: '600px', display: 'flex', justifyContent: 'center' }}>
-            {state?.items?.map((item, i) => (
-              <UploadRow key={i}>
-                <img src={item.url || defaultImg} alt='cropped' />
-                <input onChange={e => onChange(e, i)} className='custom-file-input' type='file' />
-                {!!item?.id && (
-                  <span
-                    style={{ cursor: 'pointer', position: 'absolute', top: '0px', right: '40px' }}
-                    onClick={() => handleDeleteImage(state.id, item.id)}
-                  >
-                    <DeleteIcon />
-                  </span>
-                )}
-              </UploadRow>
-            ))}
+            <UploadRow>
+              <img src={state.link || defaultSrc} alt='cropped' />
+              <input onChange={e => onChange(e)} className='custom-file-input' type='file' />
+
+              <p style={{ color: 'red', fontSize: '10px' }}> The size should be approx 1060  x  440</p>
+            </UploadRow>
           </div>
         </DialogContent>
 
@@ -627,7 +517,7 @@ export const Images = () => {
           <Button
             autoFocus
             onClick={() => {
-              !!state?.id ? handleUpdateImages() : handleCreateImages()
+              handleCreateImages()
               handleClose()
             }}
           >
@@ -671,3 +561,48 @@ export const Images = () => {
     </Box>
   )
 }
+const UploadRow = styled.div`
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: relative;
+
+  & .custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  & .custom-file-input::before {
+    content: 'Upload';
+    display: inline-block;
+    background: linear-gradient(top, #f9f9f9, #e3e3e3);
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+  & .custom-file-input:hover::before {
+    border-color: black;
+  }
+  & .custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+  }
+  & img {
+    width: 100px;
+    height: 100px;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+    border: 1px solid #71b9ea;
+  }
+  & input {
+    margin-left: 15px;
+  }
+`

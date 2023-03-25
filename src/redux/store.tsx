@@ -8,6 +8,7 @@ import user from './user/userReducer'
 import account from './account/accountReducer'
 import modals from './ui/modals/modalReducer'
 import groups from './groups/groupsReducer'
+import company from './main/mainReducer'
 
 const authPersistConfig = {
   key: 'auth',
@@ -19,6 +20,7 @@ const app = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
   user,
   groups,
+  company,
   account,
   ui: combineReducers({ modals }),
 })

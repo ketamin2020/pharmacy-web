@@ -7,6 +7,8 @@ import ReactDOMServer from 'react-dom/server'
 import L from 'leaflet'
 import styled from '@emotion/styled'
 import 'leaflet/dist/leaflet.css'
+import { useSelector } from 'react-redux'
+import { mainInfoSelector } from 'redux/main/mainSelectors'
 const MapWrapper = styled.div`
   & .leaflet-div-icon {
     border: none;
@@ -16,6 +18,7 @@ const MapWrapper = styled.div`
 
 const position: LatLngTuple = [50.41365970726126, 30.543992123578576]
 const Map: React.FC<MapContainerProps> = props => {
+  const main = useSelector(mainInfoSelector)
   return (
     <MapWrapper>
       <MapContainer {...props} center={position} zoom={13} scrollWheelZoom={false}>
@@ -24,11 +27,6 @@ const Map: React.FC<MapContainerProps> = props => {
           attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org">OpenMapTiles</a>, &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         />
 
-        {/* <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        /> */}
-
         <Marker
           icon={L.divIcon({
             iconSize: null,
@@ -36,9 +34,7 @@ const Map: React.FC<MapContainerProps> = props => {
           })}
           position={position}
         >
-          <Popup>
-            49100, Дніпро, пр.Героїв, <br /> б. 11Л, каб. 321
-          </Popup>
+          <Popup>{main.address}</Popup>
         </Marker>
       </MapContainer>
     </MapWrapper>

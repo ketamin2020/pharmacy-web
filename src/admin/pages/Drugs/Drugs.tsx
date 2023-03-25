@@ -5,8 +5,12 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import { NewDrug } from './components/NewDrug'
-import { NewInstruction } from './components/NewInstruction'
+import { Instruction } from './components/Instruction'
+import { Property } from './components/Property'
+import { Images } from './components/Images'
+import { Groups } from './components/Groups'
+import { Substance } from './components/Substance'
+import { Makers } from './components/Makers'
 const Wrapper = styled.section``
 interface TabPanelProps {
   children?: React.ReactNode
@@ -50,18 +54,34 @@ export const Drugs = () => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label='basic tabs example'>
             <Tab label='Drugs List' {...a11yProps(0)} />
-            <Tab label='Add drug' {...a11yProps(1)} />
-            <Tab label='Add instruction' {...a11yProps(2)} />
+            <Tab label='Instructions' {...a11yProps(1)} />
+            <Tab label='Properties' {...a11yProps(2)} />
+            <Tab label='Images' {...a11yProps(3)} />
+            <Tab label='Groups' {...a11yProps(4)} />
+            <Tab label='Active Substanses' {...a11yProps(5)} />
+            <Tab label='Makers' {...a11yProps(6)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
           <DrugsTable />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <NewDrug />
+          <Instruction />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <NewInstruction />
+          <Property />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <Images />
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          <Groups />
+        </TabPanel>
+        <TabPanel value={value} index={5}>
+          <Substance />
+        </TabPanel>
+        <TabPanel value={value} index={6}>
+          <Makers />
         </TabPanel>
       </Box>
     </Wrapper>

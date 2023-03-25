@@ -13,6 +13,7 @@ import { isAdminSelector, isAuthSelector } from 'redux/auth/authSelectors'
 import { useSelector } from 'react-redux'
 import { AdminPanelSettings } from '@mui/icons-material'
 import './NavBar.scss'
+import { mainInfoSelector } from 'redux/main/mainSelectors'
 
 const navbarItems = [
   {
@@ -47,6 +48,7 @@ const NavBar = () => {
   const navigate = useNavigate()
   const isAdmin = useSelector(isAdminSelector)
   const isAuth = useSelector(isAuthSelector)
+  const main = useSelector(mainInfoSelector)
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
@@ -80,8 +82,8 @@ const NavBar = () => {
         <div className='header__nav-contacts mobile__hidden'>
           <Phone />
           <div>
-            <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
-              {PhoneNumber.PHONE_1_PRETY}
+            <a href={`tel:${main.phone}`} type='tel'>
+              {main.phone}
             </a>
           </div>
         </div>

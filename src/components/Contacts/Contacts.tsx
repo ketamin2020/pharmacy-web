@@ -6,6 +6,8 @@ import { EmailOutlined } from '@material-ui/icons'
 import { AccessTime } from '@material-ui/icons'
 import { LocationOn } from '@mui/icons-material'
 import { Phone as PhoneNumber, Email } from 'public'
+import { useSelector } from 'react-redux'
+import { mainInfoSelector } from 'redux/main/mainSelectors'
 const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -43,12 +45,13 @@ const Box = styled.div`
   border-radius: 10px;
 `
 
-const items = [
-  { title: 'Директор з маркетингу', phone: PhoneNumber.PHONE_1_PRETY, email: Email.EMAIL_1 },
-  { title: 'Постачальникам', phone: PhoneNumber.PHONE_1_PRETY, email: Email.EMAIL_1 },
-  { title: 'Оптовий продаж', phone: PhoneNumber.PHONE_1_PRETY, email: Email.EMAIL_1 },
-]
 export const Contacts = () => {
+  const main = useSelector(mainInfoSelector)
+  const items = [
+    { title: 'Директор з маркетингу', phone: main.marketing.phone, email: main.marketing.email },
+    { title: 'Постачальникам', phone: main.sales.phone, email: main.sales.email },
+    { title: 'Оптовий продаж', phone: main.provider.phone, email: main.provider.email },
+  ]
   return (
     <Wrapper>
       <>
@@ -60,8 +63,8 @@ export const Contacts = () => {
               <AccessTime /> Гаряча лінія:
             </div>
             <div>
-              <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
-                {PhoneNumber.PHONE_1_PRETY}
+              <a href={`tel:${main.phone}`} type='tel'>
+                {main.phone}
               </a>
             </div>
           </Row>
@@ -76,8 +79,8 @@ export const Contacts = () => {
               <EmailOutlined /> Служба підтримки:
             </div>
             <div>
-              <a href={`mailto:${Email.EMAIL_1}`} type='email'>
-                {Email.EMAIL_1}
+              <a href={`mailto:${main.support_email}`} type='email'>
+                {main.support_email}
               </a>
             </div>
           </Row>
@@ -85,7 +88,7 @@ export const Contacts = () => {
             <div className='title'>
               <LocationOn /> Адреса:
             </div>
-            <div>49100, Дніпро, пр.Героїв, б. 11Л, каб. 321</div>
+            <div>{main.address}</div>
           </Row>
           <p style={{ width: '300px' }}>
             Ви можете звернутися за консультацією фармацевта або з будь-якого іншого питання до нас, використовуючи

@@ -30,6 +30,7 @@ const Wrapper = styled.div`
   }
   & .gradient {
     height: 200px;
+    max-width: 1400px;
     width: 100%;
     position: absolute;
     margin-top: -200px;

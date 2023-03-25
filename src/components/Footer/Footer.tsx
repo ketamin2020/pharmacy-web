@@ -4,8 +4,10 @@ import { Logo } from 'images/icons/icons'
 import { Phone as PhoneNumber, Email } from 'public'
 import { Phone, EmailOutlined } from '@mui/icons-material'
 import { MastercardLogo, VisaLogo } from 'images/icons/icons'
+import { useSelector } from 'react-redux'
 import { RoutePath } from 'routes/types'
 import './Footer.scss'
+import { mainInfoSelector } from 'redux/main/mainSelectors'
 const footerItems = [
   {
     id: 0,
@@ -34,6 +36,7 @@ const footerItems = [
   },
 ]
 const Footer = () => {
+  const main = useSelector(mainInfoSelector)
   return (
     <>
       <article className='footer__wrapper'>
@@ -53,16 +56,16 @@ const Footer = () => {
             <div className='footer--contacts__block'>
               <Phone />
               <div>
-                <a href={`tel:${PhoneNumber.PHONE_1}`} type='tel'>
-                  {PhoneNumber.PHONE_1_PRETY}
+                <a href={`tel:${main.phone}`} type='tel'>
+                  {main.phone}
                 </a>
               </div>
             </div>
             <div className='footer--contacts__block'>
               <EmailOutlined />
               <div>
-                <a href={`mailto:${Email.EMAIL_1}`} type='email'>
-                  {Email.EMAIL_1}
+                <a href={`mailto:${main.support_email}`} type='email'>
+                  {main.support_email}
                 </a>
               </div>
             </div>

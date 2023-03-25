@@ -4,14 +4,14 @@ import { Pagination, Navigation, Autoplay, Lazy } from 'swiper'
 import { ArrowRight, ArrowLeft } from '@material-ui/icons'
 import Button from 'common/Button/Button'
 import styled from '@emotion/styled'
-import slider from '../../../../mockDev/slider.png'
-import slider1 from '../../../../mockDev/slider1.jpeg'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import 'swiper/css/effect-fade'
 import 'swiper/css/lazy'
+import { useSelector } from 'react-redux'
+import { mainBannersSelector } from 'redux/main/mainSelectors'
 
 const Wrapper = styled.div`
   & .swiper-button-next,
@@ -31,6 +31,7 @@ const ButtonWrapper = styled.div`
 `
 
 const Slider = () => {
+  const banners = useSelector(mainBannersSelector)
   const sliderRef = useRef(null)
 
   const handlePrev = useCallback(() => {
@@ -61,12 +62,11 @@ const Slider = () => {
         }}
         grabCursor={true}
       >
-        <SwiperSlide>
-          <img style={{ width: '100%', height: 'auto', display: 'block' }} src={slider} alt='' />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img style={{ width: '100%', height: 'auto', display: 'block' }} src={slider1} alt='' />
-        </SwiperSlide>
+        {banners?.map(({ link, id }) => (
+          <SwiperSlide key={id}>
+            <img style={{ width: '100%', height: 'auto', maxHeight: '700px', display: 'block' }} src={link} alt={id} />
+          </SwiperSlide>
+        ))}
       </Swiper>
       <ButtonWrapper>
         <Button shape='circle' color='green' onClick={handlePrev}>

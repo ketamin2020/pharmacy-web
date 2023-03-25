@@ -5,6 +5,8 @@ import { ListItem, List } from '@material-ui/core'
 import { NewPostIcon, DeliveredIcon, CurierIcon } from 'images/icons/icons'
 import { CreditCard, Money, Replay } from '@material-ui/icons'
 import { QrCode } from '@mui/icons-material'
+import { useSelector } from 'react-redux'
+import { mainInfoSelector } from 'redux/main/mainSelectors'
 
 const Wrapper = styled.div`
   & * {
@@ -64,6 +66,7 @@ const Box = styled.article`
   }
 `
 export const Payment = () => {
+  const main = useSelector(mainInfoSelector)
   return (
     <Wrapper>
       <h2>Способи доставки</h2>
@@ -74,7 +77,7 @@ export const Payment = () => {
               <CurierIcon />
             </div>
             <div>
-              <h4>Кур`єр «artmed.ua»</h4>
+              <h4>{`Кур'єр ${main.name}`}</h4>
               <p>Швидка доставка на сьогодні</p>
             </div>
           </div>
