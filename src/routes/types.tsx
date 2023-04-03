@@ -20,6 +20,7 @@ enum RoutePath {
   WISHLIST = '/account/wishlist',
   ORDERS = '/account/orders',
   ADMIN = '/admin',
+  DRUGS = '/drugs',
 }
 
 interface Routes {

@@ -14,6 +14,7 @@ import {
 import { menuItemsSelector } from 'redux/groups/groupsSelectors'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
+
 import './ToolBar.scss'
 const icons = {
   0: <DrugsIcon />,
@@ -36,7 +37,7 @@ const Toolbar = () => {
         </article>
         <article>
           {items?.map((item, i) => (
-            <Dropdown key={i} icon={icons[i]} title={item.group_name} onChange={() => null} list={item.children} />
+            <Dropdown key={i} icon={icons[i]} title={item.group_name} item={item} list={item.children} />
           ))}
 
           {/* <Button

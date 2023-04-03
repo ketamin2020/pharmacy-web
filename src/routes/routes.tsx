@@ -117,6 +117,12 @@ const privateRoutes: Routes[] = [
     exact: true,
     element: lazy(() => import('../pages/OrderedPage/index' /* webpackChunkName: "Ordered Page" */)),
   },
+  {
+    path: `${RoutePath.DRUGS}/:first_level/*`,
+    name: 'Препарати',
+    exact: true,
+    element: lazy(() => import('../pages/DrugListPage/index' /* webpackChunkName: "Drug List Page" */)),
+  },
 ]
 const adminRoutes: Routes[] = [
   {

@@ -11,7 +11,7 @@ import Workers from './pages/Workers'
 import Application from './pages/Application'
 import Brands from './pages/Brands'
 import Partners from './pages/Partners'
-
+import Prices from './pages/Prices'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -61,6 +61,7 @@ const Admin = () => {
     DASHBOARD = 5,
     WORKERS = 6,
     APPLICATION = 7,
+    PRICES = 8,
   }
 
   return (
@@ -81,6 +82,7 @@ const Admin = () => {
         <Tab label='Dashboard' {...a11yProps(EnumTabType.DASHBOARD)} />
         <Tab label='Workers' {...a11yProps(EnumTabType.WORKERS)} />
         <Tab label='Application' {...a11yProps(EnumTabType.APPLICATION)} />
+        <Tab label='Prices' {...a11yProps(EnumTabType.PRICES)} />
       </Tabs>
 
       <TabPanel value={value} index={EnumTabType.DRUGS}>
@@ -106,6 +108,9 @@ const Admin = () => {
       </TabPanel>
       <TabPanel value={value} index={EnumTabType.PARTNERS}>
         <Partners />
+      </TabPanel>
+      <TabPanel value={value} index={EnumTabType.PRICES}>
+        <Prices />
       </TabPanel>
     </Box>
   )

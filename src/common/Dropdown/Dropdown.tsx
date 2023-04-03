@@ -8,6 +8,7 @@ import { MenuItemData } from 'components/Header/components/utils/types'
 import NestedMenuItem from 'material-ui-nested-menu-item'
 import { makeStyles } from '@material-ui/styles'
 import { Theme } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
   list: {
@@ -24,8 +25,10 @@ interface IProps {
   icon: JSX.Element
 }
 
-export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon }): JSX.Element => {
+export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, item }): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const navigate = useNavigate()
+
   const classes = useStyles()
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -37,8 +40,10 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon }):
   const [menuPosition, setMenuPosition] = useState<any>({ top: 10, left: 10 })
   const menuItemRef = useRef<any>(null)
 
-  const handleItemClick = (event: React.MouseEvent) => {
-    setMenuPosition(null)
+  const handleItemClick = (id, group, firstLevel, secondLevel) => {
+    const path = `drugs/${group}${firstLevel ? '/' + firstLevel : ''}${secondLevel ? '/' + secondLevel : ''}`
+
+    navigate(path, { replace: true })
   }
   return (
     <Wrapper>
@@ -56,24 +61,24 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon }):
 
       {!!list?.length && (
         <Menu open={open} anchorEl={anchorEl} onClose={handleClose} classes={{ list: classes.list }}>
-          {list?.map(({ group_name, children }, i) =>
+          {list?.map(({ group_name, id, slug, children }, i) =>
             children?.length ? (
               <NestedMenuItem
                 ref={menuItemRef}
                 label={group_name}
                 parentMenuOpen={!!menuPosition}
-                onClick={handleItemClick}
+                onClick={() => handleItemClick(id, item.slug, slug)}
               >
                 <ListRow>
-                  {children.map(({ group_name }, i) => (
-                    <MenuItem divider key={i} onClick={handleClose}>
-                      {group_name}
+                  {children.map((child, i) => (
+                    <MenuItem divider onClick={() => handleItemClick(child.id, item.slug, slug, child.slug)} key={i}>
+                      {child.group_name}
                     </MenuItem>
                   ))}
                 </ListRow>
               </NestedMenuItem>
             ) : (
-              <MenuItem divider key={i} onClick={handleClose}>
+              <MenuItem onClick={() => handleItemClick(id, item.slug, slug)} divider key={i}>
                 {group_name}
               </MenuItem>
             ),

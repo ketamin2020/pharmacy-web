@@ -48,7 +48,7 @@ import { getQuantity } from 'api/quantity'
 import { getTemperatures } from 'api/temperature'
 import { getPackages } from 'api/package'
 import notification from 'common/Notification/Notification'
-
+import { getGroups } from 'api/groups'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Edit } from '@material-ui/icons'
@@ -308,6 +308,21 @@ const initData = {
   marked_name: {
     value: '',
   },
+  groups: {
+    main_group: {
+      value: '',
+      slug: '',
+    },
+    first_lavel_group: {
+      value: '',
+      slug: '',
+    },
+    second_lavel_group: {
+      value: '',
+      slug: '',
+    },
+  },
+
   manufacturing_country: {
     value: '',
   },
@@ -400,6 +415,7 @@ export const Property = () => {
   const [temperature, setTemperature] = useState([])
   const [packages, setPackages] = useState([])
   const [options, setOptions] = useState<readonly Film[]>([])
+  const [groups, setGroups] = useState([])
   const [openTradeNameModal, setOpenTradeNameModal] = useState(false)
 
   const [openSubstaceModal, setOpenSubstaceModal] = useState(false)
@@ -422,6 +438,19 @@ export const Property = () => {
   const onChangeWarnings = (e: onChange<HTMLInputElement>) => {
     const { name, value } = e.target
     setWarnings(prev => ({ ...prev, [name]: { ...prev[name], value: value } }))
+  }
+  const onChangeGroups = (e: onChange<HTMLInputElement>) => {
+    const { name, value, slug } = e.target
+    setState(prev => ({
+      ...prev,
+      ['groups']: {
+        ...prev['groups'],
+        [name]: {
+          value,
+          slug,
+        },
+      },
+    }))
   }
 
   const handleClickOpen = () => {
@@ -622,6 +651,15 @@ export const Property = () => {
       notification('error', 'Something went wrong!')
     }
   }
+  const fetchGroupsList = async () => {
+    try {
+      const res = await getGroups()
+
+      setGroups(res)
+    } catch (error) {
+      notification('error', 'Something went wrong!')
+    }
+  }
 
   useEffect(() => {
     fetchPropertiesList()
@@ -653,6 +691,9 @@ export const Property = () => {
   useEffect(() => {
     fetchPackagesList()
   }, [])
+  useEffect(() => {
+    fetchGroupsList()
+  }, [])
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
@@ -660,6 +701,12 @@ export const Property = () => {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
+  const firstLavelGroup =
+    state?.groups?.main_group?.value && groups?.find(g => g.id === state?.groups?.main_group?.value)?.children
+  const secondLavelGroup =
+    firstLavelGroup && firstLavelGroup?.find(g => g.id === state?.groups?.first_lavel_group?.value)?.children
+
+  console.log(state.groups)
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -810,6 +857,125 @@ export const Property = () => {
                 value={name}
               />
             </Row>
+
+            <Row>
+              <p style={{ display: 'flex', gap: '10px' }}>Основна група</p>
+              <Autocomplete
+                id='asynchronous-demo'
+                fullWidth
+                getOptionLabel={option => groups.find(o => o.id === option)?.group_name}
+                options={groups?.map(o => o?.id)}
+                onChange={(event, value) =>
+                  onChangeGroups({
+                    target: {
+                      name: 'main_group',
+                      value,
+                      slug: groups.find(f => f.id === value)?.slug,
+                    },
+                  })
+                }
+                value={state?.groups?.main_group?.value || null}
+                size='small'
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Main group'
+                    size='small'
+                    fullWidth
+                    name='active_ingredient'
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Row>
+            {!!state?.groups?.main_group?.value && (
+              <Row>
+                <p style={{ display: 'flex', gap: '10px' }}>1-ша підгрупа</p>
+                <Autocomplete
+                  id='asynchronous-demo'
+                  fullWidth
+                  getOptionLabel={option => firstLavelGroup?.find(o => o.id === option)?.group_name}
+                  options={firstLavelGroup?.map(o => o?.id)}
+                  onChange={(event, value) =>
+                    onChangeGroups({
+                      target: {
+                        name: 'first_lavel_group',
+                        value,
+                        slug: firstLavelGroup.find(f => f.id === value)?.slug,
+                      },
+                    })
+                  }
+                  value={state?.groups?.first_lavel_group?.value || null}
+                  size='small'
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label='First level'
+                      size='small'
+                      fullWidth
+                      name='first_lavel_group'
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <React.Fragment>
+                            {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                            {params.InputProps.endAdornment}
+                          </React.Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+              </Row>
+            )}
+            {!!state?.groups?.first_lavel_group?.value && (
+              <Row>
+                <p style={{ display: 'flex', gap: '10px' }}>2-ша підгрупа</p>
+                <Autocomplete
+                  id='asynchronous-demo'
+                  fullWidth
+                  getOptionLabel={option => secondLavelGroup?.find(o => o.id === option)?.group_name}
+                  options={secondLavelGroup?.map(o => o?.id)}
+                  onChange={(event, value) =>
+                    onChangeGroups({
+                      target: {
+                        name: 'second_lavel_group',
+                        value,
+                        slug: secondLavelGroup.find(f => f.id === value)?.slug,
+                      },
+                    })
+                  }
+                  value={state?.groups?.second_lavel_group?.value || null}
+                  size='small'
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label='Second level'
+                      size='small'
+                      fullWidth
+                      name='second_lavel_group'
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <React.Fragment>
+                            {loading ? <CircularProgress color='inherit' size={20} /> : null}
+                            {params.InputProps.endAdornment}
+                          </React.Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+              </Row>
+            )}
 
             <Row>
               <p style={{ display: 'flex', gap: '10px' }}>
