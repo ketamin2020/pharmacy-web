@@ -17,7 +17,15 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     gap: '10px',
   },
+  root: {
+    color: '#21252a99',
+    '&:hover': {
+      color: '#00a990',
+      scale: '(1.1)',
+    },
+  },
 }))
+
 interface IProps {
   onChange: (value: number, name: string, event: ChangeEvent<HTMLInputElement>) => void
   list: MenuItemData[]
@@ -31,9 +39,7 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
 
   const classes = useStyles()
   const open = Boolean(anchorEl)
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -41,10 +47,16 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
   const menuItemRef = useRef<any>(null)
 
   const handleItemClick = (id, group, firstLevel, secondLevel) => {
-    const path = `drugs/${group}${firstLevel ? '/' + firstLevel : ''}${secondLevel ? '/' + secondLevel : ''}`
-
+    const path = `/drugs/${group}${firstLevel ? '/' + firstLevel : ''}${secondLevel ? '/' + secondLevel : ''}`
+    handleClose()
     navigate(path, { replace: true })
   }
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+    if (open) handleItemClick(0, item.slug, null, null)
+  }
+
   return (
     <Wrapper>
       <Button
@@ -54,7 +66,7 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <TitleWrapper>
+        <TitleWrapper style={open ? { position: 'relative', zIndex: 2000 } : {}}>
           {icon} <span>{title}</span> {!!list?.length ? open ? <ArrowDropUp /> : <ArrowDropDown /> : null}
         </TitleWrapper>
       </Button>
@@ -64,21 +76,33 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
           {list?.map(({ group_name, id, slug, children }, i) =>
             children?.length ? (
               <NestedMenuItem
+                key={id}
                 ref={menuItemRef}
                 label={group_name}
                 parentMenuOpen={!!menuPosition}
                 onClick={() => handleItemClick(id, item.slug, slug)}
+                className={classes.root}
               >
                 <ListRow>
                   {children.map((child, i) => (
-                    <MenuItem divider onClick={() => handleItemClick(child.id, item.slug, slug, child.slug)} key={i}>
+                    <MenuItem
+                      classes={{ root: classes.root }}
+                      divider
+                      onClick={() => handleItemClick(child.id, item.slug, slug, child.slug)}
+                      key={i}
+                    >
                       {child.group_name}
                     </MenuItem>
                   ))}
                 </ListRow>
               </NestedMenuItem>
             ) : (
-              <MenuItem onClick={() => handleItemClick(id, item.slug, slug)} divider key={i}>
+              <MenuItem
+                classes={{ root: classes.root }}
+                onClick={() => handleItemClick(id, item.slug, slug)}
+                divider
+                key={i}
+              >
                 {group_name}
               </MenuItem>
             ),

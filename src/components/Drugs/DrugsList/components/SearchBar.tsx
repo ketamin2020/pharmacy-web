@@ -12,7 +12,40 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import Checkbox from '@mui/material/Checkbox'
 import styled from '@emotion/styled'
-export const SearchBar = () => {
+
+const PropertyItem = ({ items, name }) => {
+  return (
+    <Accordion style={{ margin: '0px !important' }} defaultExpanded>
+      <AccordionSummary
+        style={{ display: 'flex', justifyContent: 'space-between', padding: '0 10px', margin: '0px !important' }}
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls='panel1a-content'
+        id='panel1a-header'
+      >
+        <p style={{ margin: '0px' }}> {name}</p>
+      </AccordionSummary>
+      <AccordionDetails>
+        <FormControl component='fieldset' variant='standard'>
+          <FormGroup>
+            {items?.map(item => (
+              <FormControlLabel
+                key={item.id}
+                control={<Checkbox checked={false} onChange={() => null} name={item?.id} />}
+                label={
+                  <p style={{ margin: '0 0 0 10px' }}>
+                    {item.name} <span style={{ color: 'gray' }}>{`(${item.count})`}</span>{' '}
+                  </p>
+                }
+              />
+            ))}
+          </FormGroup>
+        </FormControl>
+      </AccordionDetails>
+    </Accordion>
+  )
+}
+
+export const SearchBar = ({ properties }) => {
   const [expanded, setExpanded] = useState<string | false>(false)
   const [state, setState] = React.useState({
     gilad: true,
@@ -29,36 +62,26 @@ export const SearchBar = () => {
       [event.target.name]: event.target.checked,
     })
   }
+
   return (
     <Wrapper>
       {' '}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
-          <Typography>Accordion 1</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <FormControl component='fieldset' variant='standard'>
-            <FormGroup>
-              <FormControlLabel
-                control={<Checkbox checked={state.gilad} onChange={handleChangeValue} name='gilad' />}
-                label='Gilad Gray'
-              />
-              <FormControlLabel
-                control={<Checkbox checked={state.jason} onChange={handleChangeValue} name='jason' />}
-                label='Jason Killian'
-              />
-              <FormControlLabel
-                control={<Checkbox checked={state.antoine} onChange={handleChangeValue} name='antoine' />}
-                label='Antoine Llorca'
-              />
-            </FormGroup>
-          </FormControl>
-        </AccordionDetails>
-      </Accordion>
+      {!!properties?.route && <PropertyItem items={properties.route} name='Спосіб введення' />}
+      {!!properties?.temperature && <PropertyItem items={properties.temperature} name='Температура зберігання' />}
+      {!!properties?.substances && <PropertyItem items={properties.substances} name='Діюча речовина' />}
+      {!!properties?.quantity && <PropertyItem items={properties.quantity} name='Кількість в упаковці' />}
+      {!!properties?.packages && <PropertyItem items={properties.packages} name='Упаковка' />}
+      {!!properties?.makers && <PropertyItem items={properties.makers} name='Виробник' />}
+      {!!properties?.forms && <PropertyItem items={properties.forms} name='Лікарська форма' />}
+      {!!properties?.dosages && <PropertyItem items={properties.dosages} name='Дозування' />}
+      {!!properties?.trade_name && <PropertyItem items={properties.trade_name} name='Торгова назва' />}
+      {!!properties?.imported && <PropertyItem items={properties.imported} name='Імпорт' />}
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
-  border-right: 1px solid gray;
+  & .MuiAccordionSummary-content .Mui-expanded {
+    margin-bottom: 0px !important;
+  }
 `
