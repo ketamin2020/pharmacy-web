@@ -36,8 +36,7 @@ const initState = {
 }
 export const Groups = () => {
   const [open, setOpen] = useState(false)
-  const [openFirstLevel, setOpenFirstLevel] = useState(false)
-  const [openSecondLevel, setOpenSecondLevel] = useState(false)
+
   const [state, setState] = useState(initState)
   const [groups, setGroups] = useState([])
   const [expanded, setExpanded] = useState<string | false>(false)

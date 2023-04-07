@@ -4,18 +4,25 @@ import Button from 'common/Button/Button'
 import img from '../../mockDev/product.png'
 import { FavoriteBorder, ShoppingBasket } from '@material-ui/icons'
 import { ContentWrapper, ImageWrapper, Wrapper } from './ProductCard.styles'
-
+import { useNavigate } from 'react-router-dom'
+import { RoutePath } from 'routes/types'
 interface IProductCard {
   name: string
   status: string
   price: number
+  image: string
+  id: string
 }
 
-const ProductCard = ({ name, status, price }: IProductCard) => {
+const ProductCard = ({ name, status, price, image, id }: IProductCard) => {
+  const navigate = useNavigate()
+  const handleNavigate = () => {
+    navigate(`${RoutePath.PRODUCT}/${id}`)
+  }
   return (
-    <Wrapper>
+    <Wrapper onClick={handleNavigate}>
       <ImageWrapper>
-        <img src={img} alt='' />
+        <img src={image || img} alt='' />
         <span className='favorite-icon'>
           <FavoriteBorder />
         </span>

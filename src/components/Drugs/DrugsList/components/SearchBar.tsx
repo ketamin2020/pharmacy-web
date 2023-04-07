@@ -84,4 +84,5 @@ const Wrapper = styled.div`
   & .MuiAccordionSummary-content .Mui-expanded {
     margin-bottom: 0px !important;
   }
+  padding: 20px;
 `

@@ -31,10 +31,12 @@ export const DrugsList = () => {
       {main_group && !first_lavel && !second_level ? (
         <Groups groups={data?.data} />
       ) : (
-        <SearchBar properties={data?.properties} />
-      )}
+        <>
+          {data?.properties && <SearchBar properties={data?.properties} />}
 
-      <MainList />
+          {data?.data && <MainList list={data?.data} />}
+        </>
+      )}
     </Wrapper>
   )
 }
