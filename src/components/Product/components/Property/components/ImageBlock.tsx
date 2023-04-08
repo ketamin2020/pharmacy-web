@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import PhoneIcon from '@mui/icons-material/Phone'
+import { MainProperties } from './MainProperties'
 import styled from '@emotion/styled'
 
 export const ImageBlock = ({ images }) => {
@@ -39,6 +39,7 @@ export const ImageBlock = ({ images }) => {
             <Warning />
           </TabPanel>
         ))}
+      <MainProperties />
     </Wrapper>
   )
 }

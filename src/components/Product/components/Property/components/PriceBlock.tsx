@@ -1,15 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import moment from 'moment'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 import { CheckCircle } from '@material-ui/icons'
 import { priceToView } from 'utils/priceToView'
 import Button from 'common/Button/Button'
 import { Logo } from 'images/icons/icons'
 import { mainInfoSelector } from 'redux/main/mainSelectors'
 import { useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom'
+import { RoutePath } from 'routes/types'
+import { ListItem } from '@mui/material'
+
 export const PriceBlock = ({ product }) => {
+  const [value, setValue] = useState(0)
+
   const company = useSelector(mainInfoSelector)
   const maker = product?.property?.attributes?.main?.items?.maker
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
   return (
     <Wrapper>
       <Maker src={maker?.value?.logo?.url} name={maker?.value?.full_name} />
@@ -22,6 +35,7 @@ export const PriceBlock = ({ product }) => {
         </Button>
       </PriceRow>
       <Saller name={company.name} />
+      <PaymentSection value={value} handleChange={handleChange} />
     </Wrapper>
   )
 }
@@ -67,6 +81,86 @@ function Status() {
   )
 }
 
+function TabPanel(props) {
+  const { children, value, index, ...other } = props
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      style={{ width: '100%' }}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  )
+}
+function a11yProps(index: number) {
+  return {
+    id: `vertical-tab-${index}`,
+    'aria-controls': `vertical-tabpanel-${index}`,
+  }
+}
+
+function PaymentSection({ value, handleChange }) {
+  return (
+    <>
+      <Tabs
+        style={{ color: '#00a990', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        orientation='horizontal'
+        value={value}
+        onChange={handleChange}
+        aria-label='icon label tabs example'
+      >
+        <Tab key={0} {...a11yProps(0)} label='Оплата' />
+        <Tab key={1} {...a11yProps(1)} label='Гарантія' />
+        <Tab key={2} {...a11yProps(2)} label='Умови повернення' />
+      </Tabs>
+      <TabPanel
+        style={{ minHeight: '240px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        index={0}
+        value={value}
+      >
+        <ListItem> - Готівкою при отриманні</ListItem>
+        <ListItem> - Oплата картою на сайті</ListItem>
+        <ListItem> - Hакладений платіж</ListItem>
+      </TabPanel>
+      <TabPanel
+        style={{ minHeight: '240px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        index={1}
+        value={value}
+      >
+        <p>
+          Весь товар сертифікований. <NavLink to={RoutePath.WARRANTY}>Детальніше</NavLink>
+        </p>
+        <p>
+          Зберігання лікарських засобів відповідає оптимальному температурному режиму та «холодовому ланцюгу» для
+          термолабільних препаратів.
+        </p>
+        <p>
+          Продавець гарантує упаковку замовленого товару, яка забезпечує його цілісність і збереження належної якості і
+          товарного вигляду
+        </p>
+      </TabPanel>
+      <TabPanel
+        style={{ minHeight: '240px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        index={2}
+        value={value}
+      >
+        <p>
+          Товары надлежащего качества обмену и возврату не підлягають.{' '}
+          <NavLink to={RoutePath.WARRANTY}>Детальніше</NavLink>
+        </p>
+      </TabPanel>
+    </>
+  )
+}
 const MakerWrapper = styled.div`
   display: flex;
   align-items: center;

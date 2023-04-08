@@ -6,7 +6,8 @@ const axiosInstance = (() => {
   const params = {}
   const headers = {
     Accept: 'application/json',
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json; charset=utf-8',
+
     'X-timezone': moment.tz.guess(), // Custom header with current user's timezone
   }
 

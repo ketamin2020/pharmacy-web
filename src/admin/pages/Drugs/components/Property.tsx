@@ -77,6 +77,7 @@ const warningsItems = [
 const childItems = [
   { name: 'Заборонено', value: 'Заборонено' },
   { name: 'Дозволено', value: 'Дозволено' },
+  { value: 'З обережністю', name: 'З обережністю' },
   { name: 'З 1 року', value: 'З 1 року' },
   { name: 'З 2 років', value: 'З 2 років' },
   { name: 'З 3 років', value: 'З 3 років' },
