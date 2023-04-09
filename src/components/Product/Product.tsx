@@ -8,6 +8,8 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Heading } from './components/Heading/Heading'
 import PropertyBlock from './components/Property/PropertyBlock'
+import CircularProgress from '@mui/material/CircularProgress'
+import Backdrop from '@mui/material/Backdrop'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -22,6 +24,7 @@ enum EnumTabType {
 
 export const Product = () => {
   const [product, setProduct] = useState({})
+  const [loading, setLoading] = useState(false)
   const [value, setValue] = useState(0)
   const { id } = useParams()
 
@@ -30,11 +33,14 @@ export const Product = () => {
   }
   useEffect(() => {
     const fetchPridyctById = async () => {
+      setLoading(true)
       try {
         const res = await getDrugById({ id })
         setProduct(res)
       } catch (error) {
         console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
     if (id) fetchPridyctById()
@@ -42,26 +48,32 @@ export const Product = () => {
 
   return (
     <Box className='container' sx={{ bgcolor: 'background.paper' }}>
-      <Heading code={product?.price?.code} name={product?.property?.name}>
-        <Tabs
-          orientation='horizontal'
-          variant='scrollable'
-          value={value}
-          onChange={handleChange}
-          aria-label='Vertical tabs example'
-          sx={{ borderRight: 1, borderColor: 'divider', color: '#00a990' }}
-        >
-          <Tab label='Все про товар' {...a11yProps(EnumTabType.PROPERTY)} />
-          <Tab label='Відгуки' {...a11yProps(EnumTabType.REVIEWS)} />
-          <Tab label='Аналоги і замінники' {...a11yProps(EnumTabType.ANALOGS)} />
-        </Tabs>
+      {loading ? (
+        <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={true}>
+          <CircularProgress color='inherit' />
+        </Backdrop>
+      ) : (
+        <Heading code={product?.price?.code} name={product?.name}>
+          <Tabs
+            orientation='horizontal'
+            variant='scrollable'
+            value={value}
+            onChange={handleChange}
+            aria-label='Vertical tabs example'
+            sx={{ borderRight: 1, borderColor: 'divider', color: '#00a990' }}
+          >
+            <Tab label='Все про товар' {...a11yProps(EnumTabType.PROPERTY)} />
+            <Tab label='Відгуки' {...a11yProps(EnumTabType.REVIEWS)} />
+            <Tab label='Аналоги і замінники' {...a11yProps(EnumTabType.ANALOGS)} />
+          </Tabs>
 
-        <TabPanel value={value} index={EnumTabType.PROPERTY}>
-          <PropertyBlock product={product} />
-        </TabPanel>
-        <TabPanel value={value} index={EnumTabType.REVIEWS}></TabPanel>
-        <TabPanel value={value} index={EnumTabType.ANALOGS}></TabPanel>
-      </Heading>
+          <TabPanel value={value} index={EnumTabType.PROPERTY}>
+            <PropertyBlock product={product} />
+          </TabPanel>
+          <TabPanel value={value} index={EnumTabType.REVIEWS}></TabPanel>
+          <TabPanel value={value} index={EnumTabType.ANALOGS}></TabPanel>
+        </Heading>
+      )}
     </Box>
   )
 }

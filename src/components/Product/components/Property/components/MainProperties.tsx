@@ -57,36 +57,42 @@ const Property: React.FC<PropertyProps> = ({ item, Icon }) => {
 }
 
 export const MainProperties = ({ product }) => {
-  const items = product?.property?.attributes?.warnings?.items
-  const itemsMain = product?.property?.attributes?.main?.items
+  const items = product?.property?.warnings?.items
+  const itemsMain = product?.property?.main?.items
 
   return (
-    <Wrapper>
-      {items?.diabetes_warning && <Property Icon={DiabeticIcon} item={items?.diabetes_warning} />}
-      {items?.allergy_warning && <Property Icon={AllergyIcon} item={items?.allergy_warning} />}
-      {items?.breastfeeding_warning && <Property Icon={FeedingIcon} item={items?.breastfeeding_warning} />}
-      {items?.pregnancy_warning && <Property Icon={PregnantIcon} item={items?.pregnancy_warning} />}
-      {items?.driving_warning && <Property Icon={DriverIcon} item={items?.driving_warning} />}
-      {items?.alcohol_warning && <Property Icon={AlcoIcon} item={items?.alcohol_warning} />}
-      {itemsMain?.prescription && <Property Icon={PrescriptionIcon} item={itemsMain?.prescription} />}
-      {itemsMain?.storage_temperature && (
-        <Property
-          Icon={TemperatureIcon}
-          item={{ title: itemsMain?.storage_temperature.title, value: itemsMain?.storage_temperature.value.name }}
-        />
-      )}
-    </Wrapper>
+    <>
+      {/* <h4>Основні властивості</h4> */}
+      <Wrapper>
+        {items?.diabetes_warning && <Property Icon={DiabeticIcon} item={items?.diabetes_warning} />}
+        {items?.allergy_warning && <Property Icon={AllergyIcon} item={items?.allergy_warning} />}
+        {items?.breastfeeding_warning && <Property Icon={FeedingIcon} item={items?.breastfeeding_warning} />}
+        {items?.pregnancy_warning && <Property Icon={PregnantIcon} item={items?.pregnancy_warning} />}
+        {items?.driving_warning && <Property Icon={DriverIcon} item={items?.driving_warning} />}
+        {items?.alcohol_warning && <Property Icon={AlcoIcon} item={items?.alcohol_warning} />}
+        {itemsMain?.prescription && <Property Icon={PrescriptionIcon} item={itemsMain?.prescription} />}
+        {itemsMain?.storage_temperature && (
+          <Property
+            Icon={TemperatureIcon}
+            item={{ title: itemsMain?.storage_temperature.title, value: itemsMain?.storage_temperature.value.name }}
+          />
+        )}
+      </Wrapper>
+    </>
   )
 }
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: baseline;
+  padding: 10px;
 `
 
 const Item = styled.div`
   display: grid;
-  grid-template-columns: 50px auto;
+  grid-template-columns: 50px 175px;
+  height: 70px;
   align-items: end;
   justify-content: start;
   & .icon_block {

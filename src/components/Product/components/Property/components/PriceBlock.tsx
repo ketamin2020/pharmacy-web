@@ -19,7 +19,7 @@ export const PriceBlock = ({ product }) => {
   const [value, setValue] = useState(0)
 
   const company = useSelector(mainInfoSelector)
-  const maker = product?.property?.attributes?.main?.items?.maker
+  const maker = product?.property?.main?.items?.maker
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
@@ -123,7 +123,7 @@ function PaymentSection({ value, handleChange }) {
         <Tab key={2} {...a11yProps(2)} label='Умови повернення' />
       </Tabs>
       <TabPanel
-        style={{ minHeight: '240px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        style={{ minHeight: '150px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
         index={0}
         value={value}
       >
@@ -132,24 +132,21 @@ function PaymentSection({ value, handleChange }) {
         <ListItem> - Hакладений платіж</ListItem>
       </TabPanel>
       <TabPanel
-        style={{ minHeight: '240px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        style={{ minHeight: '150px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
         index={1}
         value={value}
       >
         <p>
           Весь товар сертифікований. <NavLink to={RoutePath.WARRANTY}>Детальніше</NavLink>
         </p>
-        <p>
-          Зберігання лікарських засобів відповідає оптимальному температурному режиму та «холодовому ланцюгу» для
-          термолабільних препаратів.
-        </p>
+        <p></p>
         <p>
           Продавець гарантує упаковку замовленого товару, яка забезпечує його цілісність і збереження належної якості і
           товарного вигляду
         </p>
       </TabPanel>
       <TabPanel
-        style={{ minHeight: '240px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
+        style={{ minHeight: '150px', borderRadius: '8px', border: '1px solid #d3d8d8' }}
         index={2}
         value={value}
       >

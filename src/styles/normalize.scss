@@ -102,6 +102,9 @@ html {
   -webkit-text-size-adjust: 100%; // 2
   -ms-text-size-adjust: 100%; // 2
 }
+html body {
+  overflow: auto !important; /* или scroll, если вы хотите, чтобы появлялась полоса прокрутки всегда */
+}
 
 // Addresses font-family inconsistency between 'textarea' and other form elements.
 

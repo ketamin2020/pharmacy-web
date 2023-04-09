@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import { MainProperties } from './MainProperties'
+
 import styled from '@emotion/styled'
 
 export const ImageBlock = ({ images }) => {
@@ -15,31 +15,30 @@ export const ImageBlock = ({ images }) => {
 
   return (
     <Wrapper>
-      <Tabs
-        TabIndicatorProps={{
-          style: { display: 'none' },
-        }}
-        orientation='vertical'
-        value={value}
-        onChange={handleChange}
-        aria-label='icon label tabs example'
-      >
-        {images
-          ?.filter(image => !!image?.id)
-          .map((item, i) => (
+      <WrapperInner>
+        <Tabs
+          TabIndicatorProps={{
+            style: { display: 'none' },
+          }}
+          orientation='vertical'
+          value={value}
+          onChange={handleChange}
+          aria-label='icon label tabs example'
+        >
+          {images?.map((item, i) => (
             <Tab key={i} {...a11yProps(i)} icon={<IconImg active={value === i} src={item?.url} />} />
           ))}
-      </Tabs>
+        </Tabs>
 
-      {images
-        ?.filter(image => !!image?.id)
-        .map((item, i) => (
+        {images?.map((item, i) => (
           <TabPanel key={i} value={value} index={i}>
             <Image src={item?.url} />
             <Warning />
           </TabPanel>
         ))}
-      <MainProperties />
+      </WrapperInner>
+
+      {/* <MainProperties product={product} /> */}
     </Wrapper>
   )
 }
@@ -132,6 +131,10 @@ const ImageWrapper = styled.div`
   }
 `
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+const WrapperInner = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 100px 500px;
