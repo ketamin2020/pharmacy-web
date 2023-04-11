@@ -97,6 +97,18 @@ const publicRoutes: Routes[] = [
     exact: true,
     element: lazy(() => import('../pages/WarrantyPage/index' /* webpackChunkName: "Warranty Page" */)),
   },
+  {
+    path: `${RoutePath.DRUGS}/:first_level/*`,
+    name: 'Препарати',
+    exact: true,
+    element: lazy(() => import('../pages/CategoryPage/index' /* webpackChunkName: "Drug List Page" */)),
+  },
+  {
+    path: `${RoutePath.PRODUCT}/:id`,
+    name: 'Препарат',
+    exact: true,
+    element: lazy(() => import('../pages/ProductPage/index' /* webpackChunkName: "Drug List Page" */)),
+  },
 ]
 const privateRoutes: Routes[] = [
   {
@@ -116,18 +128,6 @@ const privateRoutes: Routes[] = [
     name: 'Мої замовлення',
     exact: true,
     element: lazy(() => import('../pages/OrderedPage/index' /* webpackChunkName: "Ordered Page" */)),
-  },
-  {
-    path: `${RoutePath.DRUGS}/:first_level/*`,
-    name: 'Препарати',
-    exact: true,
-    element: lazy(() => import('../pages/CategoryPage/index' /* webpackChunkName: "Drug List Page" */)),
-  },
-  {
-    path: `${RoutePath.PRODUCT}/:id`,
-    name: 'Препарат',
-    exact: true,
-    element: lazy(() => import('../pages/ProductPage/index' /* webpackChunkName: "Drug List Page" */)),
   },
 ]
 const adminRoutes: Routes[] = [

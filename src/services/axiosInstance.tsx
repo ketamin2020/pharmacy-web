@@ -20,9 +20,10 @@ const axiosInstance = (() => {
 
 axiosInstance.interceptors.request.use(
   config => {
-    const auth = localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : null
+    const auth = JSON.parse(localStorage.getItem('persist:auth'))
+    const trimmedToken = auth?.token?.slice(1, -1).replace(/\\/g, '')
 
-    if (auth) config.headers.Authorization = `Bearer ${auth.token}`
+    if (trimmedToken) config.headers.Authorization = `Bearer ${trimmedToken}`
 
     return config
   },
