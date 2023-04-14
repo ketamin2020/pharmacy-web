@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Typography } from '@mui/material'
+
 import Rating from '@mui/material/Rating'
-export const Heading = ({ name, code, children }) => {
+export const Heading = ({ name, code, reviews, children }) => {
   return (
     <Wrapper>
       <h1>{name}</h1>
       <Row>
         <div className='review-block'>
-          <Rating name='read-only' value={5} readOnly />
-          <p className='review-link'>2 відгука</p>
+          <Rating name='read-only' value={reviews?.rating} readOnly />
+          <p className='review-link'>{`${reviews?.count}`} відгуків</p>
         </div>
         <div>
           <span className='code'>Код товару:</span>

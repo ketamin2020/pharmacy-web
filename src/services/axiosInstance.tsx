@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { getTokenFromLS } from 'utils/getTokenFromLS'
 import moment from 'moment-timezone'
 
 const axiosInstance = (() => {
@@ -20,10 +20,12 @@ const axiosInstance = (() => {
 
 axiosInstance.interceptors.request.use(
   config => {
-    const auth = JSON.parse(localStorage.getItem('persist:auth'))
-    const trimmedToken = auth?.token?.slice(1, -1).replace(/\\/g, '')
+    // const auth = JSON.parse(localStorage.getItem('persist:auth'))
+    // const trimmedToken = auth?.token?.slice(1, -1).replace(/\\/g, '')
 
-    if (trimmedToken) config.headers.Authorization = `Bearer ${trimmedToken}`
+    const token = getTokenFromLS()
+
+    if (token) config.headers.Authorization = `Bearer ${token}`
 
     return config
   },

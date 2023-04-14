@@ -5,9 +5,13 @@ const GET_USERS = 'api/users/get'
 const CREATE_USER = 'api/users/create'
 const UPDATE_USER = 'api/users/update'
 const DELETE_USER = 'api/users/delete'
+const GET_USER_BY_TOKEN = 'api/users/get-by-token'
 
 export const getUser = () => {
   return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_USERS).then(res => res?.data?.data)
+}
+export const getUserByToken = params => {
+  return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_USER_BY_TOKEN, { params }).then(res => res?.data?.data)
 }
 export const createUser = params => {
   return axiosInstance.post<AxiosResponse<{ data: object }>>(CREATE_USER, params).then(res => res)

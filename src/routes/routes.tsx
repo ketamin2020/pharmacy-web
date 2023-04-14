@@ -99,13 +99,13 @@ const publicRoutes: Routes[] = [
   },
   {
     path: `${RoutePath.DRUGS}/:first_level/*`,
-    name: 'Препарати',
+    name: '',
     exact: true,
     element: lazy(() => import('../pages/CategoryPage/index' /* webpackChunkName: "Drug List Page" */)),
   },
   {
     path: `${RoutePath.PRODUCT}/:id`,
-    name: 'Препарат',
+    name: '',
     exact: true,
     element: lazy(() => import('../pages/ProductPage/index' /* webpackChunkName: "Drug List Page" */)),
   },

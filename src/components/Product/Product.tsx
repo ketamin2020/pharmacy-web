@@ -10,6 +10,7 @@ import { Heading } from './components/Heading/Heading'
 import PropertyBlock from './components/Property/PropertyBlock'
 import CircularProgress from '@mui/material/CircularProgress'
 import Backdrop from '@mui/material/Backdrop'
+import { Reviews } from './components/Reviews/Reviews'
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -53,7 +54,7 @@ export const Product = () => {
           <CircularProgress color='inherit' />
         </Backdrop>
       ) : (
-        <Heading code={product?.price?.code} name={product?.name}>
+        <Heading reviews={product?.reviews} code={product?.price?.code} name={product?.name}>
           <Tabs
             orientation='horizontal'
             variant='scrollable'
@@ -70,7 +71,9 @@ export const Product = () => {
           <TabPanel value={value} index={EnumTabType.PROPERTY}>
             <PropertyBlock product={product} />
           </TabPanel>
-          <TabPanel value={value} index={EnumTabType.REVIEWS}></TabPanel>
+          <TabPanel value={value} index={EnumTabType.REVIEWS}>
+            <Reviews product={product} />
+          </TabPanel>
           <TabPanel value={value} index={EnumTabType.ANALOGS}></TabPanel>
         </Heading>
       )}

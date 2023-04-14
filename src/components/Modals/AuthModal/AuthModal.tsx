@@ -17,6 +17,8 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import { getUserByToken } from 'api/users'
+import { getUserByTokenAction } from 'redux/user/userActions'
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -67,6 +69,8 @@ const AuthModal = () => {
       const res = await loginUser({ phone: phone.replace(reg, '') })
       if (res?.admin) return setIsAdmin(true)
       if (res?.token) {
+        const res = await getUserByToken(res?.token)
+        dispatch(getUserByTokenAction(res))
         dispatch(login(res?.token))
         notification('success', 'Успішно')
         onClose()

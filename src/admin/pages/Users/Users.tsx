@@ -346,8 +346,8 @@ export const Users = () => {
 
   const fetchPartnersList = async () => {
     try {
-      const res = await getUsers()
-      setData(res)
+      // const res = await getUsers()
+      // setData(res)
     } catch (error) {
       notification('error', 'Something went wrong!')
     }
