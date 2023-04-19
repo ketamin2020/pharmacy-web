@@ -67,10 +67,14 @@ const AuthModal = () => {
 
     try {
       const res = await loginUser({ phone: phone.replace(reg, '') })
+
       if (res?.admin) return setIsAdmin(true)
       if (res?.token) {
-        const res = await getUserByToken(res?.token)
-        dispatch(getUserByTokenAction(res))
+        debugger
+        const user = await getUserByToken({ token: res?.token })
+        debugger
+        dispatch(getUserByTokenAction(user))
+        debugger
         dispatch(login(res?.token))
         notification('success', 'Успішно')
         onClose()

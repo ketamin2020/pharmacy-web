@@ -9,6 +9,7 @@ import account from './account/accountReducer'
 import modals from './ui/modals/modalReducer'
 import groups from './groups/groupsReducer'
 import company from './main/mainReducer'
+import wishlist from './wish/wishReducer'
 
 const authPersistConfig = {
   key: 'auth',
@@ -23,6 +24,7 @@ const app = combineReducers({
   company,
   account,
   ui: combineReducers({ modals }),
+  wishlist,
 })
 
 const store = configureStore({

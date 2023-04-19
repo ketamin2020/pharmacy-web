@@ -1,19 +1,15 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { Avatar } from 'common/Avatar/Avatar'
-import moment from 'moment'
+
 import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import { ThumbDown } from '@material-ui/icons'
 import { ThumbUp } from '@material-ui/icons'
 import { Reply } from '@material-ui/icons'
-import 'moment/locale/uk'
-function formatDate(dateString) {
-  const date = moment.tz(dateString, 'Europe/Kiev')
-  const formattedDate = date.format('D MMMM YYYY р.')
-  const fullFormattedDate = formattedDate.replace(formattedDate[1], formattedDate[1].toUpperCase())
-  return fullFormattedDate
-}
+
+import { formatDate } from 'utils/formatDate'
+
 export const ReviewItem = ({ review }) => {
   return (
     <Wrapper>
