@@ -70,11 +70,8 @@ const AuthModal = () => {
 
       if (res?.admin) return setIsAdmin(true)
       if (res?.token) {
-        debugger
         const user = await getUserByToken({ token: res?.token })
-        debugger
         dispatch(getUserByTokenAction(user))
-        debugger
         dispatch(login(res?.token))
         notification('success', 'Успішно')
         onClose()

@@ -42,6 +42,11 @@ const ContentWrapper = styled.div`
   & .product-price {
     font-weight: bold;
   }
+  & .product-name {
+    &:hover {
+      color: var(--greenColorSecondary);
+    }
+  }
   & .product-basket {
     font-size: 14px;
     width: 100%;

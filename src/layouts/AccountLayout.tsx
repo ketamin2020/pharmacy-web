@@ -1,9 +1,10 @@
 import React from 'react'
-
+import { useDispatch } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { privateRoutes } from 'routes/routes'
-
+import { RoutePath } from 'routes/types'
+import { logout } from 'redux/auth/authActions'
 const Wrapper = styled.div`
   background-color: #f5f7fa;
   padding: 20px;
@@ -49,6 +50,11 @@ const activeStyle = {
 }
 
 const AccountLayout = ({ children }) => {
+  const dispatch = useDispatch()
+  const handleLogout = () => {
+    localStorage.removeItem('persist:auth')
+    dispatch(logout())
+  }
   return (
     <Wrapper>
       <aside>
@@ -61,6 +67,16 @@ const AccountLayout = ({ children }) => {
                 </NavLink>
               </li>
             ))}
+            <li>
+              <NavLink
+                onClick={handleLogout}
+                end
+                to={RoutePath.HOME_PAGE}
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
+                Вихід
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </aside>

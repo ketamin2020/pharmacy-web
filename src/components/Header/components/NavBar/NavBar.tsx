@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux'
 import { AdminPanelSettings } from '@mui/icons-material'
 import './NavBar.scss'
 import { mainInfoSelector } from 'redux/main/mainSelectors'
+import { Avatar } from 'common/Avatar/Avatar'
+import { userSelector } from 'redux/user/userSelectors'
 
 const navbarItems = [
   {
@@ -49,6 +51,7 @@ const NavBar = () => {
   const isAdmin = useSelector(isAdminSelector)
   const isAuth = useSelector(isAuthSelector)
   const main = useSelector(mainInfoSelector)
+  const user = useSelector(userSelector)
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
@@ -103,11 +106,18 @@ const NavBar = () => {
             </div>
           </Badge>
 
-          {!isAuth && (
+          {!isAuth ? (
             <Badge badgeContent={0} color='warning'>
               <div onClick={handleAuthModal} className='header__nav-badge'>
                 <PermIdentity />
                 <p className='header__nav-basket__title'>Увійти</p>
+              </div>
+            </Badge>
+          ) : (
+            <Badge badgeContent={0} color='warning'>
+              <div onClick={() => navigate(RoutePath.ORDERS)} className='header__nav-badge'>
+                <Avatar color={'#626ed4'}>{user.first_name || 'Користувач'}</Avatar>
+                {/* <p className='header__nav-basket__title'>Кабінет</p> */}
               </div>
             </Badge>
           )}
