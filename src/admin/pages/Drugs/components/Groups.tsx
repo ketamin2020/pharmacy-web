@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { TextField } from '@mui/material'
 import { Edit } from '@material-ui/icons'
 import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
+import { styled as s } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -16,7 +16,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Typography from '@mui/material/Typography'
 import { Delete } from '@material-ui/icons'
 import { getGroups, deleteGroup, updateGroup, createGroup } from 'api/groups'
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+import { Add } from '@material-ui/icons'
+import styled from '@emotion/styled'
+import { uploadSingleFile } from 'api/media'
+import Cropper from 'react-cropper'
+const BootstrapDialog = s(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
   },
@@ -33,7 +37,9 @@ export interface DialogTitleProps {
 const initState = {
   group_name: '',
   level: 0,
+  group_image: '',
 }
+const defaultSrc = 'https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg'
 export const Groups = () => {
   const [open, setOpen] = useState(false)
 
@@ -42,7 +48,12 @@ export const Groups = () => {
   const [expanded, setExpanded] = useState<string | false>(false)
   const [expandedFirst, setExpandedFirst] = useState<string | false>(false)
   const [expandedSecond, setExpandedSecond] = useState<string | false>(false)
-
+  const [openCropModal, setOpenCropModal] = useState(false)
+  const [image, setImage] = useState(defaultSrc)
+  const [imageBlob, setImageBlob] = useState(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const [cropData, setCropData] = useState(null)
+  const [cropper, setCropper] = useState<Cropper>()
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
   }
@@ -53,12 +64,47 @@ export const Groups = () => {
     setExpandedSecond(isExpanded ? panel : false)
   }
 
+  const onChangeFile = (e: any) => {
+    e.preventDefault()
+    let files
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files
+    } else if (e.target) {
+      files = e.target.files
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      setOpenCropModal(true)
+      setImage(reader.result as any)
+    }
+    reader.readAsDataURL(files[0])
+  }
+
+  const getCropData = () => {
+    if (typeof cropper !== 'undefined') {
+      const canvas = cropper.getCroppedCanvas()
+      const base64 = canvas.toDataURL()
+      canvas.toBlob(async blob => {
+        const fd = new FormData()
+        const file = new File([blob], 'filename.jpeg')
+        fd.append('image', file)
+        setImageBlob(fd)
+      })
+
+      setCropData(base64)
+    }
+  }
+
   const handleClickOpen = () => {
     setOpen(true)
   }
   const handleClose = () => {
     setOpen(false)
     setState(initState)
+  }
+
+  const handleCloseCropModal = () => {
+    setOpenCropModal(false)
   }
 
   const onChange = e => {
@@ -75,18 +121,31 @@ export const Groups = () => {
     }
   }
   const onCreateGroup = async () => {
+    let image = null
     try {
-      await createGroup(state)
+      if (imageBlob) {
+        image = await uploadSingleFile(imageBlob)
+      }
+      await createGroup({ ...state, group_image: image.url })
       await fetchGroupList()
+      setImageBlob(null)
+      setCropData(null)
     } catch (error) {
       console.log(error)
     }
   }
 
   const onUpdateGroup = async () => {
+    let image = null
+
     try {
-      await updateGroup(state)
+      if (imageBlob) {
+        image = await uploadSingleFile(imageBlob)
+      }
+      await updateGroup({ ...state, group_image: image.url })
       await fetchGroupList()
+      setImageBlob(null)
+      setCropData(null)
     } catch (error) {
       console.log(error)
     }
@@ -117,8 +176,21 @@ export const Groups = () => {
       </Button>
       {groups?.map((group, i) => (
         <Accordion key={group.id} expanded={expanded === group.id} onChange={handleChange(group.id)}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1bh-content' id='panel1bh-header'>
-            <Typography sx={{ width: '90%', flexShrink: 0 }}>{group.group_name}</Typography>
+          <AccordionSummary
+            style={{ alignItems: 'center' }}
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls='panel1bh-content'
+            id='panel1bh-header'
+          >
+            <Typography sx={{ width: '90%', flexShrink: 0 }}>
+              <NameWrapper>
+                <p>{group.group_name}</p>
+                <p>{group?.group_image && <img width={50} src={group?.group_image} alt='' />}</p>
+              </NameWrapper>
+            </Typography>
+
+            <Typography></Typography>
+
             <Typography
               onClick={() => {
                 setState({ ...group, level: 0 })
@@ -149,12 +221,16 @@ export const Groups = () => {
                 onChange={handleChangeFirstLevel(group.id)}
               >
                 <AccordionSummary
-                  style={{ justifyContent: 'space-between' }}
+                  style={{ justifyContent: 'space-between', alignItems: 'center !important' }}
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel1bh-content'
                   id='panel1bh-header'
                 >
-                  <Typography sx={{ width: '90%', flexShrink: 0 }}>{group.group_name}</Typography>
+                  <NameWrapper>
+                    <p>{group.group_name}</p>
+                    <p>{group?.group_image && <img width={50} src={group?.group_image} alt='' />}</p>
+                  </NameWrapper>
+
                   <Typography
                     onClick={() => {
                       setState({ ...group, level: 1 })
@@ -189,21 +265,16 @@ export const Groups = () => {
                       onChange={handleChangeSecondLevel(group.id)}
                     >
                       <AccordionSummary
-                        style={{ justifyContent: 'space-between' }}
+                        style={{ justifyContent: 'space-between', alignItems: 'center !important' }}
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls='panel1bh-content'
                         id='panel1bh-header'
                       >
-                        <Typography sx={{ width: '90%', flexShrink: 0 }}>{group.group_name}</Typography>
-                        {/* <Typography
-                          onClick={() => {
-                            setState({ ...group, level: 2 })
-                            handleClickOpen()
-                          }}
-                          sx={{ color: 'text.secondary' }}
-                        >
-                          <Edit />
-                        </Typography> */}
+                        <NameWrapper>
+                          <p>{group.group_name}</p>
+                          <p>{group?.group_image && <img width={50} src={group?.group_image} alt='' />}</p>
+                        </NameWrapper>
+
                         <Typography
                           onClick={() => onDeleteGroup(group.id, 2, group.parent_id)}
                           sx={{ color: 'text.secondary' }}
@@ -236,6 +307,8 @@ export const Groups = () => {
             required
             value={state.group_name}
           />
+          <TextField onChange={onChangeFile} style={{ marginBottom: '20px' }} fullWidth type='file' />
+          {cropData && <img style={{ width: '30%' }} src={cropData} alt='cropped' />}
         </DialogContent>
         <DialogActions>
           <Button
@@ -243,6 +316,40 @@ export const Groups = () => {
             onClick={() => {
               state?.id ? onUpdateGroup() : onCreateGroup()
               handleClose()
+            }}
+          >
+            Save changes
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
+
+      <BootstrapDialog onClose={handleCloseCropModal} aria-labelledby='customized-dialog-title' open={openCropModal}>
+        <DialogContent dividers>
+          <Cropper
+            style={{ height: 400, width: '100%' }}
+            initialAspectRatio={1}
+            preview='.img-preview'
+            src={image}
+            ref={imageRef}
+            viewMode={1}
+            guides={true}
+            minCropBoxHeight={10}
+            minCropBoxWidth={10}
+            background={false}
+            responsive={true}
+            checkOrientation={false}
+            onInitialized={instance => {
+              setCropper(instance)
+            }}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => {
+              getCropData()
+              setOpenCropModal(false)
             }}
           >
             Save changes
@@ -275,3 +382,11 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     </DialogTitle>
   )
 }
+const NameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  & p {
+    margin: 0 !important;
+  }
+`
