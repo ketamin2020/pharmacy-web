@@ -98,6 +98,12 @@ const publicRoutes: Routes[] = [
     element: lazy(() => import('../pages/WarrantyPage/index' /* webpackChunkName: "Warranty Page" */)),
   },
   {
+    path: `${RoutePath.DRUGS}/medikamenti`,
+    name: 'Медикаменти',
+    exact: true,
+    element: lazy(() => import('../pages/MedicinesPage/index' /* webpackChunkName: "Drug List Page" */)),
+  },
+  {
     path: `${RoutePath.DRUGS}/:first_level/*`,
     name: '',
     exact: true,

@@ -6,19 +6,25 @@ import { useParams } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import { getDrugsList } from 'api/drugs'
 import { Groups } from './components/Groups'
+import CircularProgress from '@mui/material/CircularProgress'
+import Backdrop from '@mui/material/Backdrop'
 export const DrugsList = () => {
   const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
   const { pathname } = useLocation()
 
   const [global, main, main_group, first_lavel, second_level] = pathname.split('/')
 
   const fetchDrugsList = async params => {
     try {
+      setLoading(true)
       const res = await getDrugsList(params)
 
       setData(res)
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -28,8 +34,10 @@ export const DrugsList = () => {
 
   return (
     <Wrapper className='container'>
-      {main_group && !first_lavel && !second_level ? (
-        <Groups groups={data?.data} />
+      {loading ? (
+        <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={true}>
+          <CircularProgress color='inherit' />
+        </Backdrop>
       ) : (
         <>
           {data?.properties && <SearchBar properties={data?.properties} />}

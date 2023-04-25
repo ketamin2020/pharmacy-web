@@ -21,19 +21,18 @@ interface IProps {
 }
 
 export const MainList = ({ list }: IProps[]) => {
-  console.log(list, 'list')
-
   return (
     <Wrapper>
-      {list?.map(item => (
-        <ProductCard
-          id={item.id}
-          image={item?.images?.items?.[0]?.url}
-          key={item.morion}
-          price={item.price.current}
-          name={item.marked_name.name}
-        />
-      ))}
+      {list &&
+        list?.map(item => (
+          <ProductCard
+            id={item?.id}
+            image={item?.images?.items?.[0]?.url}
+            key={item?.morion}
+            price={item.price?.current}
+            name={item?.marked_name?.name}
+          />
+        ))}
     </Wrapper>
   )
 }
