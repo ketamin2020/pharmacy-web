@@ -1,3 +1,1 @@
-export const isMobileDeviceSelector = state => state.app.auth.isMobile
-export const isAdminSelector = state => state.app.auth.isAdmin
-export const isAuthSelector = state => state.app.auth.token
+export const wishlistIdsSelector = state => state.app?.wishlist?.list?.data?.products

@@ -10,7 +10,8 @@ import { getBanners } from 'api/banner'
 import { getUserByToken } from 'api/users'
 import { getUserByTokenAction } from 'redux/user/userActions'
 import { getTokenFromLS } from 'utils/getTokenFromLS'
-import { fetchWishList } from 'redux/wish/wishOperation'
+import { fetchWishList, fetchWishListByUser } from 'redux/wish/wishOperation'
+import { fetchBasketList, fetchBasketListByUser } from 'redux/basket/basketOperation'
 const AuthLayout = ({ children }) => {
   const isMobile = useIsMobile()
   const dispath = useDispatch()
@@ -92,6 +93,7 @@ const AuthLayout = ({ children }) => {
     const getWishListByUser = async () => {
       try {
         dispath(fetchWishList())
+        dispath(fetchWishListByUser())
       } catch (error) {
         console.error(error)
       }
@@ -101,6 +103,22 @@ const AuthLayout = ({ children }) => {
 
     if (token) {
       getWishListByUser(token)
+    }
+  }, [])
+  useEffect(() => {
+    const getBasketList = async () => {
+      try {
+        dispath(fetchBasketList())
+        dispath(fetchBasketListByUser())
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    const token = getTokenFromLS()
+
+    if (token) {
+      getBasketList()
     }
   }, [])
 

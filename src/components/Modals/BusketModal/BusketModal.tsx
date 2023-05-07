@@ -3,16 +3,63 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isOpenBusketModalSelectror } from 'redux/ui/modals/modalSelectors'
 import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
 import Modal from '../Modal'
+import { basketlistSelector } from 'redux/basket/basketSelectors'
+import { BusketItem } from 'common/BusketItem/BusketItem'
+import Button from 'common/Button/Button'
+import styled from '@emotion/styled'
+import { priceToView } from 'utils/priceToView'
+import { useNavigate } from 'react-router-dom'
+import { RoutePath } from 'routes/types'
 
 const BusketModal = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const isOpen = useSelector(isOpenBusketModalSelectror)
+  const data = useSelector(basketlistSelector)
   const onClose = () => dispatch(toggleBusketModal(false))
+
+  const handleCheckout = () => {
+    onClose()
+    return navigate(`${RoutePath.CHECKOUT}`)
+  }
   return (
     <Modal title='Корзина' handleClose={onClose} open={isOpen}>
-      <p>Modal</p>
+      {!!data?.length
+        ? data.map((item, idx) => (
+            <BusketItem
+              reviews={item.reviews}
+              images={item.images.items}
+              price={item.price}
+              property={item.property}
+              id={item.id}
+              key={idx}
+            />
+          ))
+        : 'Корзина порожня'}
+      <SummaryWrapper>
+        <p>
+          <span className='summary-title'>Разом:</span>
+          <span className='summary-value'>{priceToView(80)}</span>
+        </p>
+        <p>
+          <Button onClick={handleCheckout} color='green' shape='square' buttonCustomClass='product-basket'>
+            <p>Оформити заказ</p>
+          </Button>
+        </p>
+      </SummaryWrapper>
     </Modal>
   )
 }
 
 export default BusketModal
+
+const SummaryWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  flex-direction: column;
+  & .summary-value {
+    font-weight: bold;
+    margin-left: 20px;
+  }
+`

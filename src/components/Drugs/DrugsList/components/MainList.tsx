@@ -30,7 +30,8 @@ export const MainList = ({ list }: IProps[]) => {
             image={item?.images?.items?.[0]?.url}
             key={item?.morion}
             price={item.price?.current}
-            name={item?.marked_name?.name}
+            name={item?.name}
+            reviews={item?.reviews}
           />
         ))}
     </Wrapper>

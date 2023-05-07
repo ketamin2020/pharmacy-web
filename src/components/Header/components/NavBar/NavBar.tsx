@@ -16,7 +16,8 @@ import './NavBar.scss'
 import { mainInfoSelector } from 'redux/main/mainSelectors'
 import { Avatar } from 'common/Avatar/Avatar'
 import { userSelector } from 'redux/user/userSelectors'
-
+import { wishlistIdsSelector } from 'redux/wish/wishSelectors'
+import { basketlistIdsSelector } from 'redux/basket/basketSelectors'
 const navbarItems = [
   {
     id: 0,
@@ -52,6 +53,8 @@ const NavBar = () => {
   const isAuth = useSelector(isAuthSelector)
   const main = useSelector(mainInfoSelector)
   const user = useSelector(userSelector)
+  const wishesArrayIds = useSelector(wishlistIdsSelector)
+  const basketArrayIds = useSelector(basketlistIdsSelector)
   const [open, setOpen] = useState(false)
 
   const toggleSlider = () => {
@@ -93,19 +96,26 @@ const NavBar = () => {
 
         <SearhInput placeholder='Пошук' onChange={() => null} />
         <div className='header__nav-constrols_group'>
-          <Badge badgeContent={4} color='warning'>
+          <Badge badgeContent={wishesArrayIds?.length || 0} color='warning'>
             <div onClick={handleWishList} className='header__nav-badge'>
               <FavoriteBorder />
               <p className='header__nav-basket__title'>Вибране</p>
             </div>
           </Badge>
-          <Badge badgeContent={4} color='warning'>
+          <Badge badgeContent={basketArrayIds?.length || 0} color='warning'>
             <div className='header__nav-badge' onClick={handleBusketModal}>
               <ShoppingBasket />
               <p className='header__nav-basket__title'>Корзина</p>
             </div>
           </Badge>
-
+          {isAdmin && (
+            <Badge badgeContent={0} color='warning'>
+              <div onClick={() => navigate(RoutePath.ADMIN)} className='header__nav-badge'>
+                <AdminPanelSettings />
+                <p className='header__nav-basket__title'>Адмін</p>
+              </div>
+            </Badge>
+          )}
           {!isAuth ? (
             <Badge badgeContent={0} color='warning'>
               <div onClick={handleAuthModal} className='header__nav-badge'>
@@ -118,15 +128,6 @@ const NavBar = () => {
               <div onClick={() => navigate(RoutePath.ORDERS)} className='header__nav-badge'>
                 <Avatar color={'#626ed4'}>{user.first_name || 'Користувач'}</Avatar>
                 {/* <p className='header__nav-basket__title'>Кабінет</p> */}
-              </div>
-            </Badge>
-          )}
-
-          {isAdmin && (
-            <Badge badgeContent={0} color='warning'>
-              <div onClick={() => navigate(RoutePath.ADMIN)} className='header__nav-badge'>
-                <AdminPanelSettings />
-                <p className='header__nav-basket__title'>Адмін</p>
               </div>
             </Badge>
           )}

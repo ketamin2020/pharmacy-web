@@ -22,6 +22,7 @@ enum RoutePath {
   ADMIN = '/admin',
   DRUGS = '/drugs',
   PRODUCT = '/product',
+  CHECKOUT = '/checkout',
 }
 
 interface Routes {

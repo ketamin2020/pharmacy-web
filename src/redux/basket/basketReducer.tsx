@@ -1,12 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
-import { getWishListAction, getWishListByUserAction } from './wishActions'
+import { getBasketListAction, getBasketListByUserAction } from './basketActions'
 
 const list = createReducer([], {
-  [getWishListAction]: (_, { payload }) => payload,
+  [getBasketListAction]: (_, { payload }) => payload,
 })
 const data = createReducer([], {
-  [getWishListByUserAction]: (_, { payload }) => payload,
+  [getBasketListByUserAction]: (_, { payload }) => payload,
 })
 
 export default combineReducers({
