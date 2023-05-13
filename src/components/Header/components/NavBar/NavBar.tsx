@@ -6,7 +6,6 @@ import { toggleBusketModal, toggleAuthModal } from 'redux/ui/modals/modalsAction
 import { Menu, MenuOpen, ShoppingBasket, Phone, PermIdentity, FavoriteBorder } from '@mui/icons-material'
 import Badge from '@mui/material/Badge'
 import NavSideBar from '../NavSideBar/NavSideBar'
-import { Phone as PhoneNumber } from 'public'
 import { SearhInput } from 'common/SearchInput/SearhInput'
 import { RoutePath } from 'routes/types'
 import { isAdminSelector, isAuthSelector } from 'redux/auth/authSelectors'
@@ -78,7 +77,7 @@ const NavBar = () => {
           {open ? <MenuOpen /> : <Menu />}
         </span>
         <div className='mobile__hidden header__nav-menu'>
-          {navbarItems.map(item => (
+          {navbarItems?.map(item => (
             <NavLink to={item.path} className='header__nav-menu_item' key={item.id} end>
               {item.title}
             </NavLink>
@@ -88,8 +87,8 @@ const NavBar = () => {
         <div className='header__nav-contacts mobile__hidden'>
           <Phone />
           <div>
-            <a href={`tel:${main.phone}`} type='tel'>
-              {main.phone}
+            <a href={`tel:${main?.phone}`} type='tel'>
+              {main?.phone}
             </a>
           </div>
         </div>
@@ -126,7 +125,7 @@ const NavBar = () => {
           ) : (
             <Badge badgeContent={0} color='warning'>
               <div onClick={() => navigate(RoutePath.ORDERS)} className='header__nav-badge'>
-                <Avatar color={'#626ed4'}>{user.first_name || 'Користувач'}</Avatar>
+                <Avatar color={'#626ed4'}>{user?.first_name || 'Користувач'}</Avatar>
                 {/* <p className='header__nav-basket__title'>Кабінет</p> */}
               </div>
             </Badge>

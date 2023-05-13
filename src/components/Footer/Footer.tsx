@@ -1,7 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Logo } from 'images/icons/icons'
-import { Phone as PhoneNumber, Email } from 'public'
 import { Phone, EmailOutlined } from '@mui/icons-material'
 import { MastercardLogo, VisaLogo } from 'images/icons/icons'
 import { useSelector } from 'react-redux'
@@ -46,7 +45,7 @@ const Footer = () => {
             <Logo />
           </article>
           <article className='footer--links'>
-            {footerItems.map(item => (
+            {footerItems?.map(item => (
               <NavLink to={item.path} className='footer--link' key={item.id} end>
                 {item.title}
               </NavLink>
@@ -56,16 +55,16 @@ const Footer = () => {
             <div className='footer--contacts__block'>
               <Phone />
               <div>
-                <a href={`tel:${main.phone}`} type='tel'>
-                  {main.phone}
+                <a href={`tel:${main?.phone}`} type='tel'>
+                  {main?.phone}
                 </a>
               </div>
             </div>
             <div className='footer--contacts__block'>
               <EmailOutlined />
               <div>
-                <a href={`mailto:${main.support_email}`} type='email'>
-                  {main.support_email}
+                <a href={`mailto:${main?.support_email}`} type='email'>
+                  {main?.support_email}
                 </a>
               </div>
             </div>

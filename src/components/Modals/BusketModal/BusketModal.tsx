@@ -36,17 +36,20 @@ const BusketModal = () => {
             />
           ))
         : 'Корзина порожня'}
-      <SummaryWrapper>
-        <p>
-          <span className='summary-title'>Разом:</span>
-          <span className='summary-value'>{priceToView(80)}</span>
-        </p>
-        <p>
-          <Button onClick={handleCheckout} color='green' shape='square' buttonCustomClass='product-basket'>
-            <p>Оформити заказ</p>
-          </Button>
-        </p>
-      </SummaryWrapper>
+
+      {!!data?.length && (
+        <SummaryWrapper>
+          <p>
+            <span className='summary-title'>Разом:</span>
+            <span className='summary-value'>{priceToView(80)}</span>
+          </p>
+          <p>
+            <Button onClick={handleCheckout} color='green' shape='square' buttonCustomClass='product-basket'>
+              <p>Оформити заказ</p>
+            </Button>
+          </p>
+        </SummaryWrapper>
+      )}
     </Modal>
   )
 }
