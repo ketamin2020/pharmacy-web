@@ -6,7 +6,7 @@ export const Checkout = () => {
   return (
     <Wrapper>
       <Header />
-      <Main />
+      <Main  />
     </Wrapper>
   )
 }
