@@ -5,6 +5,7 @@ const GET_BASKET_LIST = 'api/basket/basket'
 const GET_USER_BASKET_LIST = 'api/basket/user-basket'
 const CREATE_BASKET_LIST = 'api/basket/basket-create'
 const DELETE_BASKET = 'api/basket/basket-delete'
+const QTY_BASKET = 'api//basket/'
 export const getBasketList = () => {
   return axiosInstance.get<AxiosResponse>(GET_BASKET_LIST).then(res => res?.data)
 }
@@ -18,4 +19,10 @@ export const addProductToBasketList = params => {
 }
 export const deleteItemFromBasketList = id => {
   return axiosInstance.delete<AxiosResponse>(`${DELETE_BASKET}?id=${id}`).then(res => res?.data)
+}
+export const increaseBusketItemQty = id => {
+  return axiosInstance.put<AxiosResponse>(`${QTY_BASKET}&id=${id}?modifier=increase`).then(res => res?.data)
+}
+export const decreaseBusketItemQty = id => {
+  return axiosInstance.put<AxiosResponse>(`${QTY_BASKET}&id=${id}?modifier=decrease`).then(res => res?.data)
 }

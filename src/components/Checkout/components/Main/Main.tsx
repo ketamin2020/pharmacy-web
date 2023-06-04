@@ -6,11 +6,15 @@ import { SummaryBlock } from './components/SummaryBlock'
 import { DeliveryBlock } from './components/DeliveryBlock'
 import { ContactInfoBlock } from './components/ContactInfoBlock'
 import { PaymentBlock } from './components/PaymentBlock'
+import { BusketInfo } from './components/BusketInfo'
 import { useSelector } from 'react-redux'
 import { userSelector } from 'redux/user/userSelectors'
 import { IPayment } from '../types'
 import { basketIdSelector } from 'redux/basket/basketSelectors'
-import { DeliveryTypeNum } from '../types'
+import { DeliveryTypeNum, PaymentTypeNum } from '../types'
+import BusketModal from 'components/Modals/BusketModal/BusketModal'
+import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
+import { useDispatch } from 'react-redux'
 
 const initData: IPayment = {
   basketId: '',
@@ -70,6 +74,7 @@ const initData: IPayment = {
     warehouseId: 0,
   },
   payment: {
+    type: PaymentTypeNum.CARD,
     name: '',
     price: {
       description: '',
@@ -78,6 +83,7 @@ const initData: IPayment = {
   },
 }
 export const Main = () => {
+  const dispatch = useDispatch()
   const user = useSelector(userSelector)
   const bascketID = useSelector(basketIdSelector)
   const [state, setState] = useState<IPayment>(initData)
@@ -129,6 +135,28 @@ export const Main = () => {
       }))
     }
   }
+  const handleChangePaymentType = (type: number, title: string) => {
+    setState(prev => ({
+      ...prev,
+      payment: {
+        ...prev.payment,
+        type: type,
+        title: title,
+      },
+    }))
+    if (type !== DeliveryTypeNum.NOVA_POSHTA) {
+      setState(prev => ({
+        ...prev,
+        delivery: {
+          ...prev.delivery,
+          city: {
+            ...prev.delivery.city,
+            name: 'Київ',
+          },
+        },
+      }))
+    }
+  }
   const handleChangeWerehouse = (warehouse: IPayment['warehouse']) => {
     setState(prev => ({
       ...prev,
@@ -162,6 +190,25 @@ export const Main = () => {
       },
     }))
   }
+
+  const handleChangeInfo = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setState(prev => ({
+      ...prev,
+      delivery: {
+        ...prev.delivery,
+        recipient: {
+          ...prev.delivery.recipient,
+          [name]: value,
+        },
+      },
+    }))
+  }
+
+  const handleOpenBusketModal = () => {
+    return dispatch(toggleBusketModal(true))
+  }
+
   return (
     <Wrapper>
       <Heading>
@@ -173,26 +220,33 @@ export const Main = () => {
           </BackBlock>
         </NavLink>
       </Heading>
-      <MainBlock>
-        <TabBlock>
-          <TabTitle>1.Вибір способу доставки</TabTitle>
-          <DeliveryBlock
-            handleChangeWerehouse={handleChangeWerehouse}
-            handleChangeDeliveryType={handleChangeDeliveryType}
-            handleChangeAddress={handleChangeAddress}
-            handleChangeCity={handleChangeCity}
-            state={state}
-          />
-        </TabBlock>
-        <TabBlock>
-          <TabTitle>2.Контакта інформація</TabTitle>
-          <ContactInfoBlock state={state} />
-        </TabBlock>
-        <TabBlock>
-          <TabTitle>3.Вибір способу оплати</TabTitle>
-          <PaymentBlock />
-        </TabBlock>
-      </MainBlock>
+      <BusketInfo handleOpenBusketModal={handleOpenBusketModal} />
+      <BlockWrapper>
+        <MainBlock>
+          <TabBlock>
+            <TabTitle>1.Вибір способу доставки</TabTitle>
+            <DeliveryBlock
+              handleChangeWerehouse={handleChangeWerehouse}
+              handleChangeDeliveryType={handleChangeDeliveryType}
+              handleChangeAddress={handleChangeAddress}
+              handleChangeCity={handleChangeCity}
+              state={state}
+            />
+          </TabBlock>
+          <TabBlock>
+            <TabTitle>2.Контакта інформація</TabTitle>
+            <ContactInfoBlock onChange={handleChangeInfo} state={state} />
+          </TabBlock>
+          <TabBlock>
+            <TabTitle>3.Вибір способу оплати</TabTitle>
+            <PaymentBlock handleChangePaymentType={handleChangePaymentType} state={state} />
+          </TabBlock>
+        </MainBlock>
+        <RightBlock>
+          <SummaryBlock />
+        </RightBlock>
+      </BlockWrapper>
+      <BusketModal />
     </Wrapper>
   )
 }
@@ -217,8 +271,17 @@ const BackBlock = styled.div`
   gap: 10px;
 `
 
+const BlockWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`
+
 const MainBlock = styled.div`
-  width: 80%;
+  width: 60%;
+`
+const RightBlock = styled.div`
+  width: 30%;
 `
 
 const TabBlock = styled.div`

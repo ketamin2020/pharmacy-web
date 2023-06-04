@@ -32,6 +32,10 @@ export enum DeliveryTypeNum {
   NOVA_POSHTA = 2,
   DELIVERY = 3,
 }
+export enum PaymentTypeNum {
+  CARD = 1,
+  IN_SHOP = 2,
+}
 
 export interface DeliveryType {
   type: DeliveryTypeNum
@@ -66,6 +70,7 @@ export interface Discount {
 }
 
 export interface Payment {
+  type: PaymentTypeNum
   name: string
   price: Price
 }

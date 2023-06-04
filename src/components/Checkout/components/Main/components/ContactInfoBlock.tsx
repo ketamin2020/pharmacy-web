@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import styled from '@emotion/styled'
 import { TextField, Checkbox, FormControlLabel } from '@mui/material'
 import ReactInputMask from 'react-input-mask'
 import { IPayment } from '../../types'
 interface IProps {
   state: IPayment
-  onChange: () => void
+  onChange: (E: ChangeEvent<HTMLInputElement>) => void
 }
 
 export const ContactInfoBlock = ({ onChange, state }: IProps) => {
@@ -13,7 +13,12 @@ export const ContactInfoBlock = ({ onChange, state }: IProps) => {
     <Wrapper>
       <Controls>
         <InputRow>
-          <FormControlLabel control={<Checkbox />} label='Отримувач інша людина' />
+          <FormControlLabel
+            value={state.delivery.recipient.itself}
+            control={<Checkbox />}
+            label='Отримувач інша людина'
+            onChange={e => onChange({ target: { name: 'itself', value: e.target.checked } })}
+          />
         </InputRow>
 
         <InputRow>
@@ -25,7 +30,6 @@ export const ContactInfoBlock = ({ onChange, state }: IProps) => {
             size='small'
             fullWidth
             label='Фамилія'
-            autoFocus={true}
           />
         </InputRow>
 
@@ -38,7 +42,6 @@ export const ContactInfoBlock = ({ onChange, state }: IProps) => {
             size='small'
             fullWidth
             label={`Ім'я`}
-            autoFocus={true}
           />
         </InputRow>
 
@@ -51,7 +54,6 @@ export const ContactInfoBlock = ({ onChange, state }: IProps) => {
             size='small'
             fullWidth
             label={`По батькові`}
-            autoFocus={true}
           />
         </InputRow>
         <InputRow>

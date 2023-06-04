@@ -1,12 +1,21 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { CheckCircle, CreditCard, Money } from '@material-ui/icons'
+import { IPayment } from '../../types'
+import { PaymentTypeNum } from '../../types'
+interface IProps {
+  state: IPayment
+  handleChangePaymentType: (type: number, title: string) => void
+}
 
-export const PaymentBlock = () => {
+export const PaymentBlock = ({ state, handleChangePaymentType }: IProps) => {
   return (
     <Wrapper>
       <Block>
-        <Tab active={true}>
+        <Tab
+          onClick={() => handleChangePaymentType(PaymentTypeNum.CARD, 'Оплата картою')}
+          active={PaymentTypeNum.CARD === state?.payment?.type}
+        >
           <div className='check-icon'>
             <CheckCircle
               style={{
@@ -24,7 +33,10 @@ export const PaymentBlock = () => {
           </div>
           <p className='price'>Оплата картою на сайті</p>
         </Tab>
-        <Tab active={false}>
+        <Tab
+          onClick={() => handleChangePaymentType(PaymentTypeNum.IN_SHOP, 'Оплата готівкою')}
+          active={PaymentTypeNum.IN_SHOP === state?.payment?.type}
+        >
           <div className='check-icon'>
             <CheckCircle
               style={{
@@ -40,7 +52,7 @@ export const PaymentBlock = () => {
               fontSize='large'
             />
           </div>
-          <p className='price'>Оплата в аптеці</p>
+          <p className='price'>Оплата готівкою</p>
         </Tab>
       </Block>
     </Wrapper>
