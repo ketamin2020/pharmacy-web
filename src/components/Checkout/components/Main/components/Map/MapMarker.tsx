@@ -6,7 +6,7 @@ import { NewPostIcon } from 'images/icons/icons'
 import { MapPopap } from './MapPopup'
 import { Pharmacy } from '../ChooseAddressModal'
 
-export const MapMarker = ({ activeItem, item }: { activeItem: Pharmacy; item: Pharmacy }) => {
+export const MapMarker = ({ activeItem, item, handleChooseWerehouse }: { activeItem: Pharmacy; item: Pharmacy }) => {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export const MapMarker = ({ activeItem, item }: { activeItem: Pharmacy; item: Ph
         html: ReactDOMServer.renderToString(<NewPostIcon width={20} />),
       })}
     >
-      <MapPopap activeItem={item.activeItem} item={item} />
+      <MapPopap handleChooseWerehouse={handleChooseWerehouse} activeItem={item.activeItem} item={item} />
     </Marker>
   )
 }

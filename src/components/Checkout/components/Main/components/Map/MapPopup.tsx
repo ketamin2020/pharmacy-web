@@ -16,7 +16,7 @@ const Row = styled.p`
   font-size: 14px;
 `
 
-export const MapPopap = ({ item }: Pharmacy) => {
+export const MapPopap = ({ item, handleChooseWerehouse }: Pharmacy) => {
   return (
     <Popup keepInView>
       <PopapWrapper>
@@ -27,7 +27,7 @@ export const MapPopap = ({ item }: Pharmacy) => {
           </span>
           <span>{item.phone}</span>
         </Row>
-        <Button style={{ marginLeft: 'auto' }} color='green'>
+        <Button onClick={() => handleChooseWerehouse(item)} style={{ marginLeft: 'auto' }} color='green'>
           <span>Вибрати</span>
         </Button>
       </PopapWrapper>

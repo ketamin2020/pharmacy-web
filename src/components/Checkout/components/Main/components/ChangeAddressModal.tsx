@@ -16,7 +16,7 @@ export interface DialogTitleProps {
 
 interface IProps {
   handleClose: () => void
-  handleSave: () => void
+  handleSave: (value: string) => void
   open: boolean
 }
 
@@ -42,7 +42,15 @@ export const ChangeAddressModal = ({ handleClose, handleSave, open }: IProps) =>
         <DialogContent>
           <LinksWrapper>
             {items.map(item => (
-              <LinksItem key={item.name}>{item.name}</LinksItem>
+              <LinksItem
+                onClick={() => {
+                  handleSave(item.value)
+                  handleClose()
+                }}
+                key={item.name}
+              >
+                {item.name}
+              </LinksItem>
             ))}
           </LinksWrapper>
 
@@ -63,9 +71,9 @@ export const ChangeAddressModal = ({ handleClose, handleSave, open }: IProps) =>
           побачити доступні способи доставки
         </DialogContentText>
         <DialogActions>
-          <Button color='green' shape='square' onClick={handleSave}>
+          {/* <Button color='green' shape='square' onClick={handleSave}>
             <span>Вибрати</span>
-          </Button>
+          </Button> */}
         </DialogActions>
       </Dialog>
     </div>

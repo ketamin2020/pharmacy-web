@@ -33,7 +33,13 @@ const TempEventListener = ({ mapCenter }: LatLngTuple) => {
   return null
 }
 
-export const Map: React.FC<MapContainerProps & IProps> = ({ center, items, activeItem, ...rest }) => {
+export const Map: React.FC<MapContainerProps & IProps> = ({
+  center,
+  items,
+  handleChooseWerehouse,
+  activeItem,
+  ...rest
+}) => {
   return (
     <MapWrapper>
       <MapContainer {...rest} center={center} zoom={13} scrollWheelZoom={true}>
@@ -43,7 +49,7 @@ export const Map: React.FC<MapContainerProps & IProps> = ({ center, items, activ
         />
         {/* <MarkerClusterGroup maxClusterRadius={30} key={Date.now()}> */}
         {items?.map(item => (
-          <MapMarker activeItem={activeItem} key={item.id} item={item} />
+          <MapMarker handleChooseWerehouse={handleChooseWerehouse} activeItem={activeItem} key={item.id} item={item} />
         ))}
         {/* </MarkerClusterGroup> */}
 

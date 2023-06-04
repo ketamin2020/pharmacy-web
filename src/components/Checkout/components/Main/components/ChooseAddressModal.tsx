@@ -11,6 +11,7 @@ import { Map } from './Map/Map'
 import { NewPostIcon } from 'images/icons/icons'
 import { Phone } from '@material-ui/icons'
 import { LatLngTuple } from 'leaflet'
+import { IPayment } from '../../types'
 
 export interface DialogTitleProps {
   children?: React.ReactNode
@@ -32,21 +33,26 @@ export interface Pharmacy {
 
 interface IProps {
   handleClose: () => void
-  handleSave: () => void
   open: boolean
   title: string
   items: Pharmacy[]
+  handleSave: (werehouse: IPayment['warehouse']) => void
 }
 
 const position: LatLngTuple = [50.41365970726126, 30.543992123578576]
 
 export const ChooseAddressModal = ({ handleClose, handleSave, open, title, items }: IProps) => {
   const [center, setCenter] = useState(position)
-  const [activeItem, setActiveItem] = useState<Pharmacy>({})
+  const [activeItem, setActiveItem] = useState<IPayment['warehouse']>({})
 
-  const onClick = (item: Pharmacy) => {
+  const onClick = (item: IPayment['warehouse']) => {
     setCenter([item.latitude, item.longitude])
     setActiveItem(item)
+  }
+
+  const handleChooseWerehouse = (item: IPayment['warehouse']) => {
+    handleSave(item)
+    handleClose()
   }
 
   return (
@@ -70,10 +76,16 @@ export const ChooseAddressModal = ({ handleClose, handleSave, open, title, items
           <Wrapper>
             <SidebarItems>
               {items.map(item => (
-                <Item key={item.id} onClick={onClick} {...item} />
+                <Item key={item.id} handleChooseWerehouse={handleChooseWerehouse} onClick={onClick} item={item} />
               ))}
             </SidebarItems>
-            <Map activeItem={activeItem} center={center} items={items} style={{ width: '1000px', height: '550px' }} />
+            <Map
+              handleChooseWerehouse={handleChooseWerehouse}
+              activeItem={activeItem}
+              center={center}
+              items={items}
+              style={{ width: '1000px', height: '550px' }}
+            />
           </Wrapper>
         </DialogContent>
       </Dialog>
@@ -105,22 +117,22 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   )
 }
 
-function Item({ onClick, name, phone, latitude, longitude, id }: Pharmacy) {
+function Item({ onClick, item, handleChooseWerehouse }: Pharmacy) {
   return (
-    <ItemWrapper onClick={() => onClick({ latitude, longitude, id })}>
+    <ItemWrapper onClick={() => onClick(item)}>
       <ItemRow>
         <span>
           <NewPostIcon width={20} />
         </span>
-        <span>{name}</span>
+        <span>{item.name}</span>
       </ItemRow>
       <ItemRow>
         <span>
           <Phone />
         </span>
-        <span>{phone}</span>
+        <span>{item.phone}</span>
       </ItemRow>
-      <Button color='green' shape='square'>
+      <Button onClick={() => handleChooseWerehouse(item)} color='green' shape='square'>
         <span>Вибрати</span>
       </Button>
     </ItemWrapper>

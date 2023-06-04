@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import styled from '@emotion/styled'
 import { LocationCity } from '@material-ui/icons'
 import { ChangeAddressModal } from './ChangeAddressModal'
 import { ChooseAddressModal } from './ChooseAddressModal'
 import Button from 'common/Button/Button'
 import { Store } from '@material-ui/icons'
-import { NewPostIcon } from 'images/icons/icons'
+import { TextField } from '@mui/material'
 import { KeyboardArrowRight } from '@material-ui/icons'
-import { CheckCircle } from '@material-ui/icons'
+import { CheckCircle, LocalShipping } from '@material-ui/icons'
+import { IPayment, DeliveryTypeNum } from '../../types'
+import { NewPostIcon } from 'images/icons/icons'
+import { Phone } from '@material-ui/icons'
 
 const mock = [
   {
@@ -36,7 +39,6 @@ const mock = [
     workTime: '',
     workTimeArray: [],
   },
-
   {
     id: '7b422fc3-e1b8-11e3-8c4a-0050568002cf33',
     latitude: 50.442423,
@@ -59,7 +61,7 @@ const mockPharm = [
     longitude: 30.543992123578576,
     loyalty: true,
     maxDeclaredCost: 0,
-    name: 'Аптека Артмед',
+    name: 'Аптека Артмед, вулиця Михайла Драгомирова, 2 а, Київ, 02000',
     number: 1,
     phone: '380800500609',
     selfService: false,
@@ -68,7 +70,21 @@ const mockPharm = [
   },
 ]
 
-export const DeliveryBlock = () => {
+interface IProps {
+  state: IPayment
+  handleChangeDeliveryType: (type: number, title: string) => void
+  handleChangeWerehouse: (werehouse: IPayment['warehouse']) => void
+  handleChangeAddress: (e: ChangeEvent<HTMLInputElement>) => void
+  handleChangeCity: (city: IPayment['delivery']['city']['name']) => void
+}
+
+export const DeliveryBlock = ({
+  state,
+  handleChangeDeliveryType,
+  handleChangeWerehouse,
+  handleChangeAddress,
+  handleChangeCity,
+}: IProps) => {
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
 
@@ -85,6 +101,7 @@ export const DeliveryBlock = () => {
   const handleCloseModal = () => {
     setVisible(false)
   }
+
   return (
     <>
       {' '}
@@ -93,15 +110,23 @@ export const DeliveryBlock = () => {
           <AddressBlock>
             <span>Ваше місто</span>
             <p className='adress-wrapper'>
-              <LocationCity /> <p>Київ</p>
+              <LocationCity /> <p>{state?.delivery?.city?.name}</p>
             </p>
           </AddressBlock>
-          <Button shape='square' onClick={handleClickOpen} color='green'>
+          <Button
+            disabled={DeliveryTypeNum.NOVA_POSHTA !== state.deliveryType.type}
+            shape='square'
+            onClick={handleClickOpen}
+            color='green'
+          >
             <span>Змінити</span>
           </Button>
         </Block>
         <Block style={{ justifyContent: 'start' }}>
-          <Tab active={true}>
+          <Tab
+            onClick={() => handleChangeDeliveryType(DeliveryTypeNum.PICKUP, 'Забрати з аптеки')}
+            active={DeliveryTypeNum.PICKUP === state.deliveryType?.type}
+          >
             <div className='check-icon'>
               <CheckCircle
                 style={{
@@ -121,11 +146,38 @@ export const DeliveryBlock = () => {
             <p className='price'>Забрати з аптеки</p>
             <p className='green'>Безплатно</p>
           </Tab>
-          <Tab active={false}>
+          <Tab
+            onClick={() => handleChangeDeliveryType(DeliveryTypeNum.DELIVERY, 'Доставка')}
+            active={DeliveryTypeNum.DELIVERY === state.deliveryType?.type}
+          >
             <div className='check-icon'>
               <CheckCircle
                 style={{
-                  fill: 'red',
+                  fill: '#00a990',
+                }}
+              />
+            </div>
+
+            <div className='icon-block'>
+              <LocalShipping
+                fontSize='large'
+                style={{
+                  fill: '#00a990',
+                }}
+              />
+            </div>
+
+            <p>{`Доставка`}</p>
+            <p className='green'>70 грн</p>
+          </Tab>
+          <Tab
+            onClick={() => handleChangeDeliveryType(DeliveryTypeNum.NOVA_POSHTA, 'Нова Пошта')}
+            active={DeliveryTypeNum.NOVA_POSHTA === state.deliveryType?.type}
+          >
+            <div className='check-icon'>
+              <CheckCircle
+                style={{
+                  fill: '#00a990',
                 }}
               />
             </div>
@@ -138,19 +190,27 @@ export const DeliveryBlock = () => {
             <p className='green'>70 грн</p>
           </Tab>
         </Block>
-        <Block>
+      </Wrapper>
+      <Block>
+        {DeliveryTypeNum.PICKUP === state.deliveryType.type && (
+          <WerehouseItem handleClickOpenModal={handleClickOpenModal} item={state.warehouse} />
+        )}
+        {DeliveryTypeNum.DELIVERY === state.deliveryType.type && (
+          <DeliveryAddress onChange={handleChangeAddress} state={state} />
+        )}
+        {DeliveryTypeNum.NOVA_POSHTA === state.deliveryType.type && (
           <ChoosenButton onClick={handleClickOpenModal}>
-            <p className='button-link'>Виберіть аптеку</p>
+            <p className='button-link'>Виберіть відділення</p>
             <p>
               <KeyboardArrowRight />
             </p>
           </ChoosenButton>
-        </Block>
-      </Wrapper>
-      <ChangeAddressModal handleSave={() => null} open={open} handleClose={handleClose} />
+        )}
+      </Block>
+      <ChangeAddressModal handleSave={handleChangeCity} open={open} handleClose={handleClose} />
       <ChooseAddressModal
         title='Виберіть відділення'
-        handleSave={() => null}
+        handleSave={handleChangeWerehouse}
         open={visible}
         handleClose={handleCloseModal}
         items={mock}
@@ -159,6 +219,10 @@ export const DeliveryBlock = () => {
   )
 }
 const Wrapper = styled.div``
+const InputWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+`
 const Block = styled.div`
   padding: 20px;
   width: 100%;
@@ -210,6 +274,7 @@ const AddressBlock = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+    height: 20px;
   }
   & span {
     color: rgba(57, 69, 86, 0.6);
@@ -234,3 +299,93 @@ const ChoosenButton = styled.div`
     font-weight: 600;
   }
 `
+const ItemWrapper = styled.div`
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--greenColor);
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 10px;
+  & .text-title {
+    color: var(--greenColor);
+    text-align: end;
+  }
+`
+const ItemRow = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+`
+
+const InputRow = styled.div`
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+`
+
+function WerehouseItem({ item, handleClickOpenModal }: IPayment['warehouse']) {
+  return (
+    <ItemWrapper>
+      <p className='text-title' onClick={handleClickOpenModal}>
+        Змінити
+      </p>
+      {/* <ItemRow> */}
+      {/* <span>
+          <NewPostIcon width={20} />
+        </span> */}
+      <p>{item?.name}</p>
+      <p>{item?.street}</p>
+      {/* </ItemRow> */}
+      <ItemRow>
+        <span>
+          <Phone />
+        </span>
+        <span>{item?.number}</span>
+      </ItemRow>
+    </ItemWrapper>
+  )
+}
+
+function DeliveryAddress({ state, onChange }) {
+  return (
+    <InputWrapper>
+      {' '}
+      <InputRow>
+        <TextField
+          value={state?.delivery?.recipient?.street}
+          defaultValue={state?.delivery?.recipient?.street}
+          onChange={onChange}
+          name='street'
+          size='small'
+          fullWidth
+          label='Вулиця'
+          autoFocus={true}
+          style={{ minWidth: '300px' }}
+        />
+      </InputRow>
+      <InputRow>
+        <TextField
+          value={state?.delivery?.recipient?.house_number}
+          defaultValue={state?.delivery?.recipient?.house_number}
+          onChange={onChange}
+          name='house_number'
+          size='small'
+          label={`Дім`}
+        />
+      </InputRow>
+      <InputRow>
+        <TextField
+          value={state?.delivery?.recipient?.flat_number}
+          defaultValue={state?.delivery?.recipient?.flat_number}
+          onChange={onChange}
+          name='flat_number'
+          size='small'
+          label={`Квартира`}
+        />
+      </InputRow>
+    </InputWrapper>
+  )
+}
