@@ -7,8 +7,10 @@ import { RoutePath } from 'routes/types'
 import { useDispatch } from 'react-redux'
 import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
 import { deleteBasketItem, fetchBasketList, fetchBasketListByUser } from 'redux/basket/basketOperation'
+import { Add, Remove } from '@material-ui/icons'
+import { increaseBusketItemQty, decreaseBusketItemQty } from 'api/basket'
 
-export const BusketItem = ({ reviews, images, price, property, id }) => {
+export const BusketItem = ({ reviews, images, price, property, id, qty }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const handleOpenProduct = id => {
@@ -21,11 +23,31 @@ export const BusketItem = ({ reviews, images, price, property, id }) => {
     await dispatch(fetchBasketList())
     await dispatch(fetchBasketListByUser())
   }
+
+  const handleIncreaseQtyItem = async id => {
+    try {
+      await increaseBusketItemQty(id)
+      await dispatch(fetchBasketList())
+      await dispatch(fetchBasketListByUser())
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const handleDecreaseQtyItem = async id => {
+    try {
+      await decreaseBusketItemQty(id)
+      await dispatch(fetchBasketList())
+      await dispatch(fetchBasketListByUser())
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <Wrapper>
       <Section>
         <img width={90} src={images?.[0]?.url} alt={property?.name} />
       </Section>
+
       <Section className='property-block'>
         <p onClick={() => handleOpenProduct(id)} className='property-name'>
           {property?.name}
@@ -33,6 +55,18 @@ export const BusketItem = ({ reviews, images, price, property, id }) => {
         <p className='property-code_wrapper'>
           Код товару: <span className='property-code'>{price.code}</span>{' '}
         </p>
+      </Section>
+      <Section>
+        <QtyWrapper>
+          <div onClick={() => handleDecreaseQtyItem(id)} className='decrease-value'>
+            <Remove />
+          </div>
+
+          <div>{qty || 1}</div>
+          <div onClick={() => handleIncreaseQtyItem(id)} className='increase-value'>
+            <Add />
+          </div>
+        </QtyWrapper>
       </Section>
       <Section className='price-value'>{priceToView(price.current)}</Section>
       <Section onClick={() => handleDeleteFromBasketList(id)} className='busket-action'>
@@ -84,3 +118,19 @@ const Wrapper = styled.div`
 `
 
 const Section = styled.div``
+
+const QtyWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 30px 30px 30px;
+  align-items: center;
+  justify-items: center;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px;
+  & .increase-value {
+    cursor: pointer;
+  }
+  & .decrease-value {
+    cursor: pointer;
+  }
+`

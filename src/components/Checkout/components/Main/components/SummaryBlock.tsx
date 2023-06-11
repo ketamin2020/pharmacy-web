@@ -7,7 +7,12 @@ import Button from 'common/Button/Button'
 import { NavLink } from 'react-router-dom'
 import { RoutePath } from 'routes/types'
 
-export const SummaryBlock = () => {
+interface IProps {
+  handleSubmit: () => void
+  html: string
+}
+
+export const SummaryBlock = ({ handleSubmit, html }: IProps) => {
   const busket = useSelector(basketSelector)
 
   return (
@@ -15,7 +20,7 @@ export const SummaryBlock = () => {
       <Heading>Разом</Heading>
       <Row>
         <p className='title'>{`${busket?.totalQty || 0} товарів на сумму:`}</p>
-        <p className='value'>{priceToView(busket.totalPrice)}</p>
+        <p className='value'>{priceToView(busket?.totalPrice)}</p>
       </Row>
       <Row>
         <p className='title'>Сума доставки:</p>
@@ -23,11 +28,18 @@ export const SummaryBlock = () => {
       </Row>
       <SummaryRow>
         <p>Разом до сплати:</p>
-        <h3>{priceToView(busket.totalPrice + 70)}</h3>
+        <h3>{priceToView(busket?.totalPrice + 70)}</h3>
       </SummaryRow>
-      <Button buttonCustomClass='submit-btn' color='green' shape='square'>
+      <Button
+        onClick={handleSubmit}
+        disabled={!busket?.totalQty}
+        buttonCustomClass='submit-btn'
+        color='green'
+        shape='square'
+      >
         <p>Оформити замовленні</p>
       </Button>
+      {html ? <p style={{ textAlign: 'center' }} dangerouslySetInnerHTML={{ __html: html }} /> : ''}
       <p className='agrement'>
         Підтверджуючи замовлення, я приймаю умови <br></br>{' '}
         <NavLink to={RoutePath.AGREEMENT}>користувацької угоди</NavLink>

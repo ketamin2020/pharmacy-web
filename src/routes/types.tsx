@@ -23,6 +23,7 @@ enum RoutePath {
   DRUGS = '/drugs',
   PRODUCT = '/product',
   CHECKOUT = '/checkout',
+  CHECKOUT_SUCCESS = '/checkout/success/:orderId',
 }
 
 interface Routes {

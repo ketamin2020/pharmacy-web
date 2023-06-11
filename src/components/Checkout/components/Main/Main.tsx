@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react'
+import React, { useState, useEffect, ChangeEvent, useRef } from 'react'
 import styled from '@emotion/styled'
 import { NavLink } from 'react-router-dom'
 import { ArrowLeft } from '@material-ui/icons'
@@ -10,14 +10,16 @@ import { BusketInfo } from './components/BusketInfo'
 import { useSelector } from 'react-redux'
 import { userSelector } from 'redux/user/userSelectors'
 import { IPayment } from '../types'
-import { basketIdSelector } from 'redux/basket/basketSelectors'
+import { basketIdSelector, basketSelector, basketlistSelector } from 'redux/basket/basketSelectors'
 import { DeliveryTypeNum, PaymentTypeNum } from '../types'
 import BusketModal from 'components/Modals/BusketModal/BusketModal'
 import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
 import { useDispatch } from 'react-redux'
+import notification from 'common/Notification/Notification'
+import { createNewOrder } from 'api/ordered'
 
 const initData: IPayment = {
-  basketId: '',
+  basket_id: '',
   callback: false,
   comment: '',
   client: {
@@ -35,7 +37,7 @@ const initData: IPayment = {
 
   delivery: {
     city: {
-      id: '',
+      id: '000000',
       latitude: '',
       longitude: '',
       name: 'Київ',
@@ -86,19 +88,26 @@ export const Main = () => {
   const dispatch = useDispatch()
   const user = useSelector(userSelector)
   const bascketID = useSelector(basketIdSelector)
+  const products = useSelector(basketlistSelector)
+  const busket = useSelector(basketSelector)
   const [state, setState] = useState<IPayment>(initData)
+  const [liqpayBtn, setLiqPayBtn] = useState('')
 
   useEffect(() => {
     setState(prev => ({
       ...prev,
-      basketId: bascketID,
+      basket_id: bascketID,
+      user_id: user?.id,
+      status: 1,
+      total: busket?.totalPrice,
+      products,
       client: {
         ...prev.client,
         first_name: user.first_name,
         last_name: user.last_name,
         middle_name: user.middle_name,
         phone: user.phone,
-        user_id: user.id,
+        user_id: user?.id,
       },
       delivery: {
         ...prev.delivery,
@@ -108,11 +117,12 @@ export const Main = () => {
           last_name: user.last_name,
           middle_name: user.middle_name,
           phone: user.phone,
-          user_id: user.id,
+          email: user.email,
+          user_id: user?.id,
         },
       },
     }))
-  }, [user, bascketID])
+  }, [user, bascketID, busket, products])
 
   const handleChangeDeliveryType = (type: number, title: string) => {
     setState(prev => ({
@@ -209,6 +219,17 @@ export const Main = () => {
     return dispatch(toggleBusketModal(true))
   }
 
+  const handleSubmit = async () => {
+    try {
+      const { data: html } = await createNewOrder(state)
+      setLiqPayBtn(html)
+      notification('success', 'Успішно')
+      console.log(state)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Wrapper>
       <Heading>
@@ -243,7 +264,7 @@ export const Main = () => {
           </TabBlock>
         </MainBlock>
         <RightBlock>
-          <SummaryBlock />
+          <SummaryBlock html={liqpayBtn} handleSubmit={handleSubmit} />
         </RightBlock>
       </BlockWrapper>
       <BusketModal />

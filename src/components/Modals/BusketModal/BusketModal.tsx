@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isOpenBusketModalSelectror } from 'redux/ui/modals/modalSelectors'
 import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
 import Modal from '../Modal'
-import { basketlistSelector } from 'redux/basket/basketSelectors'
+import { basketlistSelector, basketSelector } from 'redux/basket/basketSelectors'
 import { BusketItem } from 'common/BusketItem/BusketItem'
 import Button from 'common/Button/Button'
 import styled from '@emotion/styled'
@@ -16,12 +16,15 @@ const BusketModal = () => {
   const navigate = useNavigate()
   const isOpen = useSelector(isOpenBusketModalSelectror)
   const data = useSelector(basketlistSelector)
+  const busket = useSelector(basketSelector)
   const onClose = () => dispatch(toggleBusketModal(false))
 
   const handleCheckout = () => {
     onClose()
     return navigate(`${RoutePath.CHECKOUT}`)
   }
+
+  console.log(data)
   return (
     <Modal title='Корзина' handleClose={onClose} open={isOpen}>
       {!!data?.length
@@ -33,6 +36,7 @@ const BusketModal = () => {
               property={item.property}
               id={item.id}
               key={idx}
+              qty={item.qty}
             />
           ))
         : 'Корзина порожня'}
@@ -41,7 +45,7 @@ const BusketModal = () => {
         <SummaryWrapper>
           <p>
             <span className='summary-title'>Разом:</span>
-            <span className='summary-value'>{priceToView(80)}</span>
+            <span className='summary-value'>{priceToView(busket?.totalPrice || 0)}</span>
           </p>
           <p>
             <Button onClick={handleCheckout} color='green' shape='square' buttonCustomClass='product-basket'>

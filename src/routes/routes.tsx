@@ -141,6 +141,12 @@ const privateRoutes: Routes[] = [
     exact: true,
     element: lazy(() => import('../pages/CheckoutPage/index' /* webpackChunkName: "Checkout Page" */)),
   },
+  {
+    path: RoutePath.CHECKOUT_SUCCESS,
+    name: 'Оформлення',
+    exact: true,
+    element: lazy(() => import('../pages/CheckoutSuccessPage/index' /* webpackChunkName: "Checkout Success Page" */)),
+  },
 ]
 const adminRoutes: Routes[] = [
   {
