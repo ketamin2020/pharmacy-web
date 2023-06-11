@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import styled from '@emotion/styled'
+import CitySearchAutocomplite from 'common/CitySearchAutocomplite/CitySearchAutocomplite'
 
 export interface DialogTitleProps {
   children?: React.ReactNode
@@ -17,6 +18,7 @@ export interface DialogTitleProps {
 interface IProps {
   handleClose: () => void
   handleSave: (value: string) => void
+  handleSearch: () => void
   open: boolean
 }
 
@@ -34,7 +36,7 @@ const items = [
   { name: 'Житомир', value: 'Житомир' },
 ]
 
-export const ChangeAddressModal = ({ handleClose, handleSave, open }: IProps) => {
+export const ChangeAddressModal = ({ handleClose, handleSave, open, handleSearch, onSelect, city }: IProps) => {
   return (
     <div>
       <Dialog closeAfterTransition open={open} onClose={handleClose}>
@@ -54,7 +56,7 @@ export const ChangeAddressModal = ({ handleClose, handleSave, open }: IProps) =>
             ))}
           </LinksWrapper>
 
-          <TextField
+          {/* <TextField
             autoFocus
             margin='dense'
             id='name'
@@ -64,7 +66,9 @@ export const ChangeAddressModal = ({ handleClose, handleSave, open }: IProps) =>
             fullWidth
             size='small'
             variant='outlined'
-          />
+            onChange={handleSearch}
+          /> */}
+          <CitySearchAutocomplite inputVal={city} onSelect={onSelect} />
         </DialogContent>
         <DialogContentText style={{ fontSize: '14px', padding: '20px' }}>
           Ми доставляємо замовлення до всіх населених пунктів України. Вкажіть місто або селище, що цікавить Вас, щоб

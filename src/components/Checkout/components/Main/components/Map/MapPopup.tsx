@@ -1,9 +1,11 @@
 import React, { useRef } from 'react'
 import styled from '@emotion/styled'
 import { Pharmacy } from '../ChooseAddressModal'
-import { Phone } from '@material-ui/icons'
+import { Phone, AccessTime } from '@material-ui/icons'
 import Button from 'common/Button/Button'
 import { Popup } from 'react-leaflet'
+import moment from 'moment'
+
 const PopapWrapper = styled.div``
 
 const Title = styled.p`
@@ -20,12 +22,18 @@ export const MapPopap = ({ item, handleChooseWerehouse }: Pharmacy) => {
   return (
     <Popup keepInView>
       <PopapWrapper>
-        <Title>{item.name}</Title>
+        <Title>{item?.Description}</Title>
         <Row>
           <span>
             <Phone />
           </span>
-          <span>{item.phone}</span>
+          <span>{item?.Phone}</span>
+        </Row>
+        <Row>
+          <span>
+            <AccessTime />
+          </span>
+          <span>{item?.Delivery?.[moment().format('dddd')]}</span>
         </Row>
         <Button onClick={() => handleChooseWerehouse(item)} style={{ marginLeft: 'auto' }} color='green'>
           <span>Вибрати</span>

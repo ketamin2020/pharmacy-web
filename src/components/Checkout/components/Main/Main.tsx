@@ -18,6 +18,23 @@ import { useDispatch } from 'react-redux'
 import notification from 'common/Notification/Notification'
 import { createNewOrder } from 'api/ordered'
 
+const defaultCity = {
+  AddressDeliveryAllowed: true,
+  Area: 'Київська',
+  DeliveryCity: '8d5a980d-391c-11dd-90d9-001a92567626',
+  MainDescription: 'Київ',
+  ParentRegionCode: 'обл.',
+  ParentRegionTypes: 'область',
+  Present: 'м. Київ, Київська обл.',
+  Ref: 'e718a680-4b33-11e4-ab6d-005056801329',
+  Region: '',
+  RegionTypes: '',
+  RegionTypesCode: '',
+  SettlementTypeCode: 'м.',
+  StreetsAvailability: true,
+  Warehouses: 6399,
+}
+
 const initData: IPayment = {
   basket_id: '',
   callback: false,
@@ -56,21 +73,7 @@ const initData: IPayment = {
     },
   },
   requiredRecipient: false,
-  warehouse: {
-    houseNumber: '',
-    id: '928853',
-    latitude: 50.41365970726126,
-    longitude: 30.543992123578576,
-    loyalty: false,
-    name: 'Аптека Артмед',
-    number: '+38(098)-53-69-386',
-    postcode: '',
-    selfService: true,
-    street: 'вулиця Михайла Драгомирова, 2 а, Київ, 02000',
-    typeSlug: 'artmed',
-    workTime: '8:00 - 21:00',
-    workTimeArray: [],
-  },
+  warehouse: null,
   discount: {
     usedBonus: 0,
     warehouseId: 0,
@@ -92,6 +95,7 @@ export const Main = () => {
   const busket = useSelector(basketSelector)
   const [state, setState] = useState<IPayment>(initData)
   const [liqpayBtn, setLiqPayBtn] = useState('')
+  const [city, setCity] = useState(defaultCity)
 
   useEffect(() => {
     setState(prev => ({
@@ -127,6 +131,7 @@ export const Main = () => {
   const handleChangeDeliveryType = (type: number, title: string) => {
     setState(prev => ({
       ...prev,
+      warehouse: prev.deliveryType.type !== type ? null : prev.warehouse,
       deliveryType: {
         type: type,
         title: title,
@@ -201,6 +206,11 @@ export const Main = () => {
     }))
   }
 
+  const handleChangeWerehouseCity = city => {
+    setCity(city)
+    handleChangeCity(city?.Present)
+  }
+
   const handleChangeInfo = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setState(prev => ({
@@ -251,7 +261,9 @@ export const Main = () => {
               handleChangeDeliveryType={handleChangeDeliveryType}
               handleChangeAddress={handleChangeAddress}
               handleChangeCity={handleChangeCity}
+              handleChangeWerehouseCity={handleChangeWerehouseCity}
               state={state}
+              city={city}
             />
           </TabBlock>
           <TabBlock>

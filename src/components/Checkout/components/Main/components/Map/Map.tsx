@@ -5,7 +5,6 @@ import { MapContainerProps } from 'react-leaflet'
 import { MapMarker } from './MapMarker'
 import styled from '@emotion/styled'
 import 'leaflet/dist/leaflet.css'
-import MarkerClusterGroup from 'react-leaflet-markercluster'
 
 import { Pharmacy } from '../ChooseAddressModal'
 const MapWrapper = styled.div`
@@ -47,11 +46,15 @@ export const Map: React.FC<MapContainerProps & IProps> = ({
           url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=4c3b17fc-bee1-42cc-9b17-b4b51480d8c5'
           attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org">OpenMapTiles</a>, &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         />
-        {/* <MarkerClusterGroup maxClusterRadius={30} key={Date.now()}> */}
+
         {items?.map(item => (
-          <MapMarker handleChooseWerehouse={handleChooseWerehouse} activeItem={activeItem} key={item.id} item={item} />
+          <MapMarker
+            handleChooseWerehouse={handleChooseWerehouse}
+            activeItem={activeItem}
+            key={item?.Ref}
+            item={item}
+          />
         ))}
-        {/* </MarkerClusterGroup> */}
 
         <TempEventListener mapCenter={center} />
       </MapContainer>

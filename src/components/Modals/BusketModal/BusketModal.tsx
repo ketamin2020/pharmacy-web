@@ -24,7 +24,6 @@ const BusketModal = () => {
     return navigate(`${RoutePath.CHECKOUT}`)
   }
 
-  console.log(data)
   return (
     <Modal title='Корзина' handleClose={onClose} open={isOpen}>
       {!!data?.length

@@ -12,6 +12,8 @@ import { NewPostIcon } from 'images/icons/icons'
 import { Phone } from '@material-ui/icons'
 import { LatLngTuple } from 'leaflet'
 import { IPayment } from '../../types'
+import { AccessTime } from '@material-ui/icons'
+import moment from 'moment'
 
 export interface DialogTitleProps {
   children?: React.ReactNode
@@ -46,7 +48,7 @@ export const ChooseAddressModal = ({ handleClose, handleSave, open, title, items
   const [activeItem, setActiveItem] = useState<IPayment['warehouse']>({})
 
   const onClick = (item: IPayment['warehouse']) => {
-    setCenter([item.latitude, item.longitude])
+    setCenter([+item.Latitude, +item.Longitude])
     setActiveItem(item)
   }
 
@@ -75,8 +77,8 @@ export const ChooseAddressModal = ({ handleClose, handleSave, open, title, items
         <DialogContent>
           <Wrapper>
             <SidebarItems>
-              {items.map(item => (
-                <Item key={item.id} handleChooseWerehouse={handleChooseWerehouse} onClick={onClick} item={item} />
+              {items?.map(item => (
+                <Item key={item?.Ref} handleChooseWerehouse={handleChooseWerehouse} onClick={onClick} item={item} />
               ))}
             </SidebarItems>
             <Map
@@ -124,14 +126,21 @@ function Item({ onClick, item, handleChooseWerehouse }: Pharmacy) {
         <span>
           <NewPostIcon width={20} />
         </span>
-        <span>{item.name}</span>
+        <span>{item?.Description}</span>
       </ItemRow>
       <ItemRow>
         <span>
           <Phone />
         </span>
-        <span>{item.phone}</span>
+        <span>{item?.Phone}</span>
       </ItemRow>
+      <ItemRow>
+        <span>
+          <AccessTime />
+        </span>
+        <span>{item?.Delivery?.[moment().format('dddd')]}</span>
+      </ItemRow>
+
       <Button onClick={() => handleChooseWerehouse(item)} color='green' shape='square'>
         <span>Вибрати</span>
       </Button>
@@ -140,8 +149,8 @@ function Item({ onClick, item, handleChooseWerehouse }: Pharmacy) {
 }
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 300px auto;
   gap: 20px;
   padding: 20px 0;
 `
@@ -152,6 +161,8 @@ const Heading = styled.div`
 
 const SidebarItems = styled.div`
   width: 300px;
+  max-height: 550px;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   row-gap: 10px;

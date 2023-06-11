@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { LocationCity } from '@material-ui/icons'
 import { ChangeAddressModal } from './ChangeAddressModal'
@@ -10,63 +10,66 @@ import { KeyboardArrowRight } from '@material-ui/icons'
 import { CheckCircle, LocalShipping } from '@material-ui/icons'
 import { IPayment, DeliveryTypeNum } from '../../types'
 import { NewPostIcon } from 'images/icons/icons'
-import { Phone } from '@material-ui/icons'
-
-const mock = [
-  {
-    id: '1ec09d88-e1c2-11e3-8c4a-0050568002cf11',
-    latitude: 50.354786,
-    longitude: 30.542884,
-    loyalty: true,
-    maxDeclaredCost: 0,
-    name: 'Отделение №1 (до 30 кг на одно место): ул. Пироговский путь, 135',
-    number: 1,
-    phone: '380800500609',
-    selfService: false,
-    workTime: '',
-    workTimeArray: [],
-  },
-  {
-    id: '7b422fbe-e1b8-11e3-8c4a-0050568002cf22',
-    latitude: 50.5260795,
-    longitude: 30.4826465,
-    loyalty: true,
-    maxDeclaredCost: 0,
-    name: 'Отделение №2: ул. Богатырская, 11',
-    number: 2,
-    phone: '380800500609',
-    selfService: false,
-    workTime: '',
-    workTimeArray: [],
-  },
-  {
-    id: '7b422fc3-e1b8-11e3-8c4a-0050568002cf33',
-    latitude: 50.442423,
-    longitude: 30.651501,
-    loyalty: true,
-    maxDeclaredCost: 0,
-    name: 'Отделение №3  (до 30 кг на одне місце): ул. Калачевская, 13 (Старая Дарница)',
-    number: 3,
-    phone: '380800500609',
-    selfService: false,
-    workTime: '',
-    workTimeArray: [],
-  },
-]
+import { Phone, AccessTime } from '@material-ui/icons'
+import { searchByWerehouse } from 'api/drugs'
+import moment from 'moment'
 
 const mockPharm = [
   {
-    id: '1ec09d88-e1c2-11e3-8c4a-0050568002cf',
-    latitude: 50.41365970726126,
-    longitude: 30.543992123578576,
-    loyalty: true,
-    maxDeclaredCost: 0,
-    name: 'Аптека Артмед, вулиця Михайла Драгомирова, 2 а, Київ, 02000',
-    number: 1,
-    phone: '380800500609',
-    selfService: false,
-    workTime: '',
-    workTimeArray: [],
+    BicycleParking: '0',
+    CanGetMoneyTransfer: '1',
+    CategoryOfWarehouse: 'Branch',
+    CityDescription: 'Київ',
+    CityDescriptionRu: 'Київ',
+    CityRef: '06f87976-4079-11de-b509-001d92f78698',
+    Delivery: {
+      Friday: '08:00-20:00',
+      Monday: '08:00-20:00',
+      Saturday: '08:00-20:00',
+      Sunday: '08:00-20:00',
+      Thursday: '08:00-20:00',
+      Tuesday: '08:00-20:00',
+      Wednesday: '08:00-20:00',
+    },
+    DenyToSelect: '0',
+    Description: 'Аптека "АРТМЕД", вулиця Михайла Драгомирова, 2А, Київ, 02000 ',
+    Direct: '',
+    DistrictCode: 'Ск Чи',
+    GeneratorEnabled: '1',
+    InternationalShipping: '1',
+    Latitude: 50.41365970726126,
+    Longitude: 30.543992123578576,
+    MaxDeclaredCost: '0',
+    Number: '1',
+    OnlyReceivingParcel: '0',
+    POSTerminal: '1',
+    PaymentAccess: '0',
+    Phone: '380800500609',
+    PlaceMaxWeightAllowed: '1000',
+    PostFinance: '1',
+    PostMachineType: '',
+    PostalCodeUA: '02000',
+    ReceivingLimitationsOnDimensions: { Width: 170, Height: 170, Length: 300 },
+    Ref: '169227e3-e1c2-11e3-8c4a-0050568002cf',
+    RegionCity: 'Київ',
+    SelfServiceWorkplacesCount: '0',
+    SendingLimitationsOnDimensions: { Width: 170, Height: 170, Length: 300 },
+    SettlementAreaDescription: 'Київська область',
+    SettlementDescription: 'Київ',
+    SettlementRef: 'e71ff3e7-4b33-11e4-ab6d-005056801329',
+    SettlementRegionsDescription: 'Київський р-н',
+    SettlementTypeDescription: 'місто',
+    SettlementTypeDescriptionRu: 'город',
+    ShortAddress: 'Київ, вулиця Михайла Драгомирова, 2А',
+    ShortAddressRu: 'Київ, вулиця Михайла Драгомирова, 2А',
+    SiteKey: '245',
+    TotalMaxWeightAllowed: '0',
+    TypeOfWarehouse: '9a68df70-0267-42a8-bb5c-37f427e36ee4',
+    WarehouseForAgent: '1',
+    WarehouseIndex: '996/1',
+    WarehouseStatus: 'Working',
+    WarehouseStatusDate: '2022-03-02 00:00:00',
+    WorkInMobileAwis: '0',
   },
 ]
 
@@ -76,6 +79,8 @@ interface IProps {
   handleChangeWerehouse: (werehouse: IPayment['warehouse']) => void
   handleChangeAddress: (e: ChangeEvent<HTMLInputElement>) => void
   handleChangeCity: (city: IPayment['delivery']['city']['name']) => void
+  handleChangeWerehouseCity: (city: any) => void
+  city: object
 }
 
 export const DeliveryBlock = ({
@@ -84,9 +89,12 @@ export const DeliveryBlock = ({
   handleChangeWerehouse,
   handleChangeAddress,
   handleChangeCity,
+  handleChangeWerehouseCity,
+  city,
 }: IProps) => {
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [werehouses, setWerehouses] = useState([])
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -102,6 +110,24 @@ export const DeliveryBlock = ({
     setVisible(false)
   }
 
+  useEffect(() => {
+    const fetchWerehouses = async () => {
+      try {
+        const { count, werehouses } = await searchByWerehouse({
+          page: 1,
+          limit: 200,
+          search: city?.MainDescription,
+          city_ref: city?.DeliveryCity,
+        })
+        setWerehouses(werehouses)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    if (visible && DeliveryTypeNum.NOVA_POSHTA === state.deliveryType.type) fetchWerehouses()
+    if (visible && DeliveryTypeNum.NOVA_POSHTA !== state.deliveryType.type) setWerehouses(mockPharm)
+    if (!visible) setWerehouses([])
+  }, [visible, state.deliveryType.type])
   return (
     <>
       {' '}
@@ -192,28 +218,47 @@ export const DeliveryBlock = ({
         </Block>
       </Wrapper>
       <Block>
-        {DeliveryTypeNum.PICKUP === state.deliveryType.type && (
-          <WerehouseItem handleClickOpenModal={handleClickOpenModal} item={state.warehouse} />
-        )}
-        {DeliveryTypeNum.DELIVERY === state.deliveryType.type && (
-          <DeliveryAddress onChange={handleChangeAddress} state={state} />
-        )}
-        {DeliveryTypeNum.NOVA_POSHTA === state.deliveryType.type && (
+        {DeliveryTypeNum.PICKUP === state.deliveryType.type && !state?.warehouse ? (
           <ChoosenButton onClick={handleClickOpenModal}>
             <p className='button-link'>Виберіть відділення</p>
             <p>
               <KeyboardArrowRight />
             </p>
           </ChoosenButton>
+        ) : (
+          DeliveryTypeNum.PICKUP === state.deliveryType.type && (
+            <WerehouseItem handleClickOpenModal={handleClickOpenModal} item={state.warehouse} />
+          )
+        )}
+        {DeliveryTypeNum.DELIVERY === state.deliveryType.type && (
+          <DeliveryAddress onChange={handleChangeAddress} state={state} />
+        )}
+        {DeliveryTypeNum.NOVA_POSHTA === state.deliveryType.type && !state?.warehouse ? (
+          <ChoosenButton onClick={handleClickOpenModal}>
+            <p className='button-link'>Виберіть відділення</p>
+            <p>
+              <KeyboardArrowRight />
+            </p>
+          </ChoosenButton>
+        ) : (
+          DeliveryTypeNum.NOVA_POSHTA === state.deliveryType.type && (
+            <WerehouseItem handleClickOpenModal={handleClickOpenModal} item={state.warehouse} />
+          )
         )}
       </Block>
-      <ChangeAddressModal handleSave={handleChangeCity} open={open} handleClose={handleClose} />
+      <ChangeAddressModal
+        onSelect={handleChangeWerehouseCity}
+        handleSave={handleChangeCity}
+        open={open}
+        handleClose={handleClose}
+        city={city}
+      />
       <ChooseAddressModal
         title='Виберіть відділення'
         handleSave={handleChangeWerehouse}
         open={visible}
         handleClose={handleCloseModal}
-        items={mock}
+        items={werehouses}
       />
     </>
   )
@@ -336,14 +381,20 @@ function WerehouseItem({ item, handleClickOpenModal }: IPayment['warehouse']) {
       {/* <span>
           <NewPostIcon width={20} />
         </span> */}
-      <p>{item?.name}</p>
-      <p>{item?.street}</p>
+      <p>{item?.Description}</p>
+      {/* <p>{item?.street}</p> */}
       {/* </ItemRow> */}
       <ItemRow>
         <span>
           <Phone />
         </span>
-        <span>{item?.number}</span>
+        <span>{item?.Phone}</span>
+      </ItemRow>
+      <ItemRow>
+        <span>
+          <AccessTime />
+        </span>
+        <span>{item?.Delivery?.[moment().format('dddd')]}</span>
       </ItemRow>
     </ItemWrapper>
   )

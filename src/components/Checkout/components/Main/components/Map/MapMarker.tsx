@@ -10,7 +10,7 @@ export const MapMarker = ({ activeItem, item, handleChooseWerehouse }: { activeI
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (activeItem.id === item.id) {
+    if (activeItem?.Ref === item?.Ref) {
       setOpen(true)
     } else {
       setOpen(false)
@@ -28,13 +28,13 @@ export const MapMarker = ({ activeItem, item, handleChooseWerehouse }: { activeI
   return (
     <Marker
       ref={markerRef}
-      position={[Number(item.latitude), Number(item.longitude)]}
+      position={[Number(item?.Latitude), Number(item?.Longitude)]}
       icon={L.divIcon({
         iconSize: null,
         html: ReactDOMServer.renderToString(<NewPostIcon width={20} />),
       })}
     >
-      <MapPopap handleChooseWerehouse={handleChooseWerehouse} activeItem={item.activeItem} item={item} />
+      <MapPopap handleChooseWerehouse={handleChooseWerehouse} activeItem={item?.activeItem} item={item} />
     </Marker>
   )
 }
