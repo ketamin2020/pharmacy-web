@@ -33,7 +33,7 @@ interface IProps {
   icon: JSX.Element
 }
 
-export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, item }): JSX.Element => {
+export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, item, callback }): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const navigate = useNavigate()
 
@@ -50,6 +50,7 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
     const path = `/drugs/${group}${firstLevel ? '/' + firstLevel : ''}${secondLevel ? '/' + secondLevel : ''}`
     handleClose()
     navigate(path, { replace: true })
+    callback?.()
   }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

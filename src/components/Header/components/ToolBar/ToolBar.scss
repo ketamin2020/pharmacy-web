@@ -4,14 +4,13 @@
   gap: 10px;
   padding: 10px 0px;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+
   & article {
     display: flex;
     align-items: flex-start;
-    flex-wrap: wrap;
-    @include desktop {
-      flex-wrap: nowrap;
-    }
+    flex-wrap: nowrap;
+    @include desktop;
   }
 }
 .toolbar_wrapper {

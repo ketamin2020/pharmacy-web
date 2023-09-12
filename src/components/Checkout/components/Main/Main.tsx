@@ -215,6 +215,10 @@ export const Main = () => {
     const { name, value } = e.target
     setState(prev => ({
       ...prev,
+      client: {
+        ...prev.client,
+        [name]: value,
+      },
       delivery: {
         ...prev.delivery,
         recipient: {

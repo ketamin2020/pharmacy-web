@@ -74,7 +74,7 @@ const Footer = () => {
       <div className='separator'></div>
       <article className='footer--policy'>
         <div className='container footer--policy__inner'>
-          <div>2022 Всі права захищені. Політика конфіденційності</div>
+          <div>{`${new Date().getFullYear()} Всі права захищені. Політика конфіденційності`}</div>
           <div className='logo__wrap'>
             <MastercardLogo />
             <VisaLogo />

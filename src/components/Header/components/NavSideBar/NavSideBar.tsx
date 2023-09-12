@@ -1,4 +1,4 @@
-import { Avatar, Box, Divider, List, makeStyles, Drawer, Typography } from '@material-ui/core'
+import { Avatar, Box, Divider, List, makeStyles, Drawer } from '@material-ui/core'
 import {
   DrugsIcon,
   AntibioticsIcon,
@@ -7,17 +7,28 @@ import {
   CosmeticsIcon,
   DeliverySmallIcon,
 } from 'images/icons/icons'
-import Button from '@mui/material/Button'
+
 import { Logo } from 'images/icons/icons'
 import { Dropdown } from 'common/Dropdown/Dropdown'
 import SocialList from 'common/SocialList/SocialList'
-import { ItemsMenuFirstNested } from '../utils/types'
-import { antibiotics } from '../utils/antibiotics'
-import { medicines } from '../utils/medicines'
-import { medicalGoods } from '../utils/medial_goods'
-import { motherAndChildrens } from '../utils/motherAndChildrens'
-import { gigiena } from '../utils/gigiena'
+import { useDispatch } from 'react-redux'
+import { menuItemsSelector } from 'redux/groups/groupsSelectors'
+import { userSelector } from 'redux/user/userSelectors'
+import { useSelector } from 'react-redux'
+import { logout } from 'redux/auth/authActions'
+import Button from 'common/Button/Button'
+import { RoutePath } from 'routes/types'
+import { useNavigate } from 'react-router-dom'
 import './NavBarSideBar.scss'
+
+const icons = {
+  0: <DrugsIcon />,
+  1: <AntibioticsIcon />,
+  2: <MedicalGoodsIcon />,
+  3: <MotherAndChildIcon />,
+  4: <CosmeticsIcon />,
+}
+
 const useStyles = makeStyles(theme => ({
   menuSliderContainer: {
     width: 300,
@@ -49,104 +60,92 @@ const navbarItems = [
   {
     id: 0,
     title: 'Про нас',
+    path: RoutePath.ABOUT_PAGE,
   },
   {
     id: 2,
     title: 'Гарантії',
+    path: RoutePath.WARRANTY,
   },
   {
     id: 3,
     title: 'Доставка та оплата',
+    path: RoutePath.DELIVERY,
   },
   {
     id: 4,
     title: 'Повернення',
+    path: RoutePath.ORDER_RETURN,
   },
   {
     id: 5,
     title: 'Контакти',
+    path: RoutePath.CONTACTS,
   },
 ]
 
 const NavSideBar = ({ open, toggleSlider }: IProps) => {
   const classes = useStyles()
+  const navigate = useNavigate()
+  const items = useSelector(menuItemsSelector)
+  const user = useSelector(userSelector)
+
+  const dispatch = useDispatch()
+  const handleLogout = () => {
+    localStorage.removeItem('persist:auth')
+    dispatch(logout())
+  }
 
   const sideList = () => (
     <Box className={classes.menuSliderContainer} component='div'>
-      <div className='sidebar__logo'>
+      <div
+        onClick={() => {
+          navigate(RoutePath.HOME_PAGE)
+          toggleSlider()
+        }}
+        className='sidebar__logo'
+      >
         <Logo />
       </div>
 
       <Divider />
-      <Typography sx={{ mt: 0.5 }} color='text.secondary' display='block' variant='caption'>
-        Навігація
-      </Typography>
+
       <List>
-        <Dropdown icon={<DrugsIcon />} title={ItemsMenuFirstNested.MEDICINES} onChange={() => null} list={medicines} />
-        <Dropdown
-          icon={<AntibioticsIcon />}
-          title={ItemsMenuFirstNested.ANTIBIOTICS}
-          onChange={() => null}
-          list={antibiotics}
-        />
-        <Dropdown
-          icon={<MedicalGoodsIcon />}
-          title={ItemsMenuFirstNested.MEDICAL_GOODS}
-          onChange={() => null}
-          list={medicalGoods}
-        />
-        <Dropdown
-          icon={<MotherAndChildIcon />}
-          title={ItemsMenuFirstNested.GOODS_FOR_MOTHERS_AND_CHILDREN}
-          onChange={() => null}
-          list={motherAndChildrens}
-        />
-        <Dropdown
-          icon={<CosmeticsIcon />}
-          title={ItemsMenuFirstNested.COSMETICS_AND_HYGIENE}
-          onChange={() => null}
-          list={gigiena}
-        />
-        <Button
-          id='basic-button'
-          style={{ display: 'flex', alignItems: 'flex-start' }}
-          aria-controls={'basic-menu'}
-          aria-haspopup='true'
-          onClick={() => null}
-        >
-          <span>
-            <DeliverySmallIcon />
-          </span>{' '}
-          <span style={{ color: 'red' }}>Акції</span>
-        </Button>
+        {items?.map((item, i) => (
+          <Dropdown
+            key={i}
+            callback={toggleSlider}
+            icon={icons[i]}
+            title={item.group_name}
+            item={item}
+            list={item.children}
+          />
+        ))}
       </List>
       <Divider />
-      <Typography sx={{ mt: 0.5 }} color='text.secondary' display='block' variant='caption'>
-        Інформація про компанію
-      </Typography>
+
       <List className={classes.linksWrapper}>
         {navbarItems.map(item => (
-          <span className='header__side-menu_item' key={item.id}>
+          <span
+            onClick={() => {
+              navigate(item.path)
+              toggleSlider()
+            }}
+            className='header__side-menu_item'
+            key={item.id}
+          >
             {item.title}
           </span>
         ))}
       </List>
       <Divider />
-      <Typography sx={{ mt: 0.5 }} color='text.secondary' display='block' variant='caption'>
-        Ми в соціальних мережах
-      </Typography>
+
       <SocialList />
       <Divider />
       <List>
         <Avatar className={classes.avatar} src='https://i.ibb.co/rx5DFbs/avatar.png' alt='Juaneme8' />
-        <Button
-          id='basic-button'
-          style={{ justifyContent: 'center', width: '100%' }}
-          aria-controls={'basic-menu'}
-          aria-haspopup='true'
-          onClick={() => null}
-        >
-          Вхід
+        <Button color='green' shape='square' onClick={!!user?.id ? handleLogout : () => null}>
+          {!!user?.id ? <span>Вихід</span> : <span>Вхід</span>}
         </Button>
       </List>
     </Box>

@@ -7,7 +7,7 @@ import { mainInfoSelector } from 'redux/main/mainSelectors'
 const Wrapper = styled.div`
   background-color: #f8f8f8;
   border-radius: 25px;
-  max-width: 1300px;
+  /* max-width: 1300px; */
   margin: 0 auto;
   padding: 10px;
   & button {
