@@ -380,7 +380,7 @@ export const Banner = () => {
       console.log(error)
     }
   }
-  console.log(state, 'state')
+
   const handleCreateImages = async () => {
     try {
       await createBanner(state)

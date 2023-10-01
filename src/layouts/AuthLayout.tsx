@@ -44,8 +44,8 @@ const AuthLayout = ({ children }) => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const res = await getBanners()
-        dispath(bannerAction(res))
+        const { data } = await getBanners()
+        dispath(bannerAction(data))
       } catch (error) {
         console.error(error)
       }

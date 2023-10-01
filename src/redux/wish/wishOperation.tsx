@@ -2,7 +2,7 @@ import { getWishListAction, getWishListByUserAction } from './wishActions'
 import { getWishList, addProductToWishList, deleteItemFromWishList, getUserWishList } from 'api/wish'
 
 export const fetchWishList = () => dispatch => {
-  return getWishList().then(data => dispatch(getWishListAction(data)))
+  return getWishList().then(({ data }) => dispatch(getWishListAction(data)))
 }
 export const fetchWishListByUser = () => dispatch => {
   return getUserWishList().then(data => dispatch(getWishListByUserAction(data)))
