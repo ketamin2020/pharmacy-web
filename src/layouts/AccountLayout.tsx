@@ -60,13 +60,15 @@ const AccountLayout = ({ children }) => {
       <aside>
         <nav>
           <ul>
-            {privateRoutes.map(menu => (
-              <li key={menu.path}>
-                <NavLink end to={menu.path} style={({ isActive }) => (isActive ? activeStyle : undefined)}>
-                  {menu.name}
-                </NavLink>
-              </li>
-            ))}
+            {privateRoutes
+              .filter(item => ![RoutePath.CHECKOUT, RoutePath.CHECKOUT_SUCCESS].includes(item.path))
+              .map(menu => (
+                <li key={menu.path}>
+                  <NavLink end to={menu.path} style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+                    {menu.name}
+                  </NavLink>
+                </li>
+              ))}
             <li>
               <NavLink
                 onClick={handleLogout}
