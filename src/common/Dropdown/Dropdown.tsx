@@ -15,6 +15,7 @@ const useStyles = makeStyles(() => ({
     padding: '10px !important',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'start',
     gap: '10px',
   },
   root: {
@@ -115,7 +116,6 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
 }
 const Wrapper = styled.div`
   position: relative;
-  width: 100%;
   & .MuiList-root {
     display: flex;
     flex-direction: column;

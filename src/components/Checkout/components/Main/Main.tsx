@@ -17,6 +17,10 @@ import { toggleBusketModal } from 'redux/ui/modals/modalsActions'
 import { useDispatch } from 'react-redux'
 import notification from 'common/Notification/Notification'
 import { createNewOrder } from 'api/ordered'
+import { fetchBasketListByUser } from 'redux/basket/basketOperation'
+import { fetchWishListByUser } from 'redux/wish/wishOperation'
+import { fetchWishList } from 'redux/wish/wishOperation'
+import { fetchBasketList } from 'redux/basket/basketOperation'
 
 const defaultCity = {
   AddressDeliveryAllowed: true,
@@ -237,6 +241,9 @@ export const Main = () => {
     try {
       const { data: html } = await createNewOrder(state)
       setLiqPayBtn(html)
+
+      await dispatch(fetchBasketListByUser())
+      await dispatch(fetchBasketList())
       notification('success', 'Успішно')
       console.log(state)
     } catch (error) {

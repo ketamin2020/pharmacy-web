@@ -22,6 +22,13 @@ const icons = {
   2: <MedicalGoodsIcon />,
   3: <MotherAndChildIcon />,
   4: <CosmeticsIcon />,
+  5: <DrugsIcon />,
+  6: <DrugsIcon />,
+  7: <DrugsIcon />,
+  8: <DrugsIcon />,
+  9: <DrugsIcon />,
+  10: <DrugsIcon />,
+  11: <DrugsIcon />,
 }
 
 const Toolbar = () => {
@@ -35,23 +42,10 @@ const Toolbar = () => {
             <Logo />
           </NavLink>
         </article>
-        <article>
+        <article style={{ flexWrap: 'wrap' }}>
           {items?.map((item, i) => (
             <Dropdown key={i} icon={icons[i]} title={item.group_name} item={item} list={item.children} />
           ))}
-
-          {/* <Button
-            id='basic-button'
-            style={{ display: 'flex', alignItems: 'flex-start', height: '20px' }}
-            aria-controls={'basic-menu'}
-            aria-haspopup='true'
-            onClick={() => null}
-          >
-            <span>
-              <DeliverySmallIcon />
-            </span>
-            <span style={{ color: 'red' }}>Акції</span>{' '}
-          </Button> */}
         </article>
       </div>
     </section>
