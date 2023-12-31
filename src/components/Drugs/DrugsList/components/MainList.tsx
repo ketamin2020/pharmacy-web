@@ -39,9 +39,11 @@ export const MainList = ({ list }: IProps[]) => {
 }
 
 const Wrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 20px;
   flex-wrap: wrap;
-  padding: 20px;
+  padding: 10px;
+  align-content: baseline;
 `

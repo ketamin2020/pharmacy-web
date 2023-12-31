@@ -25,6 +25,8 @@ const ImageWrapper = styled.div`
     height: auto;
     max-width: 150px;
     margin: 0 auto;
+    max-height: 150px;
+    object-fit: contain;
   }
   & .favorite-icon {
     position: absolute;

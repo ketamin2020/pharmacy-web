@@ -13,8 +13,23 @@ import Button from 'common/Button/Button'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
 
+const initQuery = {
+  dosage: [],
+  production_form: [],
+  imported: [],
+  maker: [],
+  package: [],
+  quantity: [],
+  administration_route: [],
+  active_ingredient: [],
+  storage_temperature: [],
+  marked_name: [],
+  warnings: [],
+}
+
 export const DrugsList = () => {
   const [data, setData] = useState([])
+  const [params, setParams] = useState(initQuery)
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const { pathname } = useLocation()
@@ -33,6 +48,30 @@ export const DrugsList = () => {
       setLoading(false)
     }
   }
+
+  const onChangeParams = async (group, id) => {
+    const newQuery = { ...params }
+
+    if (group in newQuery) {
+      const currentGroup = newQuery[group]
+
+      console.log(currentGroup, 'currentGroup')
+
+      if (currentGroup.includes(id)) {
+        newQuery[group] = currentGroup.filter(item => item !== id)
+      } else {
+        newQuery[group] = [...currentGroup, id]
+      }
+    }
+
+    setParams(newQuery)
+
+    const res = await getDrugsList({ main_group, first_lavel, second_level, ...newQuery })
+
+    setData(res)
+  }
+
+  console.log(params)
 
   useEffect(() => {
     fetchDrugsList({ main_group, first_lavel, second_level })
@@ -61,14 +100,18 @@ export const DrugsList = () => {
               >
                 <span>Закрити</span>
               </Button>
-              {data?.properties && <SearchBar properties={data?.properties} />}
+              {data?.properties && (
+                <SearchBar params={params} onChangeParams={onChangeParams} properties={data?.properties} />
+              )}
             </Drawer>
 
             {data?.data && <MainList list={data?.data} />}
           </MobWrapper>
 
           <DesctopWrapper>
-            {data?.properties && <SearchBar properties={data?.properties} />}
+            {data?.properties && (
+              <SearchBar params={params} onChangeParams={onChangeParams} properties={data?.properties} />
+            )}
 
             {data?.data && <MainList list={data?.data} />}
           </DesctopWrapper>
@@ -104,6 +147,7 @@ const DesctopWrapper = styled.div`
   display: none;
   @media screen and (min-width: 768px) {
     display: grid;
-    grid-template-columns: 300px 100%;
+    grid-template-columns: 320px 1110px;
+    align-content: baseline;
   }
 `

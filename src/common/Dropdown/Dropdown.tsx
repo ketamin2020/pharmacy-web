@@ -68,7 +68,7 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <TitleWrapper style={open ? { position: 'relative', zIndex: 2000 } : {}}>
+        <TitleWrapper style={open ? { position: 'relative' } : {}}>
           {icon} <span>{title}</span> {!!list?.length ? open ? <ArrowDropUp /> : <ArrowDropDown /> : null}
         </TitleWrapper>
       </Button>
@@ -104,6 +104,7 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
                 onClick={() => handleItemClick(id, item.slug, slug)}
                 divider
                 key={i}
+                style={{ marginLeft: '16px' }}
               >
                 {group_name}
               </MenuItem>
