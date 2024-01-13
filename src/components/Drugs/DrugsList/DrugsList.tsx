@@ -55,8 +55,6 @@ export const DrugsList = () => {
     if (group in newQuery) {
       const currentGroup = newQuery[group]
 
-      console.log(currentGroup, 'currentGroup')
-
       if (currentGroup.includes(id)) {
         newQuery[group] = currentGroup.filter(item => item !== id)
       } else {

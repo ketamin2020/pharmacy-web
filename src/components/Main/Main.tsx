@@ -13,8 +13,8 @@ export const Main = () => {
       <Slider />
       <About />
       <Brands />
-      {/* <Popular />
-      <Bestsellers /> */}
+      <Popular />
+      <Bestsellers />
       <Reviews />
       <Description />
     </Box>

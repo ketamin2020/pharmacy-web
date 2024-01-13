@@ -33,7 +33,7 @@ const BusketModal = () => {
               images={item.images.items}
               price={item.price}
               property={item.property}
-              id={item.id}
+              id={item.id || item._id}
               key={idx}
               qty={item.qty}
             />

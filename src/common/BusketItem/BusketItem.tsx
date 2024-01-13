@@ -53,7 +53,7 @@ export const BusketItem = ({ reviews, images, price, property, id, qty }) => {
           {property?.name}
         </p>
         <p className='property-code_wrapper'>
-          Код товару: <span className='property-code'>{price.code}</span>{' '}
+          Код товару: <span className='property-code'>{property?.morion || '-'}</span>{' '}
         </p>
       </Section>
       <Section>
@@ -68,7 +68,7 @@ export const BusketItem = ({ reviews, images, price, property, id, qty }) => {
           </div>
         </QtyWrapper>
       </Section>
-      <Section className='price-value'>{priceToView(price.current)}</Section>
+      <Section className='price-value'>{priceToView(price?.current || 0)}</Section>
       <Section onClick={() => handleDeleteFromBasketList(id)} className='busket-action'>
         <Clear />
       </Section>

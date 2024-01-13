@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, MutableRefObject } from 'react'
+import React, { useRef, useCallback, MutableRefObject, useState, useEffect } from 'react'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Navigation, Autoplay, Lazy } from 'swiper'
@@ -13,6 +13,7 @@ import 'swiper/css/scrollbar'
 import 'swiper/css/effect-fade'
 import 'swiper/css/lazy'
 import './Popular.scss'
+import { getDrugsByViews } from 'api/drugs'
 
 const Wrapper = styled.div`
   & .swiper-button-next,
@@ -36,44 +37,8 @@ const ButtonWrapper = styled.div`
   margin-top: 10px;
 `
 
-const data = [
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-]
 const Popular = () => {
+  const [data, setData] = useState([])
   const sliderRef = useRef<MutableRefObject<null | object>>(null)
 
   const handlePrev = useCallback(() => {
@@ -84,6 +49,15 @@ const Popular = () => {
   const handleNext = useCallback(() => {
     if (!sliderRef.current) return
     sliderRef.current.swiper.slideNext()
+  }, [])
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await getDrugsByViews({})
+      console.log(res)
+      setData(res)
+    }
+    fetch()
   }, [])
   return (
     <Wrapper>
@@ -122,9 +96,17 @@ const Popular = () => {
           },
         }}
       >
-        {data.map(item => (
+        {data?.map(item => (
           <SwiperSlide key={item.name}>
-            <ProductCard {...item} />
+            <ProductCard
+              id={item?.id}
+              reviews={item?.reviews}
+              name={item?.name}
+              status={item?.price}
+              price={item?.price}
+              image={item?.images?.items?.[0]?.url}
+              key={item?.id}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

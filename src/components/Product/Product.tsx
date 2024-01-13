@@ -11,6 +11,8 @@ import PropertyBlock from './components/Property/PropertyBlock'
 import CircularProgress from '@mui/material/CircularProgress'
 import Backdrop from '@mui/material/Backdrop'
 import { Reviews } from './components/Reviews/Reviews'
+import { Analogs } from './components/Analogs/Analogs'
+
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -74,7 +76,9 @@ export const Product = () => {
           <TabPanel value={value} index={EnumTabType.REVIEWS}>
             <Reviews product={product} />
           </TabPanel>
-          <TabPanel value={value} index={EnumTabType.ANALOGS}></TabPanel>
+          <TabPanel value={value} index={EnumTabType.ANALOGS}>
+            <Analogs product={product} />
+          </TabPanel>
         </Heading>
       )}
     </Box>
