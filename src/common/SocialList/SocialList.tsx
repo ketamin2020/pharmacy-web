@@ -23,6 +23,7 @@ const items = [
 const useStyles = makeStyles(theme => ({
   linksWrapper: {
     display: 'flex',
+    justifyContent: 'center',
     gap: '10px',
     padding: '1rem !important',
   },

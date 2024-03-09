@@ -23,15 +23,21 @@ import './NavBarSideBar.scss'
 
 const icons = {
   0: <DrugsIcon />,
-  1: <AntibioticsIcon />,
-  2: <MedicalGoodsIcon />,
-  3: <MotherAndChildIcon />,
-  4: <CosmeticsIcon />,
+  1: <DrugsIcon />,
+  2: <DrugsIcon />,
+  3: <DrugsIcon />,
+  4: <DrugsIcon />,
+  5: <DrugsIcon />,
+  6: <DrugsIcon />,
+  7: <DrugsIcon />,
+  8: <DrugsIcon />,
+  9: <DrugsIcon />,
+  10: <DrugsIcon />,
 }
 
 const useStyles = makeStyles(theme => ({
   menuSliderContainer: {
-    width: 300,
+    width: 350,
     background: 'white',
     height: '100%',
     padding: '1rem',
@@ -142,8 +148,7 @@ const NavSideBar = ({ open, toggleSlider }: IProps) => {
 
       <SocialList />
       <Divider />
-      <List>
-        <Avatar className={classes.avatar} src='https://i.ibb.co/rx5DFbs/avatar.png' alt='Juaneme8' />
+      <List style={{ display: 'flex', justifyContent: 'center' }}>
         <Button color='green' shape='square' onClick={!!user?.id ? handleLogout : () => null}>
           {!!user?.id ? <span>Вихід</span> : <span>Вхід</span>}
         </Button>

@@ -10,13 +10,13 @@ export const ReviewItem = ({ author, created_at, property, rate, text }) => {
       <PropertyBlock>
         <NavLink className='product-link' to={`product/${property.id}`}>
           <img src={property?.images?.[0]?.url} alt={property.name} />
-          {property.name}
+          {property.name || 'Анонімний відгук'}
         </NavLink>
       </PropertyBlock>
       <ReviewBlock>
         <div className='review-info'>
-          <Avatar color={'#626ed4'}>{author?.first_name}</Avatar>
-          <p>{author?.first_name}</p>
+          <Avatar color={'#626ed4'}>{author?.first_name || 'Анонімний відгук'}</Avatar>
+          <p>{author?.first_name || 'Анонім'}</p>
           <p className='reviews-date'>{formatDate(created_at)}</p>
         </div>
         <Rating name='half-rating-read' precision={0.5} value={rate} readOnly />

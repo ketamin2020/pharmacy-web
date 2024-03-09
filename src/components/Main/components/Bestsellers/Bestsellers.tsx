@@ -1,5 +1,6 @@
-import React, { useRef, useCallback, MutableRefObject } from 'react'
+import React, { useRef, useCallback, MutableRefObject, useState, useEffect } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { getDrugsBySold } from 'api/drugs'
 import { Pagination, Navigation, Autoplay, Lazy } from 'swiper'
 import { ArrowRight, ArrowLeft } from '@material-ui/icons'
 import Button from 'common/Button/Button'
@@ -34,44 +35,8 @@ const ButtonWrapper = styled.div`
   margin-top: 10px;
 `
 
-const data = [
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-  {
-    name: 'Доппельгерц Энерготоник-Н сироп, 250 мл',
-    status: 'Є в наявності',
-    price: 187.5,
-  },
-]
 const Bestsellers = () => {
+  const [data, setData] = useState([])
   const sliderRef = useRef<MutableRefObject<null | object>>(null)
 
   const handlePrev = useCallback(() => {
@@ -82,6 +47,19 @@ const Bestsellers = () => {
   const handleNext = useCallback(() => {
     if (!sliderRef.current) return
     sliderRef.current.swiper.slideNext()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDrugsBySold({})
+
+        setData(data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchData()
   }, [])
   return (
     <Wrapper>
@@ -122,7 +100,15 @@ const Bestsellers = () => {
       >
         {data.map(item => (
           <SwiperSlide key={item.name}>
-            <ProductCard {...item} />
+            <ProductCard
+              id={item?.id}
+              reviews={item?.reviews}
+              name={item?.name}
+              status={item?.price}
+              price={item?.price}
+              image={item?.images?.items?.[0]?.url}
+              key={item?.id}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

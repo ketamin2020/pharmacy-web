@@ -127,7 +127,9 @@ const ImageWrapper = styled.div`
   & img {
     display: block;
     width: 100%;
+    max-width: 200px;
     height: auto;
+    margin: 0 auto;
   }
 `
 const Wrapper = styled.div`

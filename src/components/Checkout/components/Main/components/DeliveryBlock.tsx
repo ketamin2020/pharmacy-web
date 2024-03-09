@@ -154,20 +154,11 @@ export const DeliveryBlock = ({
             active={DeliveryTypeNum.PICKUP === state.deliveryType?.type}
           >
             <div className='check-icon'>
-              <CheckCircle
-                style={{
-                  fill: '#00a990',
-                }}
-              />
+              <CheckCircle style={{ fill: '#00a990' }} />
             </div>
 
             <div className='icon-block'>
-              <Store
-                style={{
-                  fill: '#00a990',
-                }}
-                fontSize='large'
-              />
+              <Store fontSize='large' />
             </div>
             <p className='price'>Забрати з аптеки</p>
             <p className='green'>Безплатно</p>
@@ -177,20 +168,11 @@ export const DeliveryBlock = ({
             active={DeliveryTypeNum.DELIVERY === state.deliveryType?.type}
           >
             <div className='check-icon'>
-              <CheckCircle
-                style={{
-                  fill: '#00a990',
-                }}
-              />
+              <CheckCircle style={{ fill: '#00a990' }} />
             </div>
 
             <div className='icon-block'>
-              <LocalShipping
-                fontSize='large'
-                style={{
-                  fill: '#00a990',
-                }}
-              />
+              <LocalShipping fontSize='large' />
             </div>
 
             <p>{`Доставка`}</p>
@@ -201,11 +183,7 @@ export const DeliveryBlock = ({
             active={DeliveryTypeNum.NOVA_POSHTA === state.deliveryType?.type}
           >
             <div className='check-icon'>
-              <CheckCircle
-                style={{
-                  fill: '#00a990',
-                }}
-              />
+              <CheckCircle style={{ fill: '#00a990' }} />
             </div>
 
             <div className='icon-block'>
@@ -295,6 +273,12 @@ const Tab = styled.div<{ active: boolean }>`
 
   & .icon-block {
     min-height: 50px;
+    & svg {
+      fill: ${props => (props.active ? '#00a990' : 'grey')};
+    }
+    & g {
+      fill: ${props => (props.active ? '#00a990' : 'grey')};
+    }
   }
   & p {
     text-align: center;

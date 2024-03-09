@@ -15,7 +15,7 @@ export const CheckoutSuccess = () => {
         const res = await getOrderById(params)
         setOrder(res)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
     if (params?.orderId) fetchOrderById()

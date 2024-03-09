@@ -54,7 +54,7 @@ const Popular = () => {
   useEffect(() => {
     const fetch = async () => {
       const res = await getDrugsByViews({})
-      console.log(res)
+
       setData(res)
     }
     fetch()
@@ -102,7 +102,7 @@ const Popular = () => {
               id={item?.id}
               reviews={item?.reviews}
               name={item?.name}
-              status={item?.price}
+              status={item?.status}
               price={item?.price}
               image={item?.images?.items?.[0]?.url}
               key={item?.id}

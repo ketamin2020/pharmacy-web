@@ -69,7 +69,8 @@ export const Dropdown: FC<IProps> = ({ onChange, list = [], title = '', icon, it
         onClick={handleClick}
       >
         <TitleWrapper style={open ? { position: 'relative' } : {}}>
-          {icon} <span>{title}</span> {!!list?.length ? open ? <ArrowDropUp /> : <ArrowDropDown /> : null}
+          {icon} <span>{title.slice(0, 25) + '...'}</span>{' '}
+          {!!list?.length ? open ? <ArrowDropUp /> : <ArrowDropDown /> : null}
         </TitleWrapper>
       </Button>
 

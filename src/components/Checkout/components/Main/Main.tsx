@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react'
 import styled from '@emotion/styled'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from '@material-ui/icons'
 import { SummaryBlock } from './components/SummaryBlock'
 import { DeliveryBlock } from './components/DeliveryBlock'
@@ -21,6 +21,7 @@ import { fetchBasketListByUser } from 'redux/basket/basketOperation'
 import { fetchWishListByUser } from 'redux/wish/wishOperation'
 import { fetchWishList } from 'redux/wish/wishOperation'
 import { fetchBasketList } from 'redux/basket/basketOperation'
+import { RoutePath } from 'routes/types'
 
 const defaultCity = {
   AddressDeliveryAllowed: true,
@@ -93,6 +94,7 @@ const initData: IPayment = {
 }
 export const Main = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const user = useSelector(userSelector)
   const bascketID = useSelector(basketIdSelector)
   const products = useSelector(basketlistSelector)
@@ -239,15 +241,18 @@ export const Main = () => {
 
   const handleSubmit = async () => {
     try {
-      const { data: html } = await createNewOrder(state)
-      setLiqPayBtn(html)
-
+      const { data: html, order } = await createNewOrder(state)
+      notification('success', 'Успішно')
       await dispatch(fetchBasketListByUser())
       await dispatch(fetchBasketList())
-      notification('success', 'Успішно')
-      console.log(state)
+
+      if (state.payment.type === PaymentTypeNum.IN_SHOP) {
+        return navigate(`/checkout/success/${order.id}`)
+      }
+
+      setLiqPayBtn(html)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -287,7 +292,7 @@ export const Main = () => {
           </TabBlock>
         </MainBlock>
         <RightBlock>
-          <SummaryBlock html={liqpayBtn} handleSubmit={handleSubmit} />
+          <SummaryBlock html={liqpayBtn} type={state.deliveryType?.type} handleSubmit={handleSubmit} />
         </RightBlock>
       </BlockWrapper>
       <BusketModal />

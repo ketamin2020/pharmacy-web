@@ -39,7 +39,10 @@ export const Main = ({ order }) => {
         <h3>Деталі замовлення:</h3>
         <Row>
           <p className='detail-title'>Отримувач</p>
-          <p className='detail-value'>{order?.delivery?.recipient?.last_name || ''}</p>
+          <p className='detail-value'>
+            {`${order?.delivery?.recipient?.last_name} ${order?.delivery?.recipient?.first_name} ${order?.delivery?.recipient?.middle_name}` ||
+              ''}
+          </p>
         </Row>
         <Row>
           <p className='detail-title'>Телефон</p>
@@ -47,7 +50,7 @@ export const Main = ({ order }) => {
         </Row>
         <Row>
           <p className='detail-title'>Спосіб доставки</p>
-          <p className='detail-value'>{DeliveryTypeNum[order?.delivery_type] || ''}</p>
+          <p className='detail-value'>{DeliveryTypeNum[order?.delivery_type?.type] || ''}</p>
         </Row>
         <Row>
           <p className='detail-title'>Спосіб оплати</p>

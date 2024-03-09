@@ -19,7 +19,7 @@ export const Medicines = () => {
         const res = await getMedicinesGroupList(params)
         setData(res?.data)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         setLoading(false)
       }

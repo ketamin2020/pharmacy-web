@@ -18,7 +18,6 @@ export const MapMarker = ({ activeItem, item, handleChooseWerehouse }: { activeI
   }, [activeItem, item])
   const markerRef = ref => {
     if (ref && open) {
-      console.log(ref)
       return ref?.openPopup()
     } else {
       ref?.closePopup()

@@ -43,7 +43,7 @@ export const DrugsList = () => {
 
       setData(res)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -68,8 +68,6 @@ export const DrugsList = () => {
 
     setData(res)
   }
-
-  console.log(params)
 
   useEffect(() => {
     fetchDrugsList({ main_group, first_lavel, second_level })

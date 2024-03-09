@@ -6,14 +6,18 @@ import { priceToView } from 'utils/priceToView'
 import Button from 'common/Button/Button'
 import { NavLink } from 'react-router-dom'
 import { RoutePath } from 'routes/types'
+import { DeliveryTypeNum } from '../../types'
 
 interface IProps {
   handleSubmit: () => void
   html: string
+  type: DeliveryTypeNum
 }
 
-export const SummaryBlock = ({ handleSubmit, html }: IProps) => {
+export const SummaryBlock = ({ handleSubmit, html, type }: IProps) => {
   const busket = useSelector(basketSelector)
+
+  const additionalPrice = type !== DeliveryTypeNum.PICKUP ? 70 : 0
 
   return (
     <Wrapper>
@@ -24,11 +28,11 @@ export const SummaryBlock = ({ handleSubmit, html }: IProps) => {
       </Row>
       <Row>
         <p className='title'>Сума доставки:</p>
-        <p className='value'>{priceToView(70)}</p>
+        <p className='value'>{priceToView(additionalPrice)}</p>
       </Row>
       <SummaryRow>
         <p>Разом до сплати:</p>
-        <h3>{priceToView(busket?.totalPrice + 70)}</h3>
+        <h3>{priceToView(busket?.totalPrice + additionalPrice)}</h3>
       </SummaryRow>
       <Button
         onClick={handleSubmit}

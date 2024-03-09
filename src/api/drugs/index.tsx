@@ -9,6 +9,10 @@ const SEARCH_WEREHOUSES = 'api/drugs/search-werehouse'
 const GET_DRUG_BY_SUBSTANCE = 'api/drugs/drugs-by-active-substance'
 const GET_DRUG_BY_VIEWS = 'api/drugs/drugs-by-views'
 
+const GET_DRUG_BY_SOLD = 'api/drugs/drugs-by-sold'
+
+const GET_DRUG_BY_SEARCH = 'api/drugs/search'
+
 export const getDrugsList = params => {
   return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_DRUGS_LIST, { params }).then(res => res?.data)
 }
@@ -16,6 +20,11 @@ export const getDrugsList = params => {
 export const getDrugById = params => {
   return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_DRUGS, { params }).then(res => res?.data)
 }
+
+export const getDrugBySearch = params => {
+  return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_DRUG_BY_SEARCH, { params }).then(res => res?.data)
+}
+
 export const getMedicinesGroupList = params => {
   return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_MEDICINES_GROUP, { params }).then(res => res?.data)
 }
@@ -26,6 +35,9 @@ export const getDrugsBySubstance = params => {
 
 export const getDrugsByViews = params => {
   return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_DRUG_BY_VIEWS, { params }).then(res => res?.data)
+}
+export const getDrugsBySold = params => {
+  return axiosInstance.get<AxiosResponse<{ data: object }>>(GET_DRUG_BY_SOLD, { params }).then(res => res?.data)
 }
 
 export const searchByCityName = params => {
